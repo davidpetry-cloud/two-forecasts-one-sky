@@ -50,7 +50,7 @@
     var box = $(id);
     box.innerHTML = items.map(function (it) {
       return '<label class="choice"><input type="radio" name="' + name + '" value="' + esc(it.value) + '"' + (current !== null && String(it.value) === String(current) ? " checked" : "") + ">" +
-        "<span>" + esc(it.label) + (it.small ? " <small>" + esc(it.small) + "</small>" : "") + "</span></label>";
+        "<span>" + esc(it.label) + (it.small ? " <small>(" + esc(it.small) + ")</small>" : "") + "</span></label>";
     }).join("");
     if (onPick) box.onchange = function (e) { onPick(e.target.value); };
   }
@@ -113,6 +113,7 @@
     '<li><svg viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="var(--paper)" stroke="var(--ai)" stroke-width="3"/></svg>AI model (AIGFS)</li>' +
     '<li><svg viewBox="0 0 22 22"><rect x="3" y="3" width="16" height="16" fill="var(--paper)" stroke="var(--phys)" stroke-width="3"/></svg>Physics model (GFS)</li></ul>';
 
+  var NEXT_AFTER_RESULT = '<p class="next"><a href="#h-pick">Try another case ↑</a> <span aria-hidden="true">·</span> <a href="#h-bigger">Next: the bigger picture ↓</a></p>';
   var PLACEHOLDER = '<p class="placeholder">Make a guess in step 02, then choose <b>Show what happened</b>.</p>';
 
   function resultHtml(r) {
@@ -121,7 +122,7 @@
     if (!r.observed || typeof r.aigfs !== "number" || typeof r.gfs !== "number") {
       return '<p class="missing"><b>No reading for this evening.</b> The ' + esc(city.place) + " station sent no temperature near this time, " +
         "so there is nothing to check the forecasts against. Instruments do miss readings, and an honest tool says so.</p>" +
-        '<p class="hint">The AI model said ' + T(r.aigfs) + "; the physics model said " + T(r.gfs) + ". " + when + "</p>";
+        '<p class="hint">The AI model said ' + T(r.aigfs) + "; the physics model said " + T(r.gfs) + ". " + when + "</p>" + NEXT_AFTER_RESULT;
     }
     var o = r.observed.c, ea = r.aigfs - o, eg = r.gfs - o;
     fig.o = o; fig.a = r.aigfs; fig.g = r.gfs;
@@ -144,7 +145,7 @@
       '<li><b class="ai-text">AI model:</b> ' + T(r.aigfs) + ", missed by " + D(ea) + " " + dir(ea) + "</li>" +
       '<li><b class="phys-text">Physics model:</b> ' + T(r.gfs) + ", missed by " + D(eg) + " " + dir(eg) + "</li></ul></div>" +
       '<p class="hint">Forecasts are estimates, so they are shown in whole degrees; the misses come from the exact numbers. ' +
-      "Measured at " + esc(at) + " local time at " + esc(city.place) + " (station " + city.station + "). " + when + "</p>";
+      "Measured at " + esc(at) + " local time at " + esc(city.place) + " (station " + city.station + "). " + when + "</p>" + NEXT_AFTER_RESULT;
   }
 
   // Step 03 always shows, so the numbering never jumps (audit 8); the button says whether its content is open (audit 11).
@@ -192,9 +193,11 @@
       return "<li><b>" + p[0] + " days ahead:</b> AI model missed by " + D(p[1].ai) + " on average, physics model by " + D(p[1].ph) + ". The AI model came closer in " + p[1].win + " of " + p[1].n + ".</li>";
     }).join("");
     // Findings as cards, after the Media Lab's research cards: a glyph, a title, one line, and where it comes from.
-    var finding = function (glyph, title, dek, source, id) {
+    var finding = function (glyph, title, dek, source, id, tryIt) {
       return '<li class="finding"' + (id ? ' id="' + id + '" tabindex="-1"' : "") + '><span class="finding__glyph" aria-hidden="true">' + glyph + "</span>" +
-        '<h4 class="finding__title">' + title + '</h4><p class="finding__dek">' + dek + '</p><p class="finding__source">' + source + "</p></li>";
+        '<h4 class="finding__title">' + title + '</h4><p class="finding__dek">' + dek + "</p>" +
+        (tryIt ? '<button type="button" class="btn quiet try" data-city="' + tryIt.city + '" data-valid="' + tryIt.valid + '" data-lead="' + tryIt.lead + '">Try it: ' + tryIt.label + "</button>" : "") +
+        '<p class="finding__source">' + source + "</p></li>";
     };
     var G = {
       both: '<svg viewBox="0 0 48 24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--ai)" stroke-width="3"/><rect x="28" y="4" width="16" height="16" fill="none" stroke="var(--phys)" stroke-width="3"/></svg>',
@@ -213,7 +216,8 @@
       "<h3>What this does and doesn't show</h3><ul class=\"findings\">" +
       finding(G.both, "Close to a coin toss", "Overall the AI model came closer in " + all.win + " of " + all.n + " cases.", "From " + all.n + " cases, evenings of 2 to 4 November 2026") +
       finding(G.leads, "Too few days to tell", "The physics model did better 3 days ahead; the AI model did better 5 and 7 days ahead. Three evenings can't show that this holds.", "From the table above") +
-      finding(G.cold, "The AI model ran cold", "On average " + D(bias) + " below the measurement. At Central Park, about " + D(nyBias) + " cold every time. Why isn't known yet.", "From " + all.n + " cases; Central Park from " + ny.length) +
+      finding(G.cold, "The AI model ran cold", "On average " + D(bias) + " below the measurement. At Central Park, about " + D(nyBias) + " cold every time. Why isn't known yet.", "From " + all.n + " cases; Central Park from " + ny.length, null,
+        { city: "New York", valid: "2026-11-05T00:00:00+00:00", lead: 5, label: "New York, 4 November" }) +
       finding(G.grid, "What the AI model can't do yet", "It works on a grid of points about 28 km (17 miles) apart, so it can't see a single park, valley or stretch of coast. It doesn't forecast wind gusts, visibility or radar.", "Checked in the AIGFS v1.1 files on NOMADS, 4 November 2026", "f-limits") +
       finding(G.version, "A new version", "NOAA updated the AI model to version 1.1 and says some forecasts improved. A claim like that needs checking over many months.", SCN + ", 27 July 2026") +
       finding(G.missing, "A missed reading", lost + " cases have no measurement, because one station missed a reading. So there are " + all.n + " cases, not " + DATA.length + ".", "Station KNYC, Central Park, evening of 3 November") +
@@ -350,6 +354,18 @@
     }
   }
 
+  function loadCase(city, valid, lead) {
+    state.city = city; state.valid = valid; state.lead = lead;
+    radios("cities", "city", CITIES.map(function (c) { return { value: c.name, label: c.name }; }), state.city);
+    radios("days", "day", VALIDS.map(function (v) { return { value: v, label: dayName(v) }; }), state.valid);
+    radios("leads", "lead", LEADS.map(function (L) { return { value: L, label: L + " days" }; }), state.lead);
+    newCase();
+    $("h-guess").scrollIntoView({ block: "start" });
+    var first = document.querySelector('input[name="guess"]');
+    if (first) first.focus({ preventScroll: true });
+    announce("Case loaded: " + city + ", evening of " + dayName(valid) + ", " + lead + " days ahead. Make a guess.");
+  }
+
   // ---------- theme ----------
   function themeNow() {
     var t = document.documentElement.getAttribute("data-theme");
@@ -395,6 +411,10 @@
     showResult(true);
     $("h-result").focus();
     announce("Result shown.");
+  });
+  $("bigger").addEventListener("click", function (e) {
+    var b = e.target.closest(".try");
+    if (b) loadCase(b.dataset.city, b.dataset.valid, Number(b.dataset.lead));
   });
   $("again").addEventListener("click", function () { newCase(); announce("Started again. Make a guess."); });
   $("theme").addEventListener("click", function () {
