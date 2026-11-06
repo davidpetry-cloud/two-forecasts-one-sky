@@ -38,8 +38,8 @@ Then go to http://localhost:8096.
 ## The protocol comes first
 
 The full data governance and legal protocol, the spike findings, the vision and a
-plain-words glossary are in the AI literacy course repository:
-`ai-literacy-module/docs/two-forecasts-protocol.md`. Anything built here follows it.
+plain-words glossary are in [`docs/protocol.md`](docs/protocol.md), kept in this
+private repository until David decides to publish. Anything built here follows it.
 In short:
 
 - **NOAA / NWS terms:** data is public domain. Never imply NOAA endorsement, never
