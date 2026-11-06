@@ -1,0 +1,46 @@
+# Nightly archive (David, 6 November 2026: GitHub, private; the repository address as the NWS contact).
+# Once a day, after the 00:00 UTC readings are in, it saves that evening's forecasts and readings to
+# data/archive/ and commits them. NOAA keeps AIGFS only about 10 days, so this is the only record.
+# Rules: docs/protocol.md, "Being a good user of NOAA's servers".
+name: Nightly archive
+
+on:
+  schedule:
+    - cron: "30 6 * * *"   # 06:30 UTC every day
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "UTC date to save (YYYY-MM-DD); empty for today"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nightly-archive
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install --quiet herbie-data xarray cfgrib eccodes certifi
+      - name: Save the evening
+        env:
+          DATE: ${{ inputs.date }}   # passed as a variable, never pasted into the command
+        run: |
+          if [ -n "$DATE" ]; then python scripts/archive.py --date "$DATE"; else python scripts/archive.py; fi
+      - name: Commit if anything new
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/archive
+          if git diff --cached --quiet; then echo "Nothing new."; exit 0; fi
+          git commit -m "archive: $(ls -t data/archive/*/*/*.json | head -1 | xargs basename .json)"
+          git push
