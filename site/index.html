@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two Forecasts, One Sky</title>
+<link rel="stylesheet" href="style.css">
+<script src="theme.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="top-row">
+    <span class="tag">Prototype · 5 November 2026</span>
+    <button type="button" class="theme" id="theme">Dark theme</button>
+  </div>
+  <div class="top-inner">
+    <h1>Two Forecasts, One Sky</h1>
+    <p class="sub">NOAA now runs an AI weather model beside its physics model. Guess which one came closer, then see what really happened.</p>
+  </div>
+</header>
+
+<main id="content">
+  <div class="band band--notice">
+    <div class="mark"><span class="label">Before you start</span></div>
+    <div class="body">
+      <p class="notice">This is a prototype for learning, not a forecast. For real forecasts and warnings, go to <a href="https://www.weather.gov/">weather.gov</a>.</p>
+    </div>
+  </div>
+
+  <section class="band" aria-labelledby="h-pick">
+    <div class="mark" aria-hidden="true"><span class="step-num">01</span></div>
+    <div class="body">
+      <h2 id="h-pick">Pick a case</h2>
+      <p class="sense">Choose a place, an evening, and how far ahead the forecast was made.</p>
+      <fieldset>
+        <legend>Place</legend>
+        <div class="choices" id="cities"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Evening</legend>
+        <div class="choices" id="days"></div>
+      </fieldset>
+      <fieldset>
+        <legend>How far ahead the forecast was made</legend>
+        <div class="choices" id="leads"></div>
+      </fieldset>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-guess">
+    <div class="mark" aria-hidden="true"><span class="step-num">02</span></div>
+    <div class="body">
+      <h2 id="h-guess">Guess first</h2>
+      <p class="sense">Which forecast came closer to the temperature that was measured?</p>
+      <fieldset>
+        <legend class="sr">Your guess</legend>
+        <div class="choices" id="guesses"></div>
+      </fieldset>
+      <div class="actions">
+        <button type="button" class="btn" id="reveal">Show what happened</button>
+        <button type="button" class="btn quiet" id="again">Start again</button>
+      </div>
+      <p class="hint" id="hint"></p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-result" id="result" hidden>
+    <div class="mark" aria-hidden="true"><span class="step-num">03</span></div>
+    <div class="body">
+      <h2 id="h-result" tabindex="-1">What happened</h2>
+      <div id="result-body"></div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-bigger">
+    <div class="mark" aria-hidden="true"><span class="label">All cases</span></div>
+    <div class="body bigger">
+      <h2 id="h-bigger">The bigger picture</h2>
+      <p class="sense">One case says little. Here are all 51 cases with a measurement: 6 places, 3 evenings, 3 forecast lengths.</p>
+      <div class="wide" id="bigger"></div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-scen" id="scenario">
+    <div class="mark" aria-hidden="true"><span class="step-num">04</span></div>
+    <div class="body">
+      <h2 id="h-scen">Make a scenario</h2>
+      <p class="sense">Turn a forecast into a decision. Answer six questions. The results below change as you go.</p>
+      <p class="notice">Practice with real past forecasts, not advice for real decisions.</p>
+      <ol class="w-steps">
+        <li><fieldset><legend><span class="w">Who</span> are you?</legend><div class="choices" id="sc-who"></div></fieldset></li>
+        <li><fieldset><legend><span class="w">What</span> weather matters to you?</legend><div class="choices" id="sc-what"></div></fieldset></li>
+        <li><fieldset><legend><span class="w">Where</span> are you?</legend><div class="choices" id="sc-where"></div></fieldset></li>
+        <li><fieldset><legend><span class="w">When</span> must you decide?</legend><div class="choices" id="sc-when"></div></fieldset></li>
+        <li><fieldset><legend><span class="w">Why</span> does it matter? Which is worse for you?</legend><div class="choices" id="sc-why"></div></fieldset></li>
+        <li><fieldset><legend><span class="w">How</span> will you use the forecasts?</legend><div class="choices" id="sc-how"></div></fieldset></li>
+      </ol>
+      <div id="sc-out" class="sc-out wide"></div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-words">
+    <div class="mark" aria-hidden="true"><span class="label">Glossary</span></div>
+    <div class="body">
+      <h2 id="h-words">Words used here</h2>
+      <dl>
+        <dt>Model</dt><dd>A computer program that works out what the weather will do next.</dd>
+        <dt>AI model (AIGFS)</dt><dd>NOAA's model that learned from years of past weather. It runs on a tiny fraction of the computing the physics model needs.</dd>
+        <dt>Physics model (GFS)</dt><dd>NOAA's model built from the laws of motion, heat and moisture.</dd>
+        <dt>Miss</dt><dd>How far a forecast was from what the thermometer measured.</dd>
+        <dt>Running cold</dt><dd>Forecasting lower temperatures than really happened, again and again. Scientists call a lean like this a <i>bias</i>.</dd>
+        <dt>Rule</dt><dd>What you decide to do with the forecasts, such as "act only if both models agree".</dd>
+        <dt>False alarm</dt><dd>You acted, and the weather didn't come.</dd>
+        <dt>Caught off guard</dt><dd>The weather came, and you hadn't acted.</dd>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer class="band band--foot">
+  <div class="mark" aria-hidden="true"><span class="label">Sources</span></div>
+  <div class="body">
+    <p>Data: NOAA / National Weather Service. Forecasts: AIGFS v1.1 and GFS, 00:00 UTC runs, 2 m temperature at the nearest grid point. Measurements: NWS station readings nearest 00:00 UTC.</p>
+    <p>Not affiliated with or endorsed by NOAA. NWS material is not under copyright (17 U.S.C. § 403). The misses and averages are our own analysis.</p>
+  </div>
+</footer>
+<div id="announce" class="sr" aria-live="polite"></div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

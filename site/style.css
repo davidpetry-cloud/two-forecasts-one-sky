@@ -1,0 +1,200 @@
+/* Two Forecasts, One Sky: Media Lab style (David, 5 November 2026: "change theme to media mit edu", after
+   media.mit.edu's about and research pages). Its style, never its brand: no MIT name or logo, nothing that suggests
+   MIT made this. Near-black and off-white (not pure black and white, so letters don't glow), flat surfaces, hairline
+   rules, sans-serif headings, colour only in the data. The light theme stays warm paper, never white (David's rule).
+   Softer text is a solid grey token, never faded. Every pairing is checked by scripts/palette.py.
+   Fonts (self-hosted, SIL OFL 1.1, licences in fonts/): Instrument Sans for headings, a free grotesk in the spirit
+   of the Media Lab's Neue Haas Grotesk; Atkinson Hyperlegible Next for text, so I, l and 1 and O and 0 never look
+   alike; Atkinson Hyperlegible Mono for readings, so numbers line up. */
+@font-face{font-family:'Instrument Sans';font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/instrument-sans-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:'Atkinson Hyperlegible Next';font-style:normal;font-weight:200 800;font-display:swap;src:url(fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:'Atkinson Hyperlegible Next';font-style:italic;font-weight:200 800;font-display:swap;src:url(fonts/atkinson-hyperlegible-next-latin-wght-italic.woff2) format('woff2')}
+@font-face{font-family:'Atkinson Hyperlegible Mono';font-style:normal;font-weight:200 800;font-display:swap;src:url(fonts/atkinson-hyperlegible-mono-latin-wght-normal.woff2) format('woff2')}
+
+:root{
+  color-scheme:light;
+  --paper:oklch(0.925 0.015 85); --card:oklch(0.955 0.012 85); --line:oklch(0.8 0.012 85); --text:oklch(0.21 0.005 260); --ink:oklch(0.17 0.005 260); --muted:oklch(0.42 0.006 260); --edge:oklch(0.5 0.006 260); --btn-edge:oklch(0.17 0.005 260); --header-bg:oklch(0.17 0.005 260); --on-dark:oklch(0.96 0.008 90); --header-sub:oklch(0.8 0.006 260); --header-edge:oklch(0.5 0.006 260); --btn-bg:oklch(0.17 0.005 260); --btn-bg-hover:oklch(0.3 0.005 260); --btn-text:oklch(0.96 0.008 90); --ai:oklch(0.4 0.1 252); --phys:oklch(0.45 0.11 52); --obs:oklch(0.21 0.005 260); --link:oklch(0.17 0.005 260); --focus:oklch(0.56 0.14 58);
+  --fs-xs:.8rem; --fs-sm:.9rem; --fs-base:1rem; --fs-md:1.125rem; --fs-lg:1.25rem; --fs-xl:1.7rem;
+  --lh-heading:1.15; --lh-body:1.55; --measure:62ch;
+  --r-pill:999px;
+  --sans:"Atkinson Hyperlegible Next",system-ui,sans-serif; --display:"Instrument Sans",system-ui,sans-serif; --mono:"Atkinson Hyperlegible Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:oklch(0.17 0.005 260); --card:oklch(0.215 0.005 260); --line:oklch(0.33 0.005 260); --text:oklch(0.94 0.008 90); --ink:oklch(0.97 0.008 90); --muted:oklch(0.74 0.006 260); --edge:oklch(0.56 0.006 260); --btn-edge:oklch(0.94 0.008 90); --header-edge:oklch(0.56 0.006 260); --btn-bg:oklch(0.94 0.008 90); --btn-bg-hover:oklch(0.86 0.008 90); --btn-text:oklch(0.17 0.005 260); --ai:oklch(0.8 0.08 252); --phys:oklch(0.8 0.1 62); --obs:oklch(0.94 0.008 90); --link:oklch(0.97 0.008 90); --focus:oklch(0.8 0.13 70);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:oklch(0.17 0.005 260); --card:oklch(0.215 0.005 260); --line:oklch(0.33 0.005 260); --text:oklch(0.94 0.008 90); --ink:oklch(0.97 0.008 90); --muted:oklch(0.74 0.006 260); --edge:oklch(0.56 0.006 260); --btn-edge:oklch(0.94 0.008 90); --header-edge:oklch(0.56 0.006 260); --btn-bg:oklch(0.94 0.008 90); --btn-bg-hover:oklch(0.86 0.008 90); --btn-text:oklch(0.17 0.005 260); --ai:oklch(0.8 0.08 252); --phys:oklch(0.8 0.1 62); --obs:oklch(0.94 0.008 90); --link:oklch(0.97 0.008 90); --focus:oklch(0.8 0.13 70);
+}
+
+html{font-size:106.25%}
+*,*::before,*::after{box-sizing:border-box}
+/* Space (David, 5 November 2026, after the MIT Media Lab's layouts): a wider spacing scale for rhythm between
+   sections, a narrow "mark" column beside a reading column, hairline rules instead of boxes, and big type. */
+:root{
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px; --s-10:128px;
+  --margin:var(--s-4); --mark-col:9rem;
+  --fs-hero:clamp(2.6rem,7.5vw,5rem); --fs-h2:clamp(1.7rem,3.6vw,2.4rem); --fs-num:clamp(2rem,4.5vw,3.2rem);
+}
+@media (min-width:48em){:root{--margin:30px}}
+body{margin:0;background:var(--paper);
+  color:var(--text);font-family:var(--sans);font-size:var(--fs-base);line-height:var(--lh-body);text-wrap:pretty}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* the opening: flat near-black in both themes, big type, lots of air, closed by a hairline */
+.top{position:relative;color:var(--on-dark);background:var(--header-bg);padding:var(--s-4) var(--margin) var(--s-9);border-bottom:1px solid var(--header-edge)}
+.top-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:var(--s-3);max-width:80rem;margin:0 auto}
+.tag{font-size:var(--fs-xs);letter-spacing:.06em;text-transform:uppercase;color:var(--header-sub)}
+.theme{min-height:44px;padding:var(--s-2) var(--s-4);border-radius:var(--r-pill);border:2px solid var(--on-dark);background:transparent;color:var(--on-dark);
+  font:inherit;font-size:var(--fs-sm);cursor:pointer}
+.theme:hover{background:color-mix(in oklch,var(--on-dark) 14%,transparent)}
+.top-inner{max-width:80rem;margin:0 auto;padding-top:clamp(var(--s-8),14vw,12rem)}
+h1{font-family:var(--display);font-weight:600;font-size:var(--fs-hero);line-height:1;letter-spacing:-0.02em;margin:0 0 var(--s-5);max-width:14ch;text-wrap:balance}
+/* a very long word at very large text sizes breaks rather than pushing the page sideways */
+h1,h2{overflow-wrap:break-word;hyphens:auto}
+.sub{color:var(--header-sub);font-size:var(--fs-md);max-width:44ch;margin:0}
+
+/* bands: each section is a full-width band with a hairline on top, a mark column and a reading column */
+main{max-width:80rem;margin:0 auto;padding:var(--s-8) var(--margin) 0}
+.band{display:grid;grid-template-columns:1fr;gap:var(--s-3) var(--s-6);border-top:1px solid var(--edge);padding-top:var(--s-5);margin-bottom:var(--s-9)}
+@media (min-width:56em){.band{grid-template-columns:var(--mark-col) minmax(0,1fr)}}
+.band[hidden]{display:none}
+.mark{color:var(--ink)}
+.step-num{display:block;font-family:var(--display);font-weight:500;letter-spacing:-0.02em;font-size:var(--fs-num);line-height:1;font-variant-numeric:lining-nums tabular-nums}
+.label{display:block;font-size:var(--fs-xs);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:var(--s-1)}
+.body{min-width:0}
+.band--notice{margin-bottom:var(--s-8)}
+.notice{max-width:var(--measure);margin:0}
+.notice a{color:var(--link);text-underline-offset:3px}
+h2{font-family:var(--display);font-weight:600;font-size:var(--fs-h2);color:var(--ink);margin:0 0 var(--s-4);line-height:1.08;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:var(--fs-lg);color:var(--ink);margin:var(--s-7) 0 var(--s-3);line-height:var(--lh-heading)}
+p,li,dd{max-width:var(--measure)}
+.sense{font-size:var(--fs-md);margin:0 0 var(--s-6);color:var(--text)}
+
+/* choices: outlined, 44px tall; the chosen one gains a thicker ring and a filled dot (not colour alone) */
+fieldset{border:0;margin:0 0 var(--s-6);padding:0}
+legend{font-size:var(--fs-base);font-weight:600;margin-bottom:var(--s-3);padding:0}
+.choices{display:flex;flex-wrap:wrap;gap:var(--s-2)}
+.choice{position:relative}
+.choice input{position:absolute;opacity:0;width:1px;height:1px}
+.choice span{display:flex;align-items:center;gap:var(--s-2);min-height:44px;padding:var(--s-2) var(--s-4);border-radius:22px;
+  background:transparent;border:1.5px solid var(--edge);cursor:pointer;font-size:var(--fs-base);transition:border-color .15s,background-color .15s}
+.choice span:hover{background:var(--card)}
+.choice span::before{content:"";width:1rem;height:1rem;border-radius:50%;border:2px solid var(--edge);flex:none}
+.choice input:checked + span{border:3px solid var(--ink);padding:6px 14px;background:var(--card)}
+.choice input:checked + span::before{border-color:var(--ink);background:radial-gradient(circle,var(--ink) 45%,transparent 50%)}
+.choice input:focus-visible + span{outline:3px solid var(--focus);outline-offset:3px}
+.choice small{color:var(--muted);font-size:var(--fs-sm)}
+/* long labels wrap instead of pushing the page sideways when text is enlarged */
+.choice{max-width:100%}
+.choice span{flex-wrap:wrap;row-gap:0;overflow-wrap:anywhere}
+
+.btn{min-height:44px;padding:var(--s-2) var(--s-5);border-radius:var(--r-pill);border:2px solid var(--btn-edge);background:var(--btn-bg);color:var(--btn-text);
+  font:inherit;font-size:var(--fs-base);cursor:pointer}
+.btn:hover{background:var(--btn-bg-hover)}
+.btn.quiet{background:transparent;color:var(--ink)}
+.btn.quiet:hover{background:var(--card)}
+.actions{display:flex;flex-wrap:wrap;gap:var(--s-3);align-items:center}
+.hint{color:var(--muted);margin:var(--s-3) 0 0}
+
+/* the result: open space and hairlines, no box */
+#result:not([hidden]){animation:fade .35s ease-out}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.verdict{font-size:var(--fs-md);margin:0 0 var(--s-6);max-width:var(--measure)}
+.figure{margin:0 0 var(--s-6)}
+.figure .lanes{max-width:44rem}
+.figure svg{display:block;max-width:100%;height:auto}
+.figure figcaption{font-size:var(--fs-base);color:var(--muted);margin-top:var(--s-2)}
+svg .lane-label{font-family:var(--sans);font-size:16px;fill:var(--text)}
+svg .tick{font-family:var(--mono);font-size:14px;fill:var(--muted)}
+svg .axis{stroke:var(--edge);stroke-width:1.5}
+svg .measure-line{stroke:var(--obs);stroke-width:1.5;stroke-dasharray:4 4}
+svg .gap-ai{stroke:var(--ai);stroke-width:4;stroke-linecap:round}
+svg .gap-phys{stroke:var(--phys);stroke-width:4;stroke-linecap:round}
+svg .m-ai{fill:var(--paper);stroke:var(--ai);stroke-width:3}
+svg .m-phys{fill:var(--paper);stroke:var(--phys);stroke-width:3}
+svg .m-obs{fill:var(--obs)}
+.key{display:flex;flex-wrap:wrap;gap:var(--s-4);list-style:none;padding:0;margin:0 0 var(--s-4);font-size:var(--fs-base)}
+.key li{display:flex;align-items:center;gap:var(--s-2)}
+.key svg{width:22px;height:22px}
+
+table{border-collapse:collapse;width:100%;max-width:44rem;font-size:var(--fs-base)}
+caption{text-align:left;font-weight:600;margin-bottom:var(--s-2)}
+th,td{text-align:left;padding:var(--s-3) var(--s-3) var(--s-3) 0;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{border-bottom:1px solid var(--edge);font-weight:600}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.ai-text{color:var(--ai);font-weight:600}
+.phys-text{color:var(--phys);font-weight:600}
+.missing{padding:var(--s-4) 0;border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);margin:0;max-width:var(--measure)}
+
+/* the bigger picture as a hairline grid, after the Media Lab's publications table: every cell ruled top and
+   left, a wide mark column with the row's name set large */
+table.hairgrid{border-collapse:separate;border-spacing:0;max-width:52rem;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.hairgrid th,.hairgrid td{border-top:1px solid var(--line);border-left:1px solid var(--line);border-bottom:0;padding:var(--s-3);vertical-align:top}
+.hairgrid thead th{border-top:1px solid var(--edge);font-weight:600}
+.hairgrid .grid-mark{width:9rem;font-family:var(--display);font-weight:600;font-size:var(--fs-lg);color:var(--ink);line-height:1.1}
+.hairgrid thead .grid-mark{font-family:var(--sans);font-size:var(--fs-base)}
+.hairgrid td.num{font-size:var(--fs-md)}
+.hairgrid tr.total th,.hairgrid tr.total td{border-top:1px solid var(--edge)}
+.glyph{display:block;margin-bottom:var(--s-1)}
+.glyph svg{width:32px;height:16px;display:block}
+
+/* findings as cards, after the Media Lab's research cards: glyph, title, one line, source; ruled, not filled */
+.findings{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,16rem),1fr));gap:0;border-top:1px solid var(--edge)}
+.finding{max-width:none;padding:var(--s-4) var(--s-4) var(--s-5) 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:var(--s-2)}
+@media (min-width:40em){.finding{padding-left:var(--s-4);border-left:1px solid var(--line)}}
+.finding__glyph svg{width:48px;height:24px;display:block}
+.finding__title{font-family:var(--display);font-weight:600;font-size:var(--fs-lg);color:var(--ink);margin:var(--s-2) 0 0;line-height:var(--lh-heading)}
+.finding__dek{margin:0;max-width:none}
+.finding__source{margin:auto 0 0;padding-top:var(--s-3);font-size:var(--fs-sm);color:var(--muted);max-width:none}
+
+/* make a scenario: six questions, one per step, each opening with its question word */
+.w-steps{list-style:none;padding:0;margin:0 0 var(--s-7);border-top:1px solid var(--line)}
+.w-steps > li{padding-top:var(--s-4);border-bottom:1px solid var(--line);max-width:none}
+.w-steps fieldset{margin-bottom:var(--s-4)}
+.w-steps legend{font-size:var(--fs-md);font-weight:400}
+.w{font-family:var(--display);font-weight:600;letter-spacing:-0.01em}
+.sc-out h3:first-child{margin-top:0}
+.sc-summary{font-size:var(--fs-md);margin:0 0 var(--s-5)}
+.sc-grid{table-layout:fixed}
+.sc-grid thead td{width:9rem}
+.sc-compare .grid-mark{width:auto;font-family:var(--sans);font-size:var(--fs-base);font-weight:600}
+.sc-compare td.num{width:7rem}
+.sc-n{display:block;font-family:var(--mono);font-size:var(--fs-xl);line-height:1.1;color:var(--ink)}
+.sc-k{display:block;font-weight:700;margin-top:var(--s-1)}
+.sc-line{display:block;color:var(--muted);font-size:var(--fs-sm)}
+.sc-why{font-size:var(--fs-md);margin:var(--s-5) 0 0;padding-left:var(--s-4);border-left:3px solid var(--ink)}
+.sc-compare tr.mine th,.sc-compare tr.mine td{border-top:2px solid var(--ink)}
+.sc-compare tr.mine + tr th,.sc-compare tr.mine + tr td{border-top:2px solid var(--ink)}
+.tagline{display:inline-block;margin-left:var(--s-2);padding:0 var(--s-2);border:1.5px solid var(--ink);border-radius:var(--r-pill);font-family:var(--sans);font-size:var(--fs-xs);font-weight:600;vertical-align:middle}
+.sc-cases{margin-top:var(--s-6);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.sc-cases summary{min-height:44px;display:flex;align-items:center;gap:var(--s-2);cursor:pointer;font-weight:600;list-style:none}
+.sc-cases summary::-webkit-details-marker{display:none}
+.sc-cases summary::before{content:"▸";display:inline-block;width:1em}
+.sc-cases[open] summary::before{content:"▾"}
+.sc-cases ul{list-style:none;padding:0;margin:0 0 var(--s-4)}
+.sc-cases li{padding:var(--s-2) 0;border-top:1px solid var(--line);max-width:none}
+.sc-tag{display:inline-block;padding:0 var(--s-2);border:1.5px solid var(--edge);border-radius:var(--r-pill);font-size:var(--fs-sm);font-weight:600;white-space:nowrap}
+
+/* a table of three or more columns becomes a stacked list when it would scroll sideways */
+.ref-list{display:none;list-style:none;padding:0;margin:0}
+.ref-list li{padding:var(--s-3) 0;border-bottom:1px solid var(--line)}
+.wide{container-type:inline-size}
+@container (max-width:30rem){.wide table{display:none}.wide .ref-list{display:block}}
+
+.bigger ul{padding-left:1.2rem}
+.bigger li{margin-bottom:var(--s-2)}
+dl{margin:0;display:grid;gap:0}
+dt{font-weight:600;padding-top:var(--s-4);border-top:1px solid var(--line);max-width:var(--measure)}
+dt:first-child{border-top:0;padding-top:0}
+dd{margin:0 0 var(--s-4)}
+
+/* the foot: sources as a band */
+footer.band{max-width:80rem;margin:0 auto;padding:var(--s-5) var(--margin) var(--s-6);color:var(--muted);font-size:var(--fs-sm)}
+footer p{margin:0 0 var(--s-2)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-property:color,background-color,border-color,outline-color,box-shadow!important}}
