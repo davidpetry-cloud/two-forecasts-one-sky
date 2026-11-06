@@ -87,10 +87,11 @@ legend{font-size:var(--fs-base);font-weight:600;margin-bottom:var(--s-3);padding
 .choice{position:relative}
 .choice input{position:absolute;opacity:0;width:1px;height:1px}
 .choice span{display:flex;align-items:center;gap:var(--s-2);min-height:44px;padding:var(--s-2) var(--s-4);border-radius:22px;
-  background:transparent;border:1.5px solid var(--edge);cursor:pointer;font-size:var(--fs-base);transition:border-color .15s}
+  background:transparent;border:2px solid var(--edge);cursor:pointer;font-size:var(--fs-base);transition:border-color .15s}
+/* unselected choices carry a 2px ring like every other button (1.5px drew as a 1px hairline on standard screens) */
 .choice span:hover{background:var(--card)}
 .choice span::before{content:"";width:1rem;height:1rem;border-radius:50%;border:2px solid var(--edge);flex:none}
-.choice input:checked + span{border:3px solid var(--ink);padding:6px 14px;background:var(--card)}
+.choice input:checked + span{border:3px solid var(--ink);padding:7px 15px;background:var(--card)}
 .choice input:checked + span::before{border-color:var(--ink);background:radial-gradient(circle,var(--ink) 45%,transparent 50%)}
 .choice input:focus-visible + span{outline:3px solid var(--focus);outline-offset:3px}
 .choice small{color:var(--muted);font-size:var(--fs-sm)}
