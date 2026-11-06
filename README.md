@@ -22,7 +22,8 @@ is the only variable so far.
 |---|---|
 | `site/` | The visual prototype: a static page that reads saved data only and fetches nothing |
 | `data/` | Saved results: `spike-2026-11-05.json` holds 54 cases (6 US stations × 3 evenings × 3, 5 and 7 days ahead), 51 with a measurement |
-| `scripts/` | `pull_spike.py`, the script that made the data (run by hand only) |
+| `scripts/` | `pull_spike.py`, the script that made the data (run by hand only); `palette.py`, the contrast checker |
+| `docs/` | `protocol.md` (governance, law, vision, glossary) and `ux-audit-2026-11-05.md` |
 
 ## See it
 
@@ -64,6 +65,21 @@ In short:
   0.9 °C cold overall, and about 3 °C cold at Central Park every time (cause not
   known). Too few days to say which model is better, which is the lesson.
 
+## Licence
+
+Prepared for when David decides to publish; the repository is private until then.
+
+| Part | Licence | File |
+|---|---|---|
+| Code (HTML structure, styles, scripts, page logic) | MIT | [LICENSE](LICENSE) |
+| Words and drawings (page text, docs, README prose, textures) | CC BY 4.0 | [LICENSE-CONTENT.md](LICENSE-CONTENT.md) |
+| Saved data (`data/`, `site/data.js`) | CC0 1.0; the NOAA data underneath is public domain | [data/LICENSE.md](data/LICENSE.md) |
+| Fonts | SIL Open Font License 1.1 | `site/fonts/OFL-*.txt` |
+
+The same scheme as the Human-Centered AI Literacy course (MIT + CC BY 4.0), plus
+CC0 for data, matching NOAA's own practice. Credits, trademarks and tools are in
+[NOTICE.md](NOTICE.md). Not legal advice.
+
 ## Credits
 
 Data: NOAA / National Weather Service. Not affiliated with or endorsed by NOAA.
@@ -74,12 +90,13 @@ Instrument Sans for headings, Atkinson Hyperlegible Next for text, Atkinson
 Hyperlegible Mono for readings. Downloaded 5 November 2026 from the Fontsource
 packages (v5.3.0), Latin subsets only.
 
-**Look: in the style of the MIT Media Lab's site** (David, 5 November 2026, after
-media.mit.edu's about, funding and research pages). Its style, never its brand: no MIT
-name or logo, nothing that suggests MIT made this. Near-black and off-white rather than
-pure black and white, flat surfaces, hairline rules, a tall opening with big type,
-sections as bands with a mark column, a hairline-grid table and finding cards with
-sources. Colour is kept for the data: blue for the AI model, ochre for the physics
-model, always with a shape too. The light theme stays warm paper, never white.
-Earlier the same day the project wore a "sea and sky" theme (isobars, a horizon swell,
-depth contours); those drawings are kept, unused, in `site/textures/`.
+**A shout-out to the [MIT Media Lab](https://www.media.mit.edu/)**, whose website
+inspired this page's layouts and its generous use of space. Thank you. (The project
+isn't affiliated with or endorsed by MIT; no MIT text, images, logos or code are used.)
+
+The look in brief: near-black and off-white, flat surfaces, hairline rules, a tall
+opening with big type, and sections as bands with a mark column. Colour is kept for
+the data: blue for the AI model, ochre for the physics model, always with a shape
+too. The light theme stays warm paper, never white. Earlier drawings from a "sea and
+sky" theme (isobars, a horizon swell, depth contours) are kept, unused, in
+`site/textures/`.

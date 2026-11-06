@@ -8,22 +8,29 @@
 <script src="theme.js"></script>
 </head>
 <body>
+<a class="skip" href="#content">Skip to the activity</a>
 <header class="top">
   <div class="top-row">
     <span class="tag">Prototype · 5 November 2026</span>
-    <button type="button" class="theme" id="theme">Dark theme</button>
+    <div class="top-controls">
+      <div class="units" role="group" aria-label="Temperature units">
+        <button type="button" class="unit-btn" data-unit="F" aria-pressed="true">°F</button>
+        <button type="button" class="unit-btn" data-unit="C" aria-pressed="false">°C</button>
+      </div>
+      <button type="button" class="theme" id="theme">Switch to dark theme</button>
+    </div>
   </div>
   <div class="top-inner">
     <h1>Two Forecasts, One Sky</h1>
-    <p class="sub">NOAA now runs an AI weather model beside its physics model. Guess which one came closer, then see what really happened.</p>
+    <p class="sub">NOAA now runs an <a class="term" href="#g-ai">AI weather model</a> beside its <a class="term" href="#g-phys">physics model</a>. Guess which one came closer, then see what really happened.</p>
   </div>
 </header>
 
-<main id="content">
+<main id="content" tabindex="-1">
   <div class="band band--notice">
     <div class="mark"><span class="label">Before you start</span></div>
     <div class="body">
-      <p class="notice">This is a prototype for learning, not a forecast. For real forecasts and warnings, go to <a href="https://www.weather.gov/">weather.gov</a>.</p>
+      <p class="notice">This is a prototype for learning, not a forecast. For real forecasts and warnings, go to <a href="https://www.weather.gov/">weather.gov</a>. The AI model is new: see <a href="#f-limits">what it can't do yet</a>.</p>
     </div>
   </div>
 
@@ -36,8 +43,9 @@
         <legend>Place</legend>
         <div class="choices" id="cities"></div>
       </fieldset>
-      <fieldset>
+      <fieldset aria-describedby="evening-help">
         <legend>Evening</legend>
+        <p class="hint hint--legend" id="evening-help">Each evening is the same moment everywhere: about 7 p.m. in New York and 4 p.m. in Seattle.</p>
         <div class="choices" id="days"></div>
       </fieldset>
       <fieldset>
@@ -51,20 +59,21 @@
     <div class="mark" aria-hidden="true"><span class="step-num">02</span></div>
     <div class="body">
       <h2 id="h-guess">Guess first</h2>
+      <p class="gloss">The <b>AI model</b> (AIGFS) learned from years of past weather. The <b>physics model</b> (GFS) is built from the laws of motion, heat and moisture.</p>
       <p class="sense">Which forecast came closer to the temperature that was measured?</p>
       <fieldset>
         <legend class="sr">Your guess</legend>
         <div class="choices" id="guesses"></div>
       </fieldset>
       <div class="actions">
-        <button type="button" class="btn" id="reveal">Show what happened</button>
+        <button type="button" class="btn" id="reveal" aria-expanded="false" aria-controls="result-body">Show what happened</button>
         <button type="button" class="btn quiet" id="again">Start again</button>
       </div>
       <p class="hint" id="hint"></p>
     </div>
   </section>
 
-  <section class="band" aria-labelledby="h-result" id="result" hidden>
+  <section class="band" aria-labelledby="h-result" id="result">
     <div class="mark" aria-hidden="true"><span class="step-num">03</span></div>
     <div class="body">
       <h2 id="h-result" tabindex="-1">What happened</h2>
@@ -85,7 +94,7 @@
     <div class="mark" aria-hidden="true"><span class="step-num">04</span></div>
     <div class="body">
       <h2 id="h-scen">Make a scenario</h2>
-      <p class="sense">Turn a forecast into a decision. Answer six questions. The results below change as you go.</p>
+      <p class="sense">Turn a forecast into a decision. Answer six questions. The results change as you go.</p>
       <p class="notice">Practice with real past forecasts, not advice for real decisions.</p>
       <ol class="w-steps">
         <li><fieldset><legend><span class="w">Who</span> are you?</legend><div class="choices" id="sc-who"></div></fieldset></li>
@@ -95,6 +104,7 @@
         <li><fieldset><legend><span class="w">Why</span> does it matter? Which is worse for you?</legend><div class="choices" id="sc-why"></div></fieldset></li>
         <li><fieldset><legend><span class="w">How</span> will you use the forecasts?</legend><div class="choices" id="sc-how"></div></fieldset></li>
       </ol>
+      <a class="sc-live" id="sc-live" href="#sc-h"></a>
       <div id="sc-out" class="sc-out wide"></div>
     </div>
   </section>
@@ -104,14 +114,15 @@
     <div class="body">
       <h2 id="h-words">Words used here</h2>
       <dl>
-        <dt>Model</dt><dd>A computer program that works out what the weather will do next.</dd>
-        <dt>AI model (AIGFS)</dt><dd>NOAA's model that learned from years of past weather. It runs on a tiny fraction of the computing the physics model needs.</dd>
-        <dt>Physics model (GFS)</dt><dd>NOAA's model built from the laws of motion, heat and moisture.</dd>
-        <dt>Miss</dt><dd>How far a forecast was from what the thermometer measured.</dd>
-        <dt>Running cold</dt><dd>Forecasting lower temperatures than really happened, again and again. Scientists call a lean like this a <i>bias</i>.</dd>
-        <dt>Rule</dt><dd>What you decide to do with the forecasts, such as "act only if both models agree".</dd>
-        <dt>False alarm</dt><dd>You acted, and the weather didn't come.</dd>
-        <dt>Caught off guard</dt><dd>The weather came, and you hadn't acted.</dd>
+        <dt id="g-forecast">Forecast</dt><dd>An estimate of what the weather will do. It can be a few degrees off, so this page rounds forecasts to whole degrees.</dd>
+        <dt id="g-model">Model</dt><dd>A computer program that works out what the weather will do next.</dd>
+        <dt id="g-ai">AI model (AIGFS)</dt><dd>NOAA's model that learned from years of past weather. It runs on a tiny fraction of the computing the physics model needs.</dd>
+        <dt id="g-phys">Physics model (GFS)</dt><dd>NOAA's model built from the laws of motion, heat and moisture.</dd>
+        <dt id="g-miss">Miss</dt><dd>How far a forecast was from what the thermometer measured.</dd>
+        <dt id="g-cold">Running cold</dt><dd>Forecasting lower temperatures than really happened, again and again. Scientists call a lean like this a <i>bias</i>.</dd>
+        <dt id="g-rule">Rule</dt><dd>What you decide to do with the forecasts, such as "act only if both models agree".</dd>
+        <dt id="g-alarm">False alarm</dt><dd>You acted, and the weather didn't come.</dd>
+        <dt id="g-caught">Caught off guard</dt><dd>The weather came, and you hadn't acted.</dd>
       </dl>
     </div>
   </section>
@@ -120,8 +131,9 @@
 <footer class="band band--foot">
   <div class="mark" aria-hidden="true"><span class="label">Sources</span></div>
   <div class="body">
-    <p>Data: NOAA / National Weather Service. Forecasts: AIGFS v1.1 and GFS, 00:00 UTC runs, 2 m temperature at the nearest grid point. Measurements: NWS station readings nearest 00:00 UTC.</p>
+    <p>Data: NOAA / National Weather Service. Forecasts: AIGFS v1.1 and GFS from <a href="https://nomads.ncep.noaa.gov/">NOMADS</a>, the 00:00 UTC runs, 2 m temperature at the nearest grid point. Measurements: station readings from the <a href="https://www.weather.gov/documentation/services-web-api">NWS API</a>, nearest 00:00 UTC. The AI model's version: <a href="https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf">NWS Service Change Notice 26-68</a>.</p>
     <p>Not affiliated with or endorsed by NOAA. NWS material is not under copyright (17 U.S.C. § 403). The misses and averages are our own analysis.</p>
+    <p>Design inspired by the <a href="https://www.media.mit.edu/">MIT Media Lab</a>'s website and its use of space. Thank you. Not affiliated with MIT.</p>
   </div>
 </footer>
 <div id="announce" class="sr" aria-live="polite"></div>
