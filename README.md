@@ -95,7 +95,8 @@ inspired this page's layouts and its generous use of space. Thank you. (The proj
 isn't affiliated with or endorsed by MIT; no MIT text, images, logos or code are used.)
 
 The look in brief: near-black and off-white, flat surfaces, hairline rules, a tall
-opening with big type, and sections as bands with a mark column. Colour is kept for
+opening with big type, and sections as bands with a mark column, alternating one
+shade lighter (dark) or deeper (light) so steps stay apart while scrolling. Colour is kept for
 the data: blue for the AI model, ochre for the physics model, always with a shape
 too. The light theme stays warm paper, never white. Earlier drawings from a "sea and
 sky" theme (isobars, a horizon swell, depth contours) are kept, unused, in
