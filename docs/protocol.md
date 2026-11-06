@@ -66,6 +66,11 @@ calibrated trust: an AI model is a source, so check it like one.
 - No user's browser ever calls NOAA. The site serves files saved in advance (static,
   no live calls), as in this course.
 
+**In practice (6 November 2026):** the nightly archive (`scripts/archive.py`, run by a
+GitHub Action in the private repository at 06:30 UTC) follows these rules. Its
+User-Agent is `two-forecasts-one-sky/0.1 (github.com/davidpetry-cloud/two-forecasts-one-sky)`,
+David's choice of contact.
+
 ### 3. Licence of the AI model's output
 
 - NOAA's GraphCast-GFS output (AIGFS's experimental precursor) is released under

@@ -42,7 +42,7 @@ is in demand. Five sketches came out of it; this project is Sketch A.
 3. **VoiceOver pass** on Mac and iPhone. *Structure checked 6 November (labels, landmarks, live regions, tables, images, focus); listening still needs a person.*
 4. *Plan ready: [`user-session-plan.md`](user-session-plan.md).* **A session with three to five people** from the audiences: educators, professionals, students, plus one forecaster or emergency manager.
 5. **Windows forced-colours check.** *Rules added 6 November (selection, focus, map, buttons by system colours; shapes carry meaning); still needs a look on Windows.*
-6. **Nightly archive.** NOMADS keeps only about 10 days of AIGFS, so the record exists only once something saves it. Once a day, the one variable needed, a User-Agent with contact details David chooses.
+6. ✅ **Running from 6 November** (GitHub Action, private; User-Agent names the repository). **Nightly archive.** NOMADS keeps only about 10 days of AIGFS, so the record exists only once something saves it. Once a day, the one variable needed, a User-Agent with contact details David chooses.
 7. **Spelling:** David's call, US or British, for a US audience.
 8. **Publishing:** only on David's word, after the protocol check.
 

@@ -26,9 +26,19 @@ is the only variable so far.
 | Folder | What it holds |
 |---|---|
 | `site/` | The visual prototype: a static page that reads saved data only and fetches nothing |
-| `data/` | Saved results: `spike-2026-11-05.json` holds 54 cases (6 US stations × 3 evenings × 3, 5 and 7 days ahead), 51 with a measurement |
+| `data/` | `archive/`: one file per evening, saved daily by the nightly archive (from 6 November 2026). Saved results: `spike-2026-11-05.json` holds 54 cases (6 US stations × 3 evenings × 3, 5 and 7 days ahead), 51 with a measurement |
 | `scripts/` | `pull_spike.py`, the script that made the data (run by hand only); `palette.py`, the contrast checker; `map/`, the recipe for `site/map.js` |
 | `docs/` | `roadmap.md` (every idea, built and next), `protocol.md` (governance, law, vision, glossary), `ux-audit-2026-11-05.md` and `user-session-plan.md` |
+
+## The nightly archive
+
+NOAA keeps the AI model's forecasts only about 10 days, so a record exists only if
+someone saves it. A GitHub Action in this private repository
+(`.github/workflows/archive.yml`) runs `scripts/archive.py` at 06:30 UTC every day and
+commits one small file per evening to `data/archive/`: both models' forecasts made 3,
+5 and 7 days ahead, each station's reading, and the AI model's version. It follows the
+protocol's rules for NOAA's servers, and identifies itself by this repository's address.
+The page doesn't use the archive yet; folding it in is a next step.
 
 ## See it
 
