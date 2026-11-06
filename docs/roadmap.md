@@ -32,12 +32,19 @@ is in demand. Five sketches came out of it; this project is Sketch A.
 ## Next, in order
 
 1. **The bigger picture, city by city, with a map** (David, 6 November 2026). Results for all six stations, and a US map drawn to scale (Albers equal-area, with a scale bar), from public-domain Census or Natural Earth outlines, drawn ahead of time and stored with the site. Hover, tap or tab to a city to see its results; a table twin. Confirm the scope with David first.
-2. **VoiceOver pass** on Mac and iPhone.
-3. **A session with three to five people** from the audiences: educators, professionals, students, plus one forecaster or emergency manager.
-4. **Windows forced-colours check.**
-5. **Nightly archive.** NOMADS keeps only about 10 days of AIGFS, so the record exists only once something saves it. Once a day, the one variable needed, a User-Agent with contact details David chooses.
-6. **Spelling:** David's call, US or British, for a US audience.
-7. **Publishing:** only on David's word, after the protocol check.
+2. **A search field** (David, 6 November 2026). One field near the top that finds
+   places and stations ("Central Park", "KNYC"), cases ("New York 4 November"), glossary
+   words ("bias", "false alarm"), findings and steps, and jumps straight to them; picking
+   a place could also highlight it on the map and load its case. Everything is searched
+   in the page itself, with no outside service and nothing stored. A labelled field,
+   results as a list you can use with the keyboard, a spoken count ("3 results"), and a
+   plain "no results" message with suggestions. The course hub's search is a model.
+3. **VoiceOver pass** on Mac and iPhone.
+4. **A session with three to five people** from the audiences: educators, professionals, students, plus one forecaster or emergency manager.
+5. **Windows forced-colours check.**
+6. **Nightly archive.** NOMADS keeps only about 10 days of AIGFS, so the record exists only once something saves it. Once a day, the one variable needed, a User-Agent with contact details David chooses.
+7. **Spelling:** David's call, US or British, for a US audience.
+8. **Publishing:** only on David's word, after the protocol check.
 
 ## Growing the tool
 
