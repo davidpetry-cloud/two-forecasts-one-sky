@@ -125,6 +125,11 @@ later: USGS (Interior), the Energy Information Administration (Energy), the Fore
 Service (Agriculture), FEMA (Homeland Security), CAL FIRE and other state agencies,
 local water and power utilities. Record each check in this doc, with the date.
 
+**Check, 6 November 2026: map outlines.** US Census Bureau cartographic boundary files
+(2017), public domain; via us-atlas 3.0.1 (ISC). Drawn once into a file stored with the
+site, so the page loads no map tiles and contacts no map service. State lines haven't
+changed since 2017. Credit in NOTICE.md.
+
 ### 9. Real disasters are never content
 
 - People die in the events this tool may show (the January 2025 Los Angeles fires,

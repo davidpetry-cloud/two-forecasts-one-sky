@@ -12,6 +12,13 @@ License ([LICENSE](LICENSE)); words and drawings under CC BY 4.0
   is not affiliated with or endorsed by NOAA or the NWS. "NOAA" and "National
   Weather Service" are used only to name the source of the data.
 
+## Map
+
+- **US Census Bureau cartographic boundary files, 2017 edition**: public domain.
+  Redistributed as **us-atlas 3.0.1** (ISC License, Mike Bostock). Drawn ahead of time
+  into `site/map.js` by `scripts/map/build.mjs`, using **d3-geo** and **topojson-client**
+  (both ISC). Those tools aren't shipped with the site.
+
 ## Fonts (included, SIL Open Font License 1.1)
 
 - **Instrument Sans**: The Instrument Sans Project Authors.

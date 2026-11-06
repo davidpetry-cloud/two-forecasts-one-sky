@@ -5,6 +5,11 @@ weather model (AIGFS) beside its physics model (GFS). Learners pick a place and 
 day, guess which forecast came closer, then see what a weather station actually
 measured. The point is calibrated trust: an AI model is a source, so check it like one.
 
+The bigger picture also goes **by place**: every station's results, on a map of the
+contiguous United States drawn to scale (Albers equal-area, with a scale bar). A
+**search field** at the top finds places, stations, cases, words, findings and roles,
+and jumps straight to them.
+
 Then **make a scenario** (step 04): answer Who, What, Where, When, Why and How (your
 role, the weather that matters, the place, how far ahead you must decide, which mistake
 is worse for you, and your rule for using the two forecasts). The page runs your rule
@@ -22,8 +27,8 @@ is the only variable so far.
 |---|---|
 | `site/` | The visual prototype: a static page that reads saved data only and fetches nothing |
 | `data/` | Saved results: `spike-2026-11-05.json` holds 54 cases (6 US stations × 3 evenings × 3, 5 and 7 days ahead), 51 with a measurement |
-| `scripts/` | `pull_spike.py`, the script that made the data (run by hand only); `palette.py`, the contrast checker |
-| `docs/` | `roadmap.md` (every idea, built and next), `protocol.md` (governance, law, vision, glossary) and `ux-audit-2026-11-05.md` |
+| `scripts/` | `pull_spike.py`, the script that made the data (run by hand only); `palette.py`, the contrast checker; `map/`, the recipe for `site/map.js` |
+| `docs/` | `roadmap.md` (every idea, built and next), `protocol.md` (governance, law, vision, glossary), `ux-audit-2026-11-05.md` and `user-session-plan.md` |
 
 ## See it
 

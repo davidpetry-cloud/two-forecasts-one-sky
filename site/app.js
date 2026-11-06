@@ -213,6 +213,7 @@
       '<th scope="col"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 48 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="var(--phys)" stroke-width="3"/></svg></span><span class="phys-text">Physics model</span></th><th scope="col">AI model closer</th></tr></thead>' +
       "<tbody>" + rows + '<tr class="total"><th scope="row" class="grid-mark">All</th><td class="num">' + D(all.ai) + '</td><td class="num">' + D(all.ph) + '</td><td class="num">' + all.win + " of " + all.n + "</td></tr></tbody></table>" +
       '<ul class="ref-list">' + items + "<li><b>All:</b> " + D(all.ai) + " against " + D(all.ph) + "; the AI model came closer in " + all.win + " of " + all.n + ".</li></ul>" +
+      '<div id="places"></div>' +
       "<h3>What this does and doesn't show</h3><ul class=\"findings\">" +
       finding(G.both, "Close to a coin toss", "Overall the AI model came closer in " + all.win + " of " + all.n + " cases.", "From " + all.n + " cases, evenings of 2 to 4 November 2026") +
       finding(G.leads, "Too few days to tell", "The physics model did better 3 days ahead; the AI model did better 5 and 7 days ahead. Three evenings can't show that this holds.", "From the table above") +
@@ -222,6 +223,91 @@
       finding(G.version, "A new version", "NOAA updated the AI model to version 1.1 and says some forecasts improved. A claim like that needs checking over many months.", SCN + ", 27 July 2026") +
       finding(G.missing, "A missed reading", lost + " cases have no measurement, because one station missed a reading. So there are " + all.n + " cases, not " + DATA.length + ".", "Station KNYC, Central Park, evening of 3 November") +
       "</ul>";
+  }
+
+  // ---------- by place: every station, on a map drawn to scale ----------
+  // Map: contiguous US in an Albers equal-area projection (map.js, built from public-domain Census outlines).
+  var MAP = window.TF_MAP;
+  var PIN_SIDE = { Seattle: "right", Phoenix: "right", Denver: "right", Chicago: "above", "New York": "below", Miami: "left" };
+  var placeSel = null;
+  function cityStats(name) {
+    var rows = DATA.filter(function (r) { return r.city === name && r.observed && typeof r.aigfs === "number"; });
+    var mean = function (xs) { return xs.reduce(function (s, v) { return s + v; }, 0) / xs.length; };
+    var ai = mean(rows.map(function (r) { return Math.abs(r.aigfs - r.observed.c); }));
+    var ph = mean(rows.map(function (r) { return Math.abs(r.gfs - r.observed.c); }));
+    return {
+      n: rows.length, ai: ai, ph: ph,
+      win: rows.filter(function (r) { return Math.abs(r.aigfs - r.observed.c) < Math.abs(r.gfs - r.observed.c); }).length,
+      aiLean: mean(rows.map(function (r) { return r.aigfs - r.observed.c; })),
+      phLean: mean(rows.map(function (r) { return r.gfs - r.observed.c; })),
+      better: Math.abs(ai - ph) < 0.25 ? "even" : (ai < ph ? "ai" : "phys"),
+      rows: rows
+    };
+  }
+  var BETTER = { ai: "The AI model did better here", phys: "The physics model did better here", even: "About even here" };
+  var lean = function (d) { return Math.abs(d) < 0.3 ? "no clear lean" : (d < 0 ? "ran " + D(d) + " cold" : "ran " + D(d) + " warm"); };
+  var pinShape = function (b) {
+    return b === "ai" ? '<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="var(--paper)" stroke="var(--ai)" stroke-width="3"/></svg>'
+      : b === "phys" ? '<svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" fill="var(--paper)" stroke="var(--phys)" stroke-width="3"/></svg>'
+        : '<svg viewBox="0 0 20 20"><path d="M10 2 18 10 10 18 2 10Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/></svg>';
+  };
+  function placePanel(name) {
+    if (!name) return '<p class="hint">Choose a place on the map or in the list to see how each model did there.</p>';
+    var st = cityStats(name), c = CITIES.find(function (x) { return x.name === name; });
+    var tryRow = st.rows.find(function (r) { return r.lead_days === 3; }) || st.rows[0];
+    return '<h4 class="place__h">' + esc(name) + ' <span class="place__st">' + esc(c.place) + " · " + c.station + "</span></h4>" +
+      '<p class="place__better"><span aria-hidden="true">' + pinShape(st.better) + "</span> " + BETTER[st.better] + ".</p>" +
+      '<dl class="place__dl"><dt>AI model</dt><dd>missed by ' + D(st.ai) + " on average, " + lean(st.aiLean) + "</dd>" +
+      "<dt>Physics model</dt><dd>missed by " + D(st.ph) + " on average, " + lean(st.phLean) + "</dd>" +
+      "<dt>Closer</dt><dd>the AI model in " + st.win + " of " + st.n + " cases</dd></dl>" +
+      (st.n < 9 ? '<p class="hint">' + (9 - st.n) + " case" + (9 - st.n === 1 ? " has" : "s have") + " no reading here.</p>" : "") +
+      '<button type="button" class="btn quiet try" data-city="' + esc(name) + '" data-valid="' + tryRow.valid + '" data-lead="' + tryRow.lead_days + '">Try a case: ' + esc(name) + ", " + dayName(tryRow.valid) + "</button>";
+  }
+  function placesHtml() {
+    if (!MAP) return "";
+    var pins = MAP.stations.map(function (s) {
+      var st = cityStats(s.name), side = PIN_SIDE[s.name] || "right";
+      return '<button type="button" class="pin pin--' + side + '" data-place="' + esc(s.name) + '" tabindex="-1" aria-hidden="true" data-on="' + (placeSel === s.name) + '" ' +
+        'style="left:' + (s.x / MAP.width * 100).toFixed(2) + "%;top:" + (s.y / MAP.height * 100).toFixed(2) + '%">' +
+        '<span class="pin__mark" aria-hidden="true">' + pinShape(st.better) + "</span>" +
+        '<span class="pin__label">' + esc(s.name) + "</span></button>";
+    }).join("");
+    var km = 500, mi = 300;
+    var pct = function (units) { return (units / MAP.width * 100).toFixed(2) + "%"; };
+    var rows = CITIES.map(function (c) {
+      var st = cityStats(c.name);
+      return '<tr><th scope="row" class="grid-mark">' + esc(c.name) + '</th><td class="num">' + D(st.ai) + '</td><td class="num">' + D(st.ph) + '</td><td class="num">' + st.win + " of " + st.n + "</td><td>" + lean(st.aiLean) + "</td></tr>";
+    }).join("");
+    var items = CITIES.map(function (c) {
+      var st = cityStats(c.name);
+      return "<li><b>" + esc(c.name) + ":</b> AI model " + D(st.ai) + ", physics model " + D(st.ph) + " average miss; the AI model came closer in " + st.win + " of " + st.n + "; it " + lean(st.aiLean) + ".</li>";
+    }).join("");
+    return '<h3 id="h-places">By place</h3>' +
+      '<p class="hint">Six weather stations, on a map drawn to scale. Choose one to see how each model did there.</p>' +
+      '<div class="places">' +
+      '<figure class="map"><div class="map__canvas">' +
+      '<svg class="map__svg" viewBox="0 0 ' + MAP.width + " " + MAP.height + '" aria-hidden="true" focusable="false">' +
+      '<path class="map__land" d="' + MAP.states + '"/><path class="map__borders" d="' + MAP.borders + '"/><path class="map__outline" d="' + MAP.outline + '"/></svg>' +
+      pins + "</div>" +
+      '<figcaption><span class="scalebar" aria-hidden="true"><span class="scalebar__bar" style="width:' + pct(km * MAP.unitsPerKm) + '"></span><span>' + km + ' km</span>' +
+      '<span class="scalebar__bar" style="width:' + pct(mi * 1.609344 * MAP.unitsPerKm) + '"></span><span>' + mi + " mi</span></span>" +
+      '<span class="map__note">Contiguous United States, Albers equal-area projection, drawn to scale (the scale bar holds near the middle of the map). Alaska and Hawaii aren\'t shown: no stations there yet. Outlines: US Census Bureau, 2017.</span>' +
+      '<span class="map__key" aria-hidden="true"><span>' + pinShape("ai") + ' AI model did better</span><span>' + pinShape("phys") + ' Physics model did better</span><span>' + pinShape("even") + " About even</span></span></figcaption></figure>" +
+      '<div class="place-col"><div class="place-list" role="group" aria-label="Places">' + CITIES.map(function (c) {
+        var b = cityStats(c.name).better;
+        return '<button type="button" class="place-btn" data-place="' + esc(c.name) + '" aria-pressed="' + (placeSel === c.name) + '">' +
+          '<span aria-hidden="true">' + pinShape(b) + "</span>" + esc(c.name) + '<span class="sr">: ' + BETTER[b] + "</span></button>";
+      }).join("") + "</div>" +
+      '<div class="place" id="place-panel" aria-live="polite">' + placePanel(placeSel) + "</div></div></div>" +
+      '<table class="hairgrid places__table"><caption>Results by place, all 3 evenings and 3 forecast lengths</caption><thead><tr><th scope="col" class="grid-mark">Place</th><th scope="col">AI model, average miss</th><th scope="col">Physics model, average miss</th><th scope="col">AI model closer</th><th scope="col">AI model\'s lean</th></tr></thead><tbody>' + rows + "</tbody></table>" +
+      '<ul class="ref-list">' + items + "</ul>";
+  }
+  function renderPlaces() { var box = $("places"); if (box) box.innerHTML = placesHtml(); }
+  function choosePlace(name) {
+    placeSel = name;
+    document.querySelectorAll(".pin").forEach(function (b) { b.dataset.on = b.dataset.place === name ? "true" : "false"; });
+    document.querySelectorAll(".place-btn").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.place === name ? "true" : "false"); });
+    $("place-panel").innerHTML = placePanel(name);
   }
 
   // ---------- make a scenario: who, what, where, when, why, how ----------
@@ -366,6 +452,89 @@
     announce("Case loaded: " + city + ", evening of " + dayName(valid) + ", " + lead + " days ahead. Make a guess.");
   }
 
+  // ---------- search this page ----------
+  // Everything is searched here in the page: no outside service, nothing stored or sent.
+  var SEARCH_LIMIT = 8;
+  var norm = function (t) { return String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
+  var words = function (q) { return norm(q).split(/[^a-z0-9°]+/).filter(function (w) { return w.length >= 2 || /^\d$/.test(w); }); };
+  function searchIndex() {
+    var idx = [];
+    var steps = [["h-pick", "01 Pick a case", "choose a place evening how far ahead"], ["h-guess", "02 Guess first", "which forecast came closer guess"],
+      ["h-result", "03 What happened", "result measured drawing"], ["h-bigger", "The bigger picture", "all cases average miss by place map findings"],
+      ["h-places", "By place", "map stations cities scale"], ["h-scen", "04 Make a scenario", "who what where when why how decision rule"], ["h-words", "Words used here", "glossary"]];
+    steps.forEach(function (st) { idx.push({ kind: "Step", title: st[1], text: st[2], go: { to: st[0] } }); });
+    CITIES.forEach(function (c) {
+      idx.push({ kind: "Place", title: c.name, text: c.place + " " + c.station + (c.name === "New York" ? " nyc manhattan" : ""), go: { place: c.name } });
+    });
+    DATA.forEach(function (r) {
+      var day = dayName(r.valid);
+      var cc = CITIES.find(function (c) { return c.name === r.city; });
+      idx.push({ kind: "Case", title: r.city + ", " + day + ", " + r.lead_days + " days ahead", text: day.replace("November", "nov") + " evening " + cc.place + " " + cc.station + (r.city === "New York" ? " nyc" : "") + (r.observed ? "" : " no reading"),
+        go: { city: r.city, valid: r.valid, lead: r.lead_days } });
+    });
+    document.querySelectorAll("#h-words ~ dl dt, dl dt").forEach(function (dt) {
+      if (!dt.id) return;
+      idx.push({ kind: "Word", title: dt.textContent, text: (dt.nextElementSibling || {}).textContent || "", go: { to: dt.id } });
+    });
+    document.querySelectorAll(".finding").forEach(function (f, i) {
+      if (!f.id) f.id = "f-" + (i + 1);
+      idx.push({ kind: "Finding", title: f.querySelector(".finding__title").textContent, text: f.querySelector(".finding__dek").textContent, go: { to: f.id } });
+    });
+    SC.who.forEach(function (w) { idx.push({ kind: "Scenario role", title: w.label, text: "who " + w.cold + " " + w.warm, go: { who: w.value } }); });
+    return idx;
+  }
+  function searchPage(q) {
+    var ws = words(q);
+    if (!ws.length) return [];
+    return searchIndex().map(function (e) {
+      var title = norm(e.title), all = title + " " + norm(e.text);
+      if (!ws.every(function (w) { return all.indexOf(w) !== -1; })) return null;
+      var score = ws.filter(function (w) { return title.indexOf(w) !== -1; }).length * 2 + ({ Place: 2, Step: 1 }[e.kind] || 0);
+      e.score = score; return e;
+    }).filter(Boolean).sort(function (a, b) { return b.score - a.score; });
+  }
+  // Escape first, then mark the matches, so a query can never inject markup.
+  function mark(text, q) {
+    var ws = words(q).sort(function (a, b) { return b.length - a.length; });
+    var t = String(text);
+    if (!ws.length) return esc(t);
+    var re = new RegExp("(" + ws.map(function (w) { return w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|") + ")", "gi");
+    return t.split(re).map(function (part, i) { return i % 2 ? "<mark>" + esc(part) + "</mark>" : esc(part); }).join("");
+  }
+  function renderSearch() {
+    var q = $("q").value, res = searchPage(q), status;
+    var trimmed = q.trim();
+    if (!trimmed) status = 'Try "Central Park", "4 November", "bias" or "farmer".';
+    else if (!words(q).length) status = "Type at least two letters.";
+    else if (!res.length) status = 'No results for "' + trimmed + '". Try fewer words, a place name or a date like "3 November".';
+    else status = res.length > SEARCH_LIMIT ? res.length + ' results for "' + trimmed + '". Showing the first ' + SEARCH_LIMIT + "; add a word to narrow them down."
+      : res.length + " result" + (res.length === 1 ? "" : "s") + ' for "' + trimmed + '".';
+    $("q-status").textContent = status;
+    $("q-results").innerHTML = res.slice(0, SEARCH_LIMIT).map(function (e, i) {
+      return '<li><button type="button" class="search__hit" data-i="' + i + '"><span class="search__kind">' + esc(e.kind) + "</span> " + mark(e.title, q) + "</button></li>";
+    }).join("");
+    renderSearch.res = res;
+  }
+  function goTo(go) {
+    if (go.to) {
+      var el = $(go.to);
+      if (el) { el.scrollIntoView({ block: "start" }); if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1"); el.focus({ preventScroll: true }); }
+      return;
+    }
+    if (go.place) {
+      choosePlace(go.place);
+      $("h-places").scrollIntoView({ block: "start" });
+      var btn = document.querySelector('.place-btn[data-place="' + go.place + '"]'); if (btn) btn.focus({ preventScroll: true });
+      return;
+    }
+    if (go.city) { loadCase(go.city, go.valid, go.lead); return; }
+    if (go.who) {
+      sc.who = go.who;
+      var input = document.querySelector('input[name="sc-who"][value="' + go.who + '"]');
+      if (input) { input.checked = true; renderScenario(true); $("h-scen").scrollIntoView({ block: "start" }); input.focus({ preventScroll: true }); }
+    }
+  }
+
   // ---------- theme ----------
   function themeNow() {
     var t = document.documentElement.getAttribute("data-theme");
@@ -385,6 +554,7 @@
     ], state.guess, function (v) { state.guess = v; $("hint").textContent = ""; });
     radios("sc-what", "sc-what", SC.what.map(function (w) { var l = whatLabel(w); return { value: w.value, label: l.label, small: l.small }; }), sc.what, scPick("what"));
     $("bigger").innerHTML = biggerHtml();
+    renderPlaces();
     if (state.shown) showResult(true);
     renderScenario(false);
   }
@@ -413,6 +583,8 @@
     announce("Result shown.");
   });
   $("bigger").addEventListener("click", function (e) {
+    var pin = e.target.closest(".pin, .place-btn");
+    if (pin) { choosePlace(pin.dataset.place); return; }
     var b = e.target.closest(".try");
     if (b) loadCase(b.dataset.city, b.dataset.valid, Number(b.dataset.lead));
   });
@@ -431,6 +603,12 @@
       renderUnits();
       announce("Temperatures now in " + (unit === "F" ? "Fahrenheit" : "Celsius") + ".");
     });
+  });
+  $("q").addEventListener("input", renderSearch);
+  $("q").addEventListener("keydown", function (e) { if (e.key === "Escape") { $("q").value = ""; renderSearch(); } });
+  $("q-results").addEventListener("click", function (e) {
+    var b = e.target.closest(".search__hit");
+    if (b && renderSearch.res) goTo(renderSearch.res[Number(b.dataset.i)].go);
   });
   themeLabel();
   showResult(false);

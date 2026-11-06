@@ -31,6 +31,12 @@
     <div class="mark"><span class="label">Before you start</span></div>
     <div class="body">
       <p class="notice">This is a prototype for learning, not a forecast. For real forecasts and warnings, go to <a href="https://www.weather.gov/">weather.gov</a>. The AI model is new: see <a href="#f-limits">what it can't do yet</a>. It takes about 10 minutes.</p>
+      <div class="search" role="search">
+        <label for="q" class="search__label">Search this page</label>
+        <input type="search" id="q" class="search__input" autocomplete="off" spellcheck="false" placeholder="A place, a date, a word…" aria-describedby="q-status">
+        <p class="hint search__status" id="q-status" role="status">Try "Central Park", "4 November", "bias" or "farmer".</p>
+        <ul class="search__results" id="q-results"></ul>
+      </div>
       <nav class="toc" aria-label="On this page">
         <h2 class="toc__h">On this page</h2>
         <ol>
@@ -153,6 +159,7 @@
 </footer>
 <div id="announce" class="sr" aria-live="polite"></div>
 <script src="data.js"></script>
+<script src="map.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

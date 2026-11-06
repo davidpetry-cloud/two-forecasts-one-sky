@@ -254,15 +254,93 @@ main > .band:first-child{border-top:0}
 .next.end{color:var(--muted)}
 .try{margin:var(--s-2) 0 0;align-self:flex-start;font-size:var(--fs-base)}
 
+
+/* by place: the map and its city panel (6 November 2026) */
+.places{display:grid;grid-template-columns:1fr;gap:var(--s-5);margin:0 0 var(--s-6)}
+@container (min-width:46rem){.places{grid-template-columns:minmax(0,2fr) minmax(16rem,1fr);align-items:start}}
+.map{margin:0}
+.map__canvas{position:relative;container-type:inline-size}
+.map__svg{display:block;width:100%;height:auto}
+.map__land{fill:var(--band)}
+.map__borders{fill:none;stroke:var(--paper);stroke-width:1.2;vector-effect:non-scaling-stroke}
+.map__outline{fill:none;stroke:var(--edge);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.pin{position:absolute;display:flex;align-items:center;min-height:44px;min-width:44px;padding:0;border:0;background:none;color:var(--text);
+  font:inherit;font-size:var(--fs-sm);font-weight:600;line-height:1.2;cursor:pointer;transform:translate(-22px,-50%)}
+.pin__mark{flex:none;width:44px;height:44px;display:grid;place-items:center}
+.pin__mark svg{width:20px;height:20px}
+.pin__label{white-space:nowrap;padding:2px var(--s-2);background:var(--paper);border:2px solid var(--edge);border-radius:var(--r-pill)}
+.pin--left{flex-direction:row-reverse;transform:translate(calc(-100% + 22px),-50%)}
+.pin--above{flex-direction:column-reverse;transform:translate(-50%,calc(-100% + 22px))}
+.pin--below{flex-direction:column;transform:translate(-50%,-22px)}
+.pin:hover .pin__label{border-color:var(--ink)}
+.pin[data-on="true"] .pin__label{border:3px solid var(--ink);background:var(--card);padding:1px 7px}
+/* narrow maps: names move to the place list, so tags never crowd or overlap */
+@container (max-width:36rem){.pin__label{display:none}}
+.pin[data-on="true"] .pin__mark svg{width:26px;height:26px}
+.map figcaption{margin-top:var(--s-3);display:grid;gap:var(--s-2)}
+.scalebar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--s-1) var(--s-2);font-size:var(--fs-sm);color:var(--text)}
+.scalebar__bar{display:inline-block;height:8px;border:2px solid var(--ink);border-top:0}
+.map__note{color:var(--muted);font-size:var(--fs-sm);max-width:var(--measure)}
+.map__key{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-1) var(--s-2);font-size:var(--fs-sm)}
+.map__key > span{display:inline-flex;align-items:center;gap:var(--s-1)}
+.places > *{min-width:0}
+.map__key svg,.place__better svg{width:18px;height:18px;vertical-align:-3px}
+.place-list{display:flex;flex-wrap:wrap;gap:var(--s-2);margin:0 0 var(--s-4)}
+.place-btn{display:inline-flex;align-items:center;gap:var(--s-2);min-height:44px;padding:var(--s-2) var(--s-3);border:2px solid var(--edge);border-radius:22px;background:transparent;color:var(--text);font:inherit;font-size:var(--fs-base);cursor:pointer}
+.place-btn svg{width:18px;height:18px;display:block}
+.place-btn:hover{border-color:var(--ink)}
+.place-btn[aria-pressed="true"]{border:3px solid var(--ink);padding:7px 11px;background:var(--card);font-weight:600}
+.place{border-top:1px solid var(--edge);padding-top:var(--s-3)}
+.place__h{font-family:var(--display);font-weight:600;font-size:var(--fs-lg);color:var(--ink);margin:0 0 var(--s-2);line-height:var(--lh-heading)}
+.place__st{display:block;font-family:var(--sans);font-size:var(--fs-sm);font-weight:400;color:var(--muted)}
+.place__better{margin:0 0 var(--s-3);font-weight:600}
+.place__dl dt{border-top:0;padding-top:var(--s-2)}
+.place__dl dd{margin:0}
+.places__table{margin-bottom:var(--s-6)}
+
+
+/* search this page (6 November 2026) */
+.search{margin-top:var(--s-6);max-width:var(--measure)}
+.search__label{display:block;font-weight:700;color:var(--ink);margin-bottom:var(--s-2)}
+.search__input{width:100%;min-height:48px;padding:var(--s-2) var(--s-4);border:2px solid var(--edge);border-radius:var(--r-pill);background:var(--card);color:var(--text);font:inherit;font-size:var(--fs-base)}
+.search__input::placeholder{color:var(--muted);opacity:1}
+.search__input:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-color:var(--ink)}
+.search__status{margin:var(--s-2) 0}
+.search__results{list-style:none;padding:0;margin:0}
+.search__results li{max-width:none;border-top:1px solid var(--line)}
+.search__results li:last-child{border-bottom:1px solid var(--line)}
+.search__hit{display:flex;align-items:baseline;gap:var(--s-2);flex-wrap:wrap;width:100%;min-height:44px;padding:var(--s-2) 0;border:0;background:none;color:var(--text);font:inherit;font-size:var(--fs-base);text-align:left;cursor:pointer}
+.search__hit:hover{text-decoration:underline;text-underline-offset:3px}
+.search__kind{font-size:var(--fs-sm);font-weight:600;color:var(--muted);min-width:6.5rem}
+.search__hit mark{background:none;color:inherit;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+
 /* 14: print: light, on white paper, controls hidden, content shown */
 @media print{
   :root,:root[data-theme="dark"]{color-scheme:light;--paper:#fff;--card:#fff;--band:#fff;--text:#000;--ink:#000;--muted:#333;--line:#999;--edge:#666;--header-bg:#fff;--on-dark:#000;--header-sub:#333;--obs:#000}
   body{background:#fff}
   .top{color:#000;border-bottom:1px solid #000;padding-bottom:var(--s-5)}
-  .top-controls,.skip,.choices,.actions,.hint:empty,.sc-live,#announce,.toc,.next,.try{display:none!important}
+  .top-controls,.skip,.choices,.actions,.hint:empty,.sc-live,#announce,.toc,.next,.try,.search,.place-list{display:none!important}
   .sc-cases > ul{display:block}
   .band{break-inside:avoid-page;margin-bottom:var(--s-6)}
   a{color:#000}
+}
+
+
+/* Windows high contrast (forced colours): the system replaces colours, so every state must also show by shape,
+   border or a system colour (6 November 2026). Shapes already tell the models apart (circle, square, diamond). */
+@media (forced-colors: active){
+  .choice input:checked + span,.place-btn[aria-pressed="true"],.pin[data-on="true"] .pin__label{border-color:Highlight;outline:2px solid Highlight;outline-offset:2px}
+  .choice input:checked + span::before{forced-color-adjust:none;background:Highlight;border-color:Highlight}
+  .unit-btn[aria-pressed="true"]{forced-color-adjust:none;background:Highlight;color:HighlightText}
+  .btn,.theme,.units,.search__input{border:2px solid ButtonText}
+  :focus-visible,.choice input:focus-visible + span,.pin:focus-visible .pin__label{outline:3px solid Highlight}
+  .map__land{fill:Canvas}
+  .map__outline,.map__borders{stroke:CanvasText}
+  .main > .band,.band{border-top-color:CanvasText}
+  .sc-live{border-top:2px solid CanvasText}
+  .scalebar__bar{border-color:CanvasText}
+  .placeholder,.missing{border-color:CanvasText}
+  .search__hit mark{color:Highlight;forced-color-adjust:none}
 }
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-property:color,background-color,border-color,outline-color,box-shadow!important}}
