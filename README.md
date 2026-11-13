@@ -38,7 +38,7 @@ someone saves it. A GitHub Action in this private repository
 commits one small file per evening to `data/archive/`: both models' forecasts made 3,
 5 and 7 days ahead, each station's reading, and the AI model's version. It follows the
 protocol's rules for NOAA's servers, and identifies itself by this repository's address.
-The page doesn't use the archive yet; folding it in is a next step.
+Each night the Action also rebuilds `site/data.js` from the spike and the archive (`scripts/build_data.py`), so the page grows by one evening a day, and its findings are worded from the data, not fixed sentences.
 
 ## See it
 

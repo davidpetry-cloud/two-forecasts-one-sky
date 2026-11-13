@@ -12,6 +12,10 @@
   ];
   var VALIDS = Array.from(new Set(DATA.map(function (r) { return r.valid; }))).sort();
   var LEADS = [3, 5, 7];
+  var META = window.TF_META || {};
+  var EVENINGS = VALIDS.length;
+  var SPAN = "evenings of " + new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(new Date(VALIDS[0]).getTime() - 86400000)) +
+    " to " + new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(new Date(VALIDS[VALIDS.length - 1]).getTime() - 86400000));
   var SAME = 0.5; // misses within 0.5 °C (about 1 °F) of each other count as "about the same"
   var state = { city: "Seattle", valid: VALIDS[1] || VALIDS[0], lead: 3, guess: null, shown: false };
 
@@ -186,6 +190,30 @@
     var ny = ok.filter(function (r) { return r.city === "New York"; });
     var nyBias = mean(ny.map(function (r) { return r.aigfs - r.observed.c; }));
     var lost = DATA.length - ok.length;
+    var pct = function (a, b) { return Math.round(a / b * 100); };
+    var share = all.win / all.n;
+    var overall = {
+      title: share >= 0.45 && share <= 0.55 ? "Close to a coin toss" : share < 0.45 ? "The physics model came closer more often" : "The AI model came closer more often",
+      dek: "Overall the AI model came closer in " + all.win + " of " + all.n + " cases (" + pct(all.win, all.n) + "%). Its average miss was " + D(all.ai) + ", against the physics model's " + D(all.ph) + "."
+    };
+    var leadKind = function (st) { return Math.abs(st.ai - st.ph) < 0.1 ? "even" : st.ai < st.ph ? "ai" : "phys"; };
+    var LEAD_WORD = { even: "about even", ai: "the AI model did better", phys: "the physics model did better" };
+    var leadWords = byLead.map(function (p) { return p[0] + " days ahead, " + LEAD_WORD[leadKind(p[1])]; });
+    var sameEverywhere = byLead.every(function (p) { return leadKind(p[1]) === leadKind(byLead[0][1]); });
+    var leadsF = {
+      title: sameEverywhere ? "The same at every distance" : "It depends how far ahead",
+      dek: leadWords.join("; ") + ". " + (EVENINGS < 30 ? plural(EVENINGS, "evening", "evenings") + " is still too few to call this a rule." : "Watch whether this holds as the record grows.")
+    };
+    var nyCold = ny.filter(function (r) { return r.aigfs < r.observed.c; }).length;
+    var leanF = {
+      title: bias < -0.3 ? "The AI model ran cold" : bias > 0.3 ? "The AI model ran warm" : "No clear lean overall",
+      dek: "On average " + D(bias) + (bias < 0 ? " below" : " above") + " the measurement. At Central Park it ran about " + D(nyBias) + (nyBias < 0 ? " cold" : " warm") +
+        " on average, colder than measured in " + nyCold + " of " + ny.length + " cases. Why isn't known yet."
+    };
+    var missed = DATA.filter(function (r) { return !r.observed; }).map(function (r) {
+      var c = CITIES.find(function (x) { return x.name === r.city; }); return c.station + ", " + dayName(r.valid);
+    }).filter(function (v, i, a) { return a.indexOf(v) === i; });
+    var missedSource = "Missed: " + missed.slice(0, 3).join("; ") + (missed.length > 3 ? "; and " + (missed.length - 3) + " more" : "");
     var rows = byLead.map(function (p) {
       return '<tr><th scope="row" class="grid-mark">' + p[0] + ' days</th><td class="num">' + D(p[1].ai) + '</td><td class="num">' + D(p[1].ph) + '</td><td class="num">' + p[1].win + " of " + p[1].n + "</td></tr>";
     }).join("");
@@ -215,13 +243,14 @@
       '<ul class="ref-list">' + items + "<li><b>All:</b> " + D(all.ai) + " against " + D(all.ph) + "; the AI model came closer in " + all.win + " of " + all.n + ".</li></ul>" +
       '<div id="places"></div>' +
       "<h3>What this does and doesn't show</h3><ul class=\"findings\">" +
-      finding(G.both, "Close to a coin toss", "Overall the AI model came closer in " + all.win + " of " + all.n + " cases.", "From " + all.n + " cases, evenings of 2 to 4 November 2026") +
-      finding(G.leads, "Too few days to tell", "The physics model did better 3 days ahead; the AI model did better 5 and 7 days ahead. Three evenings can't show that this holds.", "From the table above") +
-      finding(G.cold, "The AI model ran cold", "On average " + D(bias) + " below the measurement. At Central Park, about " + D(nyBias) + " cold every time. Why isn't known yet.", "From " + all.n + " cases; Central Park from " + ny.length, null,
+      finding(G.both, overall.title, overall.dek, "From " + all.n + " cases, " + SPAN) +
+      finding(G.leads, leadsF.title, leadsF.dek, "From the table above") +
+      finding(G.cold, leanF.title, leanF.dek, "From " + all.n + " cases; Central Park from " + ny.length, null,
         { city: "New York", valid: "2026-11-05T00:00:00+00:00", lead: 5, label: "New York, 4 November" }) +
       finding(G.grid, "What the AI model can't do yet", "It works on a grid of points about 28 km (17 miles) apart, so it can't see a single park, valley or stretch of coast. It doesn't forecast wind gusts, visibility or radar.", "Checked in the AIGFS v1.1 files on NOMADS, 4 November 2026", "f-limits") +
-      finding(G.version, "A new version", "NOAA updated the AI model to version 1.1 and says some forecasts improved. A claim like that needs checking over many months.", SCN + ", 27 July 2026") +
-      finding(G.missing, "A missed reading", lost + " cases have no measurement, because one station missed a reading. So there are " + all.n + " cases, not " + DATA.length + ".", "Station KNYC, Central Park, evening of 3 November") +
+      finding(G.version, "A new version", "NOAA updated the AI model to version 1.1 and says some forecasts improved. A claim like that needs checking over many months." +
+        (META.versions && META.versions.length ? " Every forecast in the nightly archive is version " + META.versions.join(", ").replace(/v/g, "") + "." : ""), SCN + ", 27 July 2026") +
+      (lost ? finding(G.missing, lost === 1 ? "A missed reading" : "Missed readings", plural(lost, "case has", "cases have") + " no measurement, because a station missed a reading. So there are " + all.n + " cases, not " + DATA.length + ".", missedSource) : "") +
       "</ul>";
   }
 
@@ -260,7 +289,7 @@
       '<dl class="place__dl"><dt>AI model</dt><dd>missed by ' + D(st.ai) + " on average, " + lean(st.aiLean) + "</dd>" +
       "<dt>Physics model</dt><dd>missed by " + D(st.ph) + " on average, " + lean(st.phLean) + "</dd>" +
       "<dt>Closer</dt><dd>the AI model in " + st.win + " of " + st.n + " cases</dd></dl>" +
-      (st.n < 9 ? '<p class="hint">' + (9 - st.n) + " case" + (9 - st.n === 1 ? " has" : "s have") + " no reading here.</p>" : "") +
+      (st.n < EVENINGS * LEADS.length ? '<p class="hint">' + plural(EVENINGS * LEADS.length - st.n, "case has", "cases have") + " no reading here.</p>" : "") +
       '<button type="button" class="btn quiet try" data-city="' + esc(name) + '" data-valid="' + tryRow.valid + '" data-lead="' + tryRow.lead_days + '">Try a case: ' + esc(name) + ", " + dayName(tryRow.valid) + "</button>";
   }
   function placesHtml() {
@@ -299,7 +328,7 @@
           '<span aria-hidden="true">' + pinShape(b) + "</span>" + esc(c.name) + '<span class="sr">: ' + BETTER[b] + "</span></button>";
       }).join("") + "</div>" +
       '<div class="place" id="place-panel" aria-live="polite">' + placePanel(placeSel) + "</div></div></div>" +
-      '<table class="hairgrid places__table"><caption>Results by place, all 3 evenings and 3 forecast lengths</caption><thead><tr><th scope="col" class="grid-mark">Place</th><th scope="col">AI model, average miss</th><th scope="col">Physics model, average miss</th><th scope="col">AI model closer</th><th scope="col">AI model\'s lean</th></tr></thead><tbody>' + rows + "</tbody></table>" +
+      '<table class="hairgrid places__table"><caption>Results by place, all ' + EVENINGS + ' evenings and 3 forecast lengths</caption><thead><tr><th scope="col" class="grid-mark">Place</th><th scope="col">AI model, average miss</th><th scope="col">Physics model, average miss</th><th scope="col">AI model closer</th><th scope="col">AI model\'s lean</th></tr></thead><tbody>' + rows + "</tbody></table>" +
       '<ul class="ref-list">' + items + "</ul>";
   }
   function renderPlaces() { var box = $("places"); if (box) box.innerHTML = placesHtml(); }
@@ -554,6 +583,9 @@
     ], state.guess, function (v) { state.guess = v; $("hint").textContent = ""; });
     radios("sc-what", "sc-what", SC.what.map(function (w) { var l = whatLabel(w); return { value: w.value, label: l.label, small: l.small }; }), sc.what, scPick("what"));
     $("bigger").innerHTML = biggerHtml();
+    var okN = DATA.filter(function (r) { return r.observed && typeof r.aigfs === "number" && typeof r.gfs === "number"; }).length;
+    $("bigger-sense").textContent = "One case says little. Here are all " + okN + " cases with a measurement: 6 places, " + EVENINGS + " " + SPAN.replace("evenings of", "evenings, from") +
+      ", and 3 forecast lengths. A new evening is added each day.";
     renderPlaces();
     if (state.shown) showResult(true);
     renderScenario(false);
