@@ -1,0 +1,231 @@
+{
+ "saved": "2026-11-18T15:52:13+00:00",
+ "source": "NOAA / National Weather Service: AIGFS (NOMADS), GFS (AWS open data), station readings (NWS API). Public domain.",
+ "rows": [
+  {
+   "city": "Seattle",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 3,
+   "run": "2026-11-15T00:00:00+00:00",
+   "aigfs": 8.75,
+   "gfs": 8.82,
+   "observed": {
+    "c": 10,
+    "at": "2026-11-17T23:55:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Phoenix",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 3,
+   "run": "2026-11-15T00:00:00+00:00",
+   "aigfs": 18.85,
+   "gfs": 18.6,
+   "observed": {
+    "c": 21,
+    "at": "2026-11-18T00:00:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Denver",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 3,
+   "run": "2026-11-15T00:00:00+00:00",
+   "aigfs": 11.85,
+   "gfs": 13.03,
+   "observed": {
+    "c": 9,
+    "at": "2026-11-18T00:00:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Chicago",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 3,
+   "run": "2026-11-15T00:00:00+00:00",
+   "aigfs": 6.85,
+   "gfs": 9.92,
+   "observed": {
+    "c": 10,
+    "at": "2026-11-18T00:00:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "New York",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 3,
+   "run": "2026-11-15T00:00:00+00:00",
+   "aigfs": 6.85,
+   "gfs": 10.9,
+   "observed": null,
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Miami",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 3,
+   "run": "2026-11-15T00:00:00+00:00",
+   "aigfs": 22.55,
+   "gfs": 23.2,
+   "observed": {
+    "c": 23,
+    "at": "2026-11-17T23:55:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Seattle",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 5,
+   "run": "2026-11-13T00:00:00+00:00",
+   "aigfs": 9.25,
+   "gfs": 9.74,
+   "observed": {
+    "c": 10,
+    "at": "2026-11-17T23:55:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Phoenix",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 5,
+   "run": "2026-11-13T00:00:00+00:00",
+   "aigfs": 18.25,
+   "gfs": 19.61,
+   "observed": {
+    "c": 21,
+    "at": "2026-11-18T00:00:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Denver",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 5,
+   "run": "2026-11-13T00:00:00+00:00",
+   "aigfs": 9.35,
+   "gfs": 9.34,
+   "observed": {
+    "c": 9,
+    "at": "2026-11-18T00:00:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Chicago",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 5,
+   "run": "2026-11-13T00:00:00+00:00",
+   "aigfs": 6.15,
+   "gfs": 8.93,
+   "observed": {
+    "c": 10,
+    "at": "2026-11-18T00:00:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "New York",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 5,
+   "run": "2026-11-13T00:00:00+00:00",
+   "aigfs": 6.35,
+   "gfs": 10.21,
+   "observed": null,
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Miami",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 5,
+   "run": "2026-11-13T00:00:00+00:00",
+   "aigfs": 23.65,
+   "gfs": 25.13,
+   "observed": {
+    "c": 23,
+    "at": "2026-11-17T23:55:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Seattle",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 7,
+   "run": "2026-11-11T00:00:00+00:00",
+   "aigfs": 10.45,
+   "gfs": 9.5,
+   "observed": {
+    "c": 10,
+    "at": "2026-11-17T23:55:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Phoenix",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 7,
+   "run": "2026-11-11T00:00:00+00:00",
+   "aigfs": 18.35,
+   "gfs": 15.05,
+   "observed": {
+    "c": 21,
+    "at": "2026-11-18T00:00:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Denver",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 7,
+   "run": "2026-11-11T00:00:00+00:00",
+   "aigfs": 8.15,
+   "gfs": 7.68,
+   "observed": {
+    "c": 9,
+    "at": "2026-11-18T00:00:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Chicago",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 7,
+   "run": "2026-11-11T00:00:00+00:00",
+   "aigfs": 4.15,
+   "gfs": 6.92,
+   "observed": {
+    "c": 10,
+    "at": "2026-11-18T00:00:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "New York",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 7,
+   "run": "2026-11-11T00:00:00+00:00",
+   "aigfs": 4.65,
+   "gfs": 9.52,
+   "observed": null,
+   "aigfs_version": "v1.1"
+  },
+  {
+   "city": "Miami",
+   "valid": "2026-11-18T00:00:00+00:00",
+   "lead_days": 7,
+   "run": "2026-11-11T00:00:00+00:00",
+   "aigfs": 23.25,
+   "gfs": 27.69,
+   "observed": {
+    "c": 23,
+    "at": "2026-11-17T23:55:00+00:00"
+   },
+   "aigfs_version": "v1.1"
+  }
+ ]
+}
