@@ -7,7 +7,8 @@ For the evening that has just passed (00:00 UTC today), it saves:
   - the station reading nearest 00:00 UTC, from the NWS API;
   - the AI model's version, as NOMADS names it (for example "v1.1").
 
-Writes data/archive/YYYY/MM/YYYY-MM-DD.json and stops if that file already exists.
+Writes data/archive/YYYY/MM/YYYY-MM-DD.json (skipping an evening already saved), then re-checks the
+last 6 evenings for missing readings or forecasts and fills any the sources still hold.
 
 Follows docs/protocol.md, "Being a good user of NOAA's servers": run once a day; fetch
 only 2 m temperature through the .idx byte ranges; at most 3 tries, a minute apart.
@@ -94,57 +95,108 @@ def observed(station, when):
     return None if best is None else {"c": round(best[1], 2), "at": best[2]}
 
 
+def save_evening(day, force, cache):
+    valid = datetime(day.year, day.month, day.day, tzinfo=timezone.utc)
+    out = ROOT / "data" / "archive" / f"{day:%Y}" / f"{day:%m}" / f"{day:%Y-%m-%d}.json"
+    if out.exists() and not force:
+        print(f"{out.relative_to(ROOT)} exists; nothing new to save.")
+        return
+    # A station that can't be reached costs only its own reading, never the night: the forecasts
+    # are the part NOAA deletes, so they are always saved. Missing readings are filled in later.
+    obs = {}
+    for n, (st, _, _) in CITIES.items():
+        try:
+            obs[n] = with_retries(f"reading {st}", lambda st=st: observed(st, valid))
+        except Exception as e:
+            obs[n] = None
+            print(f"  reading {st}: gave up for now: {e}", file=sys.stderr)
+    rows, versions = [], {}
+    for lead in LEADS:
+        run = valid - timedelta(days=lead)
+        fxx = lead * 24
+        got = {}
+        for model in ("aigfs", "gfs"):
+            try:
+                got[model] = with_retries(f"{model} {run:%Y%m%d%H} f{fxx}", lambda m=model: forecast(m, run, fxx, cache))
+            except Exception as e:
+                got[model] = {}
+                print(f"  {model} {run:%Y%m%d%H} f{fxx}: gave up: {e}", file=sys.stderr)
+        try:
+            versions[f"{run:%Y-%m-%d}"] = with_retries("AIGFS version", lambda: aigfs_version(run))
+        except Exception:
+            versions[f"{run:%Y-%m-%d}"] = "unknown"
+        for name in CITIES:
+            rows.append({
+                "city": name, "valid": valid.isoformat(), "lead_days": lead, "run": run.isoformat(),
+                "aigfs": got["aigfs"].get(name), "gfs": got["gfs"].get(name), "observed": obs[name],
+                "aigfs_version": versions[f"{run:%Y-%m-%d}"],
+            })
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({
+        "saved": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "source": "NOAA / National Weather Service: AIGFS (NOMADS), GFS (AWS open data), station readings (NWS API). Public domain.",
+        "rows": rows,
+    }, indent=1) + "\n")
+    missing = sum(1 for r in rows if r["aigfs"] is None or r["gfs"] is None or r["observed"] is None)
+    print(f"saved {out.relative_to(ROOT)}: {len(rows)} rows, {missing} incomplete")
+
+
+def fill_recent(today, days, cache):
+    """Try once more for anything missing in the last few evenings, while the sources still hold it:
+    station readings (the NWS API keeps about a week) and forecasts (NOMADS keeps AIGFS about 10 days).
+    One try each, no waiting, so a bad night heals itself the next night without extra load."""
+    for back in range(1, days + 1):
+        day = today - timedelta(days=back)
+        path = ROOT / "data" / "archive" / f"{day:%Y}" / f"{day:%m}" / f"{day:%Y-%m-%d}.json"
+        if not path.exists():
+            print(f"  {day}: no file (a missed night; re-run with --date {day} while NOAA still holds it)", file=sys.stderr)
+            continue
+        doc = json.loads(path.read_text())
+        rows, changed = doc["rows"], 0
+        valid = datetime(day.year, day.month, day.day, tzinfo=timezone.utc)
+        for name, (st, _, _) in CITIES.items():
+            if any(r["city"] == name and r["observed"] is None for r in rows):
+                try:
+                    got = observed(st, valid)
+                except Exception as e:
+                    print(f"  fill {day} {st}: still unavailable ({e})", file=sys.stderr)
+                    continue
+                if got:
+                    for r in rows:
+                        if r["city"] == name and r["observed"] is None:
+                            r["observed"] = got; changed += 1
+        for lead in LEADS:
+            run = valid - timedelta(days=lead)
+            if (datetime.now(timezone.utc) - run).days > 9:
+                continue
+            for model in ("aigfs", "gfs"):
+                if any(r["lead_days"] == lead and r[model] is None for r in rows):
+                    try:
+                        got = forecast(model, run, lead * 24, cache)
+                    except Exception as e:
+                        print(f"  fill {day} {model} f{lead*24}: still unavailable ({e})", file=sys.stderr)
+                        continue
+                    for r in rows:
+                        if r["lead_days"] == lead and r[model] is None and got.get(r["city"]) is not None:
+                            r[model] = got[r["city"]]; changed += 1
+        if changed:
+            doc.setdefault("filled", []).append(datetime.now(timezone.utc).isoformat(timespec="seconds"))
+            path.write_text(json.dumps(doc, indent=1) + "\n")
+            print(f"filled {path.relative_to(ROOT)}: {changed} values")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", help="the UTC date whose 00:00 UTC to save (default: today)")
     ap.add_argument("--force", action="store_true", help="overwrite an existing file")
+    ap.add_argument("--fill-days", type=int, default=6, help="how many earlier evenings to re-check for gaps (0 to skip)")
     a = ap.parse_args()
     day = datetime.strptime(a.date, "%Y-%m-%d").date() if a.date else datetime.now(timezone.utc).date()
-    valid = datetime(day.year, day.month, day.day, tzinfo=timezone.utc)
-    out = ROOT / "data" / "archive" / f"{day:%Y}" / f"{day:%m}" / f"{day:%Y-%m-%d}.json"
-    if out.exists() and not a.force:
-        print(f"{out.relative_to(ROOT)} exists; nothing to do.")
-        return
     cache = Path(tempfile.mkdtemp(prefix="tf-archive-"))
     try:
-        # A station that can't be reached costs only its own reading, never the night: the forecasts
-        # are the part NOAA deletes, so they are always saved. Missing readings are filled in later.
-        obs = {}
-        for n, (st, _, _) in CITIES.items():
-            try:
-                obs[n] = with_retries(f"reading {st}", lambda st=st: observed(st, valid))
-            except Exception as e:
-                obs[n] = None
-                print(f"  reading {st}: gave up for now: {e}", file=sys.stderr)
-        rows, versions = [], {}
-        for lead in LEADS:
-            run = valid - timedelta(days=lead)
-            fxx = lead * 24
-            got = {}
-            for model in ("aigfs", "gfs"):
-                try:
-                    got[model] = with_retries(f"{model} {run:%Y%m%d%H} f{fxx}", lambda m=model: forecast(m, run, fxx, cache))
-                except Exception as e:
-                    got[model] = {}
-                    print(f"  {model} {run:%Y%m%d%H} f{fxx}: gave up: {e}", file=sys.stderr)
-            try:
-                versions[f"{run:%Y-%m-%d}"] = with_retries("AIGFS version", lambda: aigfs_version(run))
-            except Exception:
-                versions[f"{run:%Y-%m-%d}"] = "unknown"
-            for name in CITIES:
-                rows.append({
-                    "city": name, "valid": valid.isoformat(), "lead_days": lead, "run": run.isoformat(),
-                    "aigfs": got["aigfs"].get(name), "gfs": got["gfs"].get(name), "observed": obs[name],
-                    "aigfs_version": versions[f"{run:%Y-%m-%d}"],
-                })
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps({
-            "saved": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            "source": "NOAA / National Weather Service: AIGFS (NOMADS), GFS (AWS open data), station readings (NWS API). Public domain.",
-            "rows": rows,
-        }, indent=1) + "\n")
-        missing = sum(1 for r in rows if r["aigfs"] is None or r["gfs"] is None or r["observed"] is None)
-        print(f"saved {out.relative_to(ROOT)}: {len(rows)} rows, {missing} incomplete")
+        save_evening(day, a.force, cache)
+        if a.fill_days and not a.date:
+            fill_recent(day, a.fill_days, cache)
     finally:
         shutil.rmtree(cache, ignore_errors=True)
 

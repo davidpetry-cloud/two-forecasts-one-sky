@@ -642,6 +642,15 @@
     var b = e.target.closest(".search__hit");
     if (b && renderSearch.res) goTo(renderSearch.res[Number(b.dataset.i)].go);
   });
+  // How fresh the data is, so a stalled archive shows on the page itself.
+  (function () {
+    var el = $("data-status"); if (!el || !VALIDS.length) return;
+    var lastValid = new Date(VALIDS[VALIDS.length - 1]);
+    var lastName = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(lastValid.getTime() - 86400000));
+    var daysOld = Math.floor((Date.now() - lastValid.getTime()) / 86400000);
+    el.textContent = "Saved through the evening of " + lastName + ". A new evening is added each night." +
+      (daysOld > 2 ? " No evening has been added for " + daysOld + " days, so the nightly archive may need a look." : "");
+  })();
   themeLabel();
   showResult(false);
   renderUnits();
