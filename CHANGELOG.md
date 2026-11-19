@@ -1,5 +1,11 @@
 # What's new
 
+## 0.9 (19 November 2026), still a prototype
+
+- **Spanish** (`/es/`): the whole activity and the lesson plan, in neutral US Spanish with "tú". Translated and checked by Claude, an AI model, and labeled that way on the page; not yet reviewed by a fluent person. One script serves both languages, so they can't drift apart.
+- **Language links**: "Español" and "English" in each page's header, and alternate-language links for search engines. No automatic switching.
+- **Long words wrap**: small headings, lists, outcome tags and the record strip no longer push the page sideways at 200% text (Spanish words run longer).
+
 ## 0.8 (19 November 2026), still a prototype
 
 - **A lesson plan for educators** (`educators.html`): 30 to 45 minutes in five timed steps, what to listen for, discussion questions, and notes on access and care. It prints on two and a half pages. Linked from "Before you start", About and methods, and the footer.

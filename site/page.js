@@ -2,12 +2,16 @@
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
+  var ES = (document.documentElement.lang || "").slice(0, 2) === "es";
   function themeNow() {
     var t = document.documentElement.getAttribute("data-theme");
     if (t) return t;
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
-  function themeLabel() { $("theme").textContent = themeNow() === "dark" ? "Switch to light theme" : "Switch to dark theme"; }
+  function themeLabel() {
+    var dark = themeNow() === "dark";
+    $("theme").textContent = ES ? (dark ? "Cambiar a tema claro" : "Cambiar a tema oscuro") : (dark ? "Switch to light theme" : "Switch to dark theme");
+  }
   $("theme").addEventListener("click", function () {
     var next = themeNow() === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);

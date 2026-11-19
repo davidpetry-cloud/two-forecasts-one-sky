@@ -387,7 +387,7 @@ h3 .ico{width:24px;height:24px;vertical-align:-4px;margin-right:var(--s-2)}
 @media (min-width:40em){.kpi + .kpi{padding-left:var(--s-4);border-left:1px solid var(--header-edge)}}
 .kpi dt{font-size:var(--fs-sm);color:var(--header-sub);font-weight:600;border:0;padding:0;max-width:none}
 .kpi dd{margin:var(--s-1) 0 0;font-family:var(--display);font-weight:600;font-size:var(--fs-xl);line-height:1.1;color:var(--on-dark);font-variant-numeric:proportional-nums}
-@media (max-width:30em){.start-row{margin-top:var(--s-4)}.kpis{margin-top:var(--s-5);grid-template-columns:1fr 1fr}.kpi dd{font-size:var(--fs-lg)}}
+@media (max-width:30em){.start-row{margin-top:var(--s-4)}.kpis{margin-top:var(--s-5);grid-template-columns:repeat(auto-fit,minmax(min(100%,8rem),1fr))}.kpi dd{font-size:var(--fs-lg)}}
 @media print{.start-row{display:none}}
 @media (forced-colors: active){.start{border:2px solid ButtonText}}
 
@@ -482,3 +482,16 @@ button.start{font:inherit;font-weight:700;font-size:var(--fs-md);cursor:pointer}
   .plan-page p,.plan-page li,.plan-page dd{max-width:none}
   .plan-page .band{grid-template-columns:1fr}
 }
+
+/* language link (audit P14, 19 November 2026): a plain link in the header, named in its own language */
+.lang{display:inline-flex;align-items:center;min-height:44px;padding:var(--s-2) var(--s-4);border-radius:var(--r-pill);border:2px solid var(--on-dark);color:var(--on-dark);font-weight:600;text-decoration:none}
+.lang:hover{background:color-mix(in oklch,var(--on-dark) 14%,transparent)}
+.translation-note{margin-bottom:var(--s-4);padding-left:var(--s-4);border-left:3px solid var(--edge)}
+.translation-note a{color:var(--link);text-underline-offset:3px}
+@media print{.lang{display:none}}
+@media (forced-colors: active){.lang{border:2px solid ButtonText}}
+/* long words (Spanish runs longer) break and hyphenate rather than push the page sideways at 200% text */
+h3,h4,.sc-cases li,.finding__dek,.place__dl dd{overflow-wrap:break-word;hyphens:auto}
+.sc-tag{white-space:normal;max-width:100%}
+
+.kpi{min-width:0}.kpi dt,.kpi dd{overflow-wrap:break-word;hyphens:auto}

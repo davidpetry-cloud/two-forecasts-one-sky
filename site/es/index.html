@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es" data-root="../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dos pronósticos, un cielo (prototipo)</title>
+<meta name="description" content="Una herramienta de aprendizaje en prototipo: el modelo meteorológico de IA de la NOAA y su modelo físico, comparados con lo que midieron las estaciones meteorológicas. Adivina, compara y toma tus propias decisiones. Datos abiertos, actualizados cada noche.">
+<link rel="canonical" href="https://davidpetry-cloud.github.io/two-forecasts-one-sky/es/">
+<link rel="alternate" hreflang="en" href="https://davidpetry-cloud.github.io/two-forecasts-one-sky/">
+<link rel="alternate" hreflang="es" href="https://davidpetry-cloud.github.io/two-forecasts-one-sky/es/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="theme-color" content="#0E0F12">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_US">
+<meta property="og:site_name" content="Two Forecasts, One Sky">
+<meta property="og:title" content="Dos pronósticos, un cielo (prototipo)">
+<meta property="og:description" content="Una herramienta de aprendizaje en prototipo: el modelo meteorológico de IA de la NOAA y su modelo físico, comparados con lo que midieron las estaciones meteorológicas. Datos abiertos, actualizados cada noche.">
+<meta property="og:url" content="https://davidpetry-cloud.github.io/two-forecasts-one-sky/es/">
+<meta property="og:image" content="https://davidpetry-cloud.github.io/two-forecasts-one-sky/social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Two Forecasts, One Sky, un prototipo: el modelo meteorológico de IA de la NOAA y su modelo físico, comparados con lo que midieron las estaciones. Sin afiliación con la NOAA.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../style.css">
+<script src="../theme.js"></script>
+</head>
+<body>
+<!-- Íconos de navegación: dibujos de línea, un solo grosor, del color del texto. Se dibujan una vez y se reusan con <use>. -->
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-pick" viewBox="0 0 24 24"><path d="M12 21.5s-6.5-6-6.5-11.5a6.5 6.5 0 0 1 13 0c0 5.5-6.5 11.5-6.5 11.5Z"/><circle cx="12" cy="10" r="2.4"/></symbol>
+  <symbol id="i-guess" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M9.4 9.3a2.7 2.7 0 1 1 3.9 2.4c-.8.4-1.3 1-1.3 1.9v.6"/><path d="M12 17.4v.1"/></symbol>
+  <symbol id="i-result" viewBox="0 0 24 24"><path d="M1.8 12S5.5 5.2 12 5.2 22.2 12 22.2 12 18.5 18.8 12 18.8 1.8 12 1.8 12Z"/><circle cx="12" cy="12" r="3.2"/></symbol>
+  <symbol id="i-bigger" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1.5"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></symbol>
+  <symbol id="i-rain" viewBox="0 0 24 24"><path d="M12 2.5S5.5 9.8 5.5 15a6.5 6.5 0 0 0 13 0C18.5 9.8 12 2.5 12 2.5Z"/><path d="M9 15.5a3 3 0 0 0 3 3"/></symbol>
+  <symbol id="i-scen" viewBox="0 0 24 24"><path d="M12 2.5v19M12 5h6.5l2.5 2.5-2.5 2.5H12M12 12.5H5.5L3 15l2.5 2.5H12M8.5 21.5h7"/></symbol>
+  <symbol id="i-about" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.4v.1"/></symbol>
+  <symbol id="i-words" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.4 3 4.8v14c4-.4 7 .2 9 1.7 2-1.5 5-2.1 9-1.7v-14c-4-.4-7 .2-9 1.7ZM12 6.5v14"/></symbol>
+  <symbol id="i-reflect" viewBox="0 0 24 24"><path d="M4 11.5c0-4.1 3.6-7.5 8-7.5s8 3.4 8 7.5-3.6 7.5-8 7.5c-1 0-2-.2-2.9-.5L4.5 20.5l1.3-3.9A7.2 7.2 0 0 1 4 11.5Z"/><path d="M9 11.5h.01M12 11.5h.01M15 11.5h.01"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
+</svg>
+<a class="skip" href="#content">Saltar a la actividad</a>
+<noscript><p class="noscript">Esta página necesita JavaScript para mostrar sus casos y gráficas. Los datos también están disponibles como <a href="../data/cases.csv">archivo CSV</a> (en inglés).</p></noscript>
+<header class="top" id="top">
+  <div class="top-row">
+    <span class="tag">Versión <span class="app-version">0.9</span> · se actualiza cada noche</span>
+    <div class="top-controls">
+      <a class="lang" href="../" hreflang="en" lang="en">English</a>
+      <div class="units" role="group" aria-label="Unidades: °F con pulgadas de lluvia, o °C con milímetros">
+        <button type="button" class="unit-btn" data-unit="F" aria-pressed="true">°F</button>
+        <button type="button" class="unit-btn" data-unit="C" aria-pressed="false">°C</button>
+      </div>
+      <button type="button" class="theme" id="theme">Cambiar a tema oscuro</button>
+    </div>
+  </div>
+  <div class="top-inner">
+    <p class="eyebrow"><span class="eyebrow__pill">Prototipo</span> <span class="eyebrow__note">El diseño todavía está en desarrollo.</span></p>
+    <h1>Dos pronósticos, un cielo</h1>
+    <p class="sub">La NOAA ahora usa un <a class="term" href="#g-ai">modelo meteorológico de IA</a> junto a su <a class="term" href="#g-phys">modelo físico</a>. Adivina cuál se acercó más y luego mira qué pasó en realidad.</p>
+    <div class="start-row">
+      <a class="start" href="#h-pick">Empieza con un caso <span aria-hidden="true">↓</span></a>
+      <span class="start-note">Unos 10 minutos · sin registrarte</span>
+    </div>
+    <dl class="kpis" id="kpis" aria-label="En el registro hasta ahora"></dl>
+  </div>
+</header>
+
+<main id="content" tabindex="-1">
+  <div class="band band--notice">
+    <div class="mark"><span class="label">Antes de empezar</span></div>
+    <div class="body">
+      <p class="notice translation-note" id="m-translation"><b>Sobre esta traducción:</b> la tradujo y la revisó Claude, un modelo de IA. Todavía no la ha revisado una persona que hable español con fluidez, así que puede haber errores. Si ves alguno, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">avísanos</a>.</p>
+      <p class="notice">Esto es un prototipo para aprender, no un pronóstico. Para pronósticos y avisos reales, visita <a href="https://www.weather.gov/" hreflang="en">weather.gov</a> o el servicio meteorológico de tu localidad. El modelo de IA es nuevo: mira <a href="#f-limits">lo que aún no puede hacer</a>. Toma unos 10 minutos. ¿Lo vas a usar en clase? Hay un <a href="educators.html">plan de clase</a>.</p>
+      <div class="outcomes">
+        <h2 class="toc__h" id="h-outcomes">Lo que podrás hacer</h2>
+        <ol class="outcomes__list">
+          <li>Comparar un pronóstico de IA y uno físico con lo que midió una estación meteorológica.</li>
+          <li>Explicar por qué un caso, o una tarde, no basta para juzgar un pronóstico.</li>
+          <li>Elegir una regla para actuar según los pronósticos, y decir qué equilibra: falsas alarmas contra sorpresas.</li>
+        </ol>
+      </div>
+      <div class="search" role="search">
+        <label for="q" class="search__label"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>Buscar en esta página</label>
+        <input type="search" id="q" class="search__input" autocomplete="off" spellcheck="false" placeholder="Un lugar, una fecha, una palabra…" aria-describedby="q-status">
+        <p class="hint search__status" id="q-status" role="status">Prueba "Central Park", "4 de noviembre", "sesgo" o "agricultor".</p>
+        <ul class="search__results" id="q-results"></ul>
+      </div>
+      <nav class="toc" aria-label="En esta página">
+        <h2 class="toc__h">En esta página</h2>
+        <ol>
+          <li><a href="#h-pick"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-pick"/></svg><span class="toc__n">01</span> Elige un caso</a></li>
+          <li><a href="#h-guess"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-guess"/></svg><span class="toc__n">02</span> Adivina primero</a></li>
+          <li><a href="#h-result"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-result"/></svg><span class="toc__n">03</span> Qué pasó</a></li>
+          <li><a href="#h-bigger"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-bigger"/></svg><span class="toc__n">—</span> El panorama general</a></li>
+          <li><a href="#h-rain"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-rain"/></svg><span class="toc__n">—</span> Lluvia</a></li>
+          <li><a href="#h-scen"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-scen"/></svg><span class="toc__n">04</span> Arma un escenario</a></li>
+          <li><a href="#h-reflect"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-reflect"/></svg><span class="toc__n">—</span> Antes de irte</a></li>
+          <li><a href="#h-about"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-about"/></svg><span class="toc__n">—</span> Acerca de y métodos</a></li>
+          <li><a href="#h-words"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-words"/></svg><span class="toc__n">—</span> Palabras usadas aquí</a></li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <section class="band" aria-labelledby="h-pick">
+    <div class="mark" aria-hidden="true"><span class="step-num">01</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-pick"/></svg></div>
+    <div class="body">
+      <h2 id="h-pick">Elige un caso</h2>
+      <p class="sense">Elige un lugar, una tarde y con cuánta anticipación se hizo el pronóstico.</p>
+      <fieldset>
+        <legend>Lugar</legend>
+        <div class="choices" id="cities"></div>
+      </fieldset>
+      <fieldset aria-describedby="evening-help">
+        <legend>Tarde</legend>
+        <p class="hint hint--legend" id="evening-help">Cada tarde es el mismo momento en todas partes: cerca de las 7 p.m. en Nueva York y las 4 p.m. en Seattle.</p>
+        <div class="choices" id="days"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Con cuánta anticipación se hizo el pronóstico</legend>
+        <div class="choices" id="leads"></div>
+      </fieldset>
+      <p class="next"><a href="#h-guess">Sigue: 02 Adivina primero ↓</a> <span aria-hidden="true">·</span> <a href="#top">Volver arriba ↑</a></p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-guess">
+    <div class="mark" aria-hidden="true"><span class="step-num">02</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-guess"/></svg></div>
+    <div class="body">
+      <h2 id="h-guess">Adivina primero</h2>
+      <p class="gloss">El <b>modelo de IA</b> (AIGFS) aprendió de muchos años de tiempo pasado. El <b>modelo físico</b> (GFS) se basa en las leyes del movimiento, el calor y la humedad.</p>
+      <p class="sense">¿Qué pronóstico se acercó más a la temperatura que se midió?</p>
+      <fieldset>
+        <legend class="sr">Tu respuesta</legend>
+        <div class="choices" id="guesses"></div>
+      </fieldset>
+      <div class="actions">
+        <button type="button" class="btn" id="reveal" aria-expanded="false" aria-controls="result-body">Mostrar qué pasó</button>
+        <button type="button" class="btn quiet" id="again">Empezar de nuevo</button>
+      </div>
+      <p class="hint" id="hint" role="status"></p>
+      <p class="next"><a href="#h-result">Sigue: 03 Qué pasó ↓</a> <span aria-hidden="true">·</span> <a href="#top">Volver arriba ↑</a></p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-result" id="result">
+    <div class="mark" aria-hidden="true"><span class="step-num">03</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-result"/></svg></div>
+    <div class="body">
+      <h2 id="h-result" tabindex="-1">Qué pasó</h2>
+      <div id="result-body"></div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-bigger">
+    <div class="mark" aria-hidden="true"><span class="label">Todos los casos</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-bigger"/></svg></div>
+    <div class="body bigger">
+      <h2 id="h-bigger">El panorama general</h2>
+      <p class="sense" id="bigger-sense">Un solo caso dice poco. Aquí están todos los casos con medición.</p>
+      <div class="wide" id="bigger"></div>
+      <p class="next"><a href="#h-scen">Sigue: 04 Arma un escenario ↓</a> <span aria-hidden="true">·</span> <a href="#top">Volver arriba ↑</a></p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-scen" id="scenario">
+    <div class="mark" aria-hidden="true"><span class="step-num">04</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-scen"/></svg></div>
+    <div class="body">
+      <h2 id="h-scen">Arma un escenario</h2>
+      <p class="sense">Convierte un pronóstico en una decisión. Responde seis preguntas. Los resultados cambian a medida que respondes.</p>
+      <p class="notice">Práctica con pronósticos reales del pasado, no consejos para decisiones reales.</p>
+      <ol class="w-steps">
+        <li><fieldset><legend>¿<span class="w">Quién</span> eres?</legend><div class="choices" id="sc-who"></div></fieldset></li>
+        <li><fieldset><legend>¿<span class="w">Qué</span> tiempo te importa?</legend><div class="choices" id="sc-what"></div></fieldset></li>
+        <li><fieldset><legend>¿<span class="w">Dónde</span> estás?</legend><div class="choices" id="sc-where"></div></fieldset></li>
+        <li><fieldset><legend>¿<span class="w">Cuándo</span> tienes que decidir?</legend><div class="choices" id="sc-when"></div></fieldset></li>
+        <li><fieldset><legend>¿<span class="w">Por qué</span> importa? ¿Qué es peor para ti?</legend><div class="choices" id="sc-why"></div></fieldset></li>
+        <li><fieldset><legend>¿<span class="w">Cómo</span> vas a usar los pronósticos?</legend><div class="choices" id="sc-how"></div></fieldset></li>
+      </ol>
+      <a class="sc-live" id="sc-live" href="#sc-h"></a>
+      <div id="sc-out" class="sc-out wide"></div>
+      <p class="next"><a href="#h-reflect">Sigue: antes de irte ↓</a> <span aria-hidden="true">·</span> <a href="#top">Volver arriba ↑</a></p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-reflect" id="reflect">
+    <div class="mark" aria-hidden="true"><span class="label">Una pausa</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-reflect"/></svg></div>
+    <div class="body">
+      <h2 id="h-reflect">Antes de irte</h2>
+      <p class="sense">Una pregunta para pensar. No hay que escribir nada, y nada se guarda.</p>
+      <p class="reflect-q">Piensa en un pronóstico en el que confías: una aplicación, un meteorólogo de la tele, una persona del trabajo. ¿Qué te gustaría saber de él antes de confiar más, o menos?</p>
+      <details class="sc-cases reflect-ideas">
+        <summary>Ideas, si no sabes por dónde empezar</summary>
+        <ul>
+          <li>¿Cuántas veces ha acertado donde tú estás, no solo en promedio?</li>
+          <li>¿Dice qué tan seguro está?</li>
+          <li>Cuando se equivoca, ¿hacia dónde se inclina: más frío, más calor, una falsa alarma, una sorpresa?</li>
+          <li>¿Quién lo revisa, y te avisan cuando cambia?</li>
+        </ul>
+      </details>
+      <h3 id="h-lookback">Mira hacia atrás</h3>
+      <p>Al principio te propusiste comparar dos pronósticos con una medición, explicar por qué un caso dice poco y elegir una regla para actuar según los pronósticos. Si alguna de esas cosas todavía no te queda clara, <a href="#h-pick">prueba otro lugar en el paso 01</a> u <a href="#h-scen">otra regla en el paso 04</a>.</p>
+      <p class="next end">Eso es toda la actividad. Tómate un descanso; cada noche se agrega una tarde nueva por si quieres volver otro día. <a href="#top">Volver arriba ↑</a></p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-about" id="about">
+    <div class="mark" aria-hidden="true"><span class="label">Acerca de</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-about"/></svg></div>
+    <div class="body about">
+      <h2 id="h-about">Acerca de y métodos</h2>
+      <p class="sense">Cómo funciona la comparación, lo que puede y no puede decirte, y de dónde sale todo.</p>
+
+      <h3 id="m-data">Los datos</h3>
+      <p>Dos pronósticos de la NOAA, la Administración Nacional Oceánica y Atmosférica de EE. UU.: su modelo de IA (AIGFS, versión 1.1) y su modelo físico (GFS). Los dos pronostican la temperatura a 2 metros sobre el suelo, y leemos cada uno en el punto de la cuadrícula más cercano a seis estaciones meteorológicas. Las mediciones vienen de los reportes de esas estaciones. Un proceso nocturno guarda cada tarde, porque la NOAA conserva los pronósticos de IA solo unos 10 días.</p>
+
+      <h3 id="m-compare">Cómo se compara un caso</h3>
+      <p>Un caso es un lugar, una tarde y una anticipación: 3, 5 o 7 días. Cada tarde es a las 00:00 UTC, cerca de las 7 p.m. en Nueva York y las 4 p.m. en Seattle. El error de un pronóstico es cuánto se alejó de la medición de la estación. Los pronósticos se muestran en grados enteros, porque son estimaciones; los errores y los promedios llevan un decimal.</p>
+
+      <h3 id="m-winner">Cómo decidimos quién ganó</h3>
+      <p>Solo decimos que a un modelo le fue mejor cuando su ventaja promedio es más del doble de su error estándar, una regla práctica común para decir "mayor que los altibajos de un día a otro". Si no, decimos que hay empate técnico. Es una guía aproximada: los casos de la misma tarde comparten el mismo tiempo, así que no son del todo independientes. Los conteos siempre van con su porcentaje, como "31 de 96 (32%)".</p>
+
+      <h3 id="m-rain">Lluvia</h3>
+      <p>Desde el 19 de noviembre de 2026 el archivo también guarda la lluvia: el total de cada modelo para las 6 horas que terminan a las 00:00 UTC, y lo que midió cada estación en esas mismas 6 horas. Una estación que reporta que no llovió mientras su pluviómetro funciona cuenta como seco; un reporte dañado o faltante cuenta como faltante, nunca como seco. "Lluvia" quiere decir al menos 0.01 pulgadas, la cantidad medible del Servicio Meteorológico Nacional. Las tardes anteriores se completaron donde las fuentes aún las tenían: reportes de estaciones de las últimas dos semanas, pronósticos del modelo físico de su archivo largo, y pronósticos del modelo de IA solo de las corridas que la NOAA aún guardaba (unos 10 días). Por eso hay menos casos con lluvia que con temperatura.</p>
+      <p>La lluvia aparece en tres lugares: debajo de cada caso en el paso 03, como tabla en el panorama general y como opción en el escenario. El pronóstico de lluvia de un modelo cuenta como "lluvia" cuando da al menos 0.01 pulgadas. Como una tarde lluviosa cuenta hasta tres veces (una por cada anticipación), no diremos que a un modelo le va mejor con la lluvia hasta tener al menos 10 combinaciones de lugar y tarde con lluvia, y aun así solo con la misma regla del doble del error estándar.</p>
+
+      <h3 id="m-limits">Lo que esto no puede decirte</h3>
+      <p>Seis estaciones y unas cuantas semanas de tardes son una muestra pequeña, y los hallazgos cambiarán a medida que crezca el registro. Un punto de la cuadrícula puede no captar lo que hace especial a un lugar, como un parque en la ciudad o un valle. Esto es una herramienta de aprendizaje, no un pronóstico: para pronósticos y avisos reales, visita <a href="https://www.weather.gov/" hreflang="en">weather.gov</a>. Mira también <a href="#f-limits">lo que el modelo de IA aún no puede hacer</a>.</p>
+
+      <h3 id="m-updates">Actualizaciones</h3>
+      <p>Cada noche se agrega una tarde nueva. Si una fuente no responde, el proceso guarda lo que puede y lo vuelve a intentar las noches siguientes; un dato que no consigue se muestra como faltante. El pie de página dice qué tan recientes son los datos.</p>
+
+      <h3 id="m-access">Accesibilidad</h3>
+      <p>Buscamos cumplir con WCAG 2.2, nivel AA. La página se revisó en tema claro y oscuro, en pantallas angostas de teléfono, con el texto ampliado al 200%, solo con el teclado, con VoiceOver y con personas reales. Las gráficas tienen descripciones habladas y tablas al lado, y el color nunca es la única pista. El modo de alto contraste de Windows se revisó en una simulación, en claro y oscuro, pero todavía no en Windows mismo. Si algo no te funciona, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">avísanos</a>.</p>
+
+      <h3 id="m-privacy">Privacidad</h3>
+      <p>Sin cuentas, sin cookies, sin rastreo, y nada se carga de otros sitios. Tus preferencias de tema y unidades se guardan en tu propio navegador para que la página las recuerde; nada de lo que eliges o escribes se envía a ninguna parte.</p>
+
+      <h3 id="m-sources">Fuentes, código y datos</h3>
+      <ul class="about__links">
+        <li><a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/docs/protocol.md" hreflang="en">Protocolo</a> (en inglés): reglas de datos, leyes, seguridad y privacidad</li>
+        <li><a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky" hreflang="en">Código e historial</a> en GitHub (licencia MIT; los textos, bajo CC BY 4.0)</li>
+        <li>Descarga los datos: <a href="../data/cases.csv" download>CSV</a> o <a href="../data/cases.json" download>JSON</a> (CC0: libres para cualquier uso; los nombres de las columnas están en inglés)</li>
+        <li><a href="educators.html">Plan de clase para docentes</a> (de 30 a 45 minutos, para imprimir, CC BY 4.0)</li>
+        <li><a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md" hreflang="en">Novedades</a> y <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/docs/roadmap.md" hreflang="en">lo que viene</a> (en inglés)</li>
+      </ul>
+
+      <h3 id="m-cite">Cómo citar</h3>
+      <p class="cite">Petry, D. (2026). <i>Two Forecasts, One Sky</i> [Dos pronósticos, un cielo] (Versión <span class="app-version">0.9</span>) [Herramienta de aprendizaje en prototipo y datos abiertos]. https://davidpetry-cloud.github.io/two-forecasts-one-sky/es/</p>
+      <p class="next"><a href="#top">Volver arriba ↑</a></p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-words">
+    <div class="mark" aria-hidden="true"><span class="label">Glosario</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-words"/></svg></div>
+    <div class="body">
+      <h2 id="h-words">Palabras usadas aquí</h2>
+      <dl>
+        <dt id="g-forecast">Pronóstico</dt><dd>Una estimación de lo que hará el tiempo. Puede fallar por unos grados, así que esta página redondea los pronósticos a grados enteros.</dd>
+        <dt id="g-model">Modelo</dt><dd>Un programa de computadora que calcula lo que hará el tiempo.</dd>
+        <dt id="g-ai">Modelo de IA (AIGFS)</dt><dd>El modelo de la NOAA que aprendió de muchos años de tiempo pasado. Usa una fracción mínima de la computación que necesita el modelo físico.</dd>
+        <dt id="g-phys">Modelo físico (GFS)</dt><dd>El modelo de la NOAA basado en las leyes del movimiento, el calor y la humedad.</dd>
+        <dt id="g-miss">Error</dt><dd>Cuánto se alejó un pronóstico de lo que midió el termómetro.</dd>
+        <dt id="g-cold">Tender a frío</dt><dd>Pronosticar temperaturas más bajas de las que hubo, una y otra vez. Los científicos llaman <i>sesgo</i> a una tendencia así.</dd>
+        <dt id="g-rule">Regla</dt><dd>Lo que decides hacer con los pronósticos, como "actuar solo si los dos modelos coinciden".</dd>
+        <dt id="g-alarm">Falsa alarma</dt><dd>Actuaste, y ese clima no llegó.</dd>
+        <dt id="g-rain">Lluvia medible</dt><dd>Al menos 0.01 pulgadas (0.25 mm) en las 6 horas. Si es menos se llama <i>trazas</i>, y cuenta como seco.</dd>
+        <dt id="g-caught">Te tomó por sorpresa</dt><dd>Ese clima llegó, y no habías actuado.</dd>
+        <dt id="g-even">Empate técnico</dt><dd>La diferencia entre los dos modelos es menor que los altibajos de un día a otro, así que todavía no se puede decir cuál es mejor.</dd>
+      </dl>
+      <p class="next"><a href="#top">Volver arriba ↑</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="band band--foot">
+  <div class="mark" aria-hidden="true"><span class="label">Fuentes</span></div>
+  <div class="body">
+    <p>Datos: NOAA / Servicio Meteorológico Nacional (NWS). Pronósticos: AIGFS v1.1 y GFS de <a href="https://nomads.ncep.noaa.gov/" hreflang="en">NOMADS</a>, las corridas de las 00:00 UTC, temperatura a 2 m en el punto de la cuadrícula más cercano. Mediciones: lecturas de las estaciones de la <a href="https://www.weather.gov/documentation/services-web-api" hreflang="en">API del NWS</a>, las más cercanas a las 00:00 UTC. Lluvia: el total de 6 horas de cada modelo, y la lluvia del reporte de las 00:00 UTC de cada estación, del <a href="https://aviationweather.gov/data/api/" hreflang="en">Centro Meteorológico de Aviación de la NOAA</a>. La versión del modelo de IA: <a href="https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf" hreflang="en">Aviso de cambio de servicio 26-68 del NWS</a> (en inglés).</p>
+    <p id="data-status"></p>
+    <p class="foot-links"><a href="#h-about">Acerca de y métodos</a> <span aria-hidden="true">·</span> <a href="#m-access">Accesibilidad</a> <span aria-hidden="true">·</span> <a href="#m-privacy">Privacidad</a> <span aria-hidden="true">·</span> <a href="educators.html">Para docentes</a> <span aria-hidden="true">·</span> <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">Reporta un problema o sugiere una idea</a> <span aria-hidden="true">·</span> Versión <span class="app-version">0.9</span>, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md" hreflang="en">novedades</a></p>
+    <p>Sin afiliación con la NOAA ni respaldo de ella. El material del NWS no tiene derechos de autor (17 U.S.C. § 403). Los errores y promedios son nuestro propio análisis.</p>
+    <p>Diseño inspirado en el sitio web del <a href="https://www.media.mit.edu/" hreflang="en">MIT Media Lab</a> y su uso del espacio. Gracias. Sin afiliación con el MIT.</p>
+  </div>
+</footer>
+<div id="announce" class="sr" aria-live="polite"></div>
+<script src="../data.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>
