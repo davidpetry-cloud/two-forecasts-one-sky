@@ -4,11 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Two Forecasts, One Sky</title>
+<meta name="description" content="A learning tool: NOAA's AI weather model and its physics model, checked against what weather stations measured. Guess, see, and make your own forecast decisions. Open data, updated nightly.">
+<link rel="canonical" href="https://davidpetry-cloud.github.io/two-forecasts-one-sky/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#0E0F12">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Two Forecasts, One Sky">
+<meta property="og:title" content="Two Forecasts, One Sky">
+<meta property="og:description" content="A learning tool: NOAA's AI weather model and its physics model, checked against what weather stations measured. Guess, see, and make your own forecast decisions. Open data, updated nightly.">
+<meta property="og:url" content="https://davidpetry-cloud.github.io/two-forecasts-one-sky/">
+<meta property="og:image" content="https://davidpetry-cloud.github.io/two-forecasts-one-sky/social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Two Forecasts, One Sky: NOAA's AI weather model and its physics model, checked against what weather stations measured. Not affiliated with NOAA.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="style.css">
 <script src="theme.js"></script>
 </head>
 <body>
 <a class="skip" href="#content">Skip to the activity</a>
+<noscript><p class="noscript">This page needs JavaScript to show its cases and charts. The data is also available as a <a href="data/cases.csv">CSV file</a>.</p></noscript>
 <header class="top" id="top">
   <div class="top-row">
     <span class="tag">Prototype · 5 November 2026</span>
@@ -45,6 +61,7 @@
           <li><a href="#h-result"><span class="toc__n">03</span> What happened</a></li>
           <li><a href="#h-bigger"><span class="toc__n">—</span> The bigger picture</a></li>
           <li><a href="#h-scen"><span class="toc__n">04</span> Make a scenario</a></li>
+          <li><a href="#h-about"><span class="toc__n">—</span> About and methods</a></li>
           <li><a href="#h-words"><span class="toc__n">—</span> Words used here</a></li>
         </ol>
       </nav>
@@ -130,6 +147,50 @@
     </div>
   </section>
 
+  <section class="band" aria-labelledby="h-about" id="about">
+    <div class="mark" aria-hidden="true"><span class="label">About</span></div>
+    <div class="body about">
+      <h2 id="h-about">About and methods</h2>
+      <p class="sense">How the comparison works, what it can and can't tell you, and where everything comes from.</p>
+
+      <h3 id="m-data">The data</h3>
+      <p>Two forecasts from NOAA, the US National Oceanic and Atmospheric Administration: its AI model (AIGFS, version 1.1) and its physics model (GFS). Both forecast the temperature 2 meters above the ground, and we read each at the grid point nearest six weather stations. The measurements come from those stations' own reports. A nightly job saves each evening, because NOAA keeps the AI forecasts for only about 10 days.</p>
+
+      <h3 id="m-compare">How a case is compared</h3>
+      <p>A case is one place, one evening and one forecast length: 3, 5 or 7 days ahead. Each evening is 00:00 UTC, about 7 p.m. in New York and 4 p.m. in Seattle. A forecast's miss is how far it was from the station's reading. Forecasts are shown in whole degrees, because they are estimates; misses and averages keep one decimal.</p>
+
+      <h3 id="m-winner">How we call a winner</h3>
+      <p>We only say a model did better when its average advantage is more than twice its standard error, a common rule of thumb for "bigger than the day-to-day ups and downs". Otherwise we say it's too close to call. It's a rough guide: cases on the same evening share the same weather, so they aren't fully independent. Counts always come with their share, such as "31 of 96 (32%)".</p>
+
+      <h3 id="m-rain">Rain</h3>
+      <p>Since 19 November 2026 the archive also saves rain: each model's total for the 6 hours ending at 00:00 UTC, and what each station measured in the same 6 hours. A station that reports no rain while its rain gauge works counts as dry; a broken or missing report counts as missing, never as dry. "Rain" means at least 0.01 inch, the National Weather Service's measurable amount. Rain will appear on this page once enough evenings are saved.</p>
+
+      <h3 id="m-limits">What this can't tell you</h3>
+      <p>Six stations and a few weeks of evenings are a small sample, and the findings will change as the record grows. A grid point can miss what makes a place special, such as a city park or a valley. This is a learning tool, not a forecast: for real forecasts and warnings, go to <a href="https://www.weather.gov/">weather.gov</a>. See also <a href="#f-limits">what the AI model can't do yet</a>.</p>
+
+      <h3 id="m-updates">Updates</h3>
+      <p>A new evening is added each night. If a source is down, the job saves what it can and tries again on later nights; a reading it can't get is shown as missing. The footer says how fresh the data is.</p>
+
+      <h3 id="m-access">Accessibility</h3>
+      <p>We aim for WCAG 2.2 level AA. The page has been checked in light and dark themes, at narrow phone widths, with text enlarged to 200%, with the keyboard alone and with VoiceOver, and with real people. Charts have spoken descriptions and tables beside them, and color is never the only cue. Not yet checked: Windows high-contrast mode. If something doesn't work for you, please <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">tell us</a>.</p>
+
+      <h3 id="m-privacy">Privacy</h3>
+      <p>No accounts, no cookies, no tracking, and nothing loaded from other sites. Your theme and unit choices are kept in your own browser so the page remembers them; nothing you choose or type is sent anywhere.</p>
+
+      <h3 id="m-sources">Sources, code and data</h3>
+      <ul class="about__links">
+        <li><a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/docs/protocol.md">Protocol</a>: data rules, law, safety and privacy</li>
+        <li><a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky">Code and history</a> on GitHub (MIT License; words under CC BY 4.0)</li>
+        <li>Download the data: <a href="data/cases.csv" download>CSV</a> or <a href="data/cases.json" download>JSON</a> (CC0: free to use for anything)</li>
+        <li><a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">What's new</a> and <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/docs/roadmap.md">what's next</a></li>
+      </ul>
+
+      <h3 id="m-cite">How to cite</h3>
+      <p class="cite">Petry, D. (2026). <i>Two Forecasts, One Sky</i> (Version <span class="app-version">0.4</span>) [Learning tool and open data]. https://davidpetry-cloud.github.io/two-forecasts-one-sky/</p>
+      <p class="next"><a href="#top">Back to top ↑</a></p>
+    </div>
+  </section>
+
   <section class="band" aria-labelledby="h-words">
     <div class="mark" aria-hidden="true"><span class="label">Glossary</span></div>
     <div class="body">
@@ -155,6 +216,7 @@
   <div class="body">
     <p>Data: NOAA / National Weather Service. Forecasts: AIGFS v1.1 and GFS from <a href="https://nomads.ncep.noaa.gov/">NOMADS</a>, the 00:00 UTC runs, 2 m temperature at the nearest grid point. Measurements: station readings from the <a href="https://www.weather.gov/documentation/services-web-api">NWS API</a>, nearest 00:00 UTC. The AI model's version: <a href="https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf">NWS Service Change Notice 26-68</a>.</p>
     <p id="data-status"></p>
+    <p class="foot-links"><a href="#h-about">About and methods</a> <span aria-hidden="true">·</span> <a href="#m-access">Accessibility</a> <span aria-hidden="true">·</span> <a href="#m-privacy">Privacy</a> <span aria-hidden="true">·</span> <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">Report a problem or suggest an idea</a> <span aria-hidden="true">·</span> Version <span class="app-version">0.4</span>, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">what's new</a></p>
     <p>Not affiliated with or endorsed by NOAA. NWS material is not under copyright (17 U.S.C. § 403). The misses and averages are our own analysis.</p>
     <p>Design inspired by the <a href="https://www.media.mit.edu/">MIT Media Lab</a>'s website and its use of space. Thank you. Not affiliated with MIT.</p>
   </div>

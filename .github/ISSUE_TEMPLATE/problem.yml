@@ -1,0 +1,30 @@
+name: Report a problem
+description: Something on the page doesn't work, is hard to use, or looks wrong.
+title: "Problem: "
+labels: ["problem"]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you. Please don't include personal details; this page is public.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you were doing, and what went wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+  - type: dropdown
+    id: device
+    attributes:
+      label: What were you using?
+      multiple: true
+      options: [Phone, Tablet, Laptop or desktop, Screen reader, Keyboard only, Magnification or large text, High contrast]
+  - type: input
+    id: browser
+    attributes:
+      label: Browser (if you know)
+      placeholder: e.g. Safari on iPhone, Chrome on Windows

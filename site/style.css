@@ -314,6 +314,16 @@ main > .band:first-child{border-top:0}
 .search__kind{font-size:var(--fs-sm);font-weight:600;color:var(--muted);min-width:6.5rem}
 .search__hit mark{background:none;color:inherit;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
 
+/* about and methods; footer links (19 November 2026) */
+.about h3{margin-top:var(--s-6)}
+.about__links{padding-left:1.2rem}
+.about__links li{margin-bottom:var(--s-2)}
+.about a,.foot-links a{color:var(--link);text-underline-offset:3px}
+.cite,.about__links,.foot-links,.noscript{overflow-wrap:anywhere}
+.cite{font-family:var(--mono);font-size:var(--fs-sm);padding:var(--s-3) var(--s-4);border-left:3px solid var(--line);max-width:var(--measure)}
+.foot-links{line-height:2}
+.noscript{margin:0;padding:var(--s-4);background:var(--card);border-bottom:2px solid var(--ink);color:var(--text)}
+
 /* 14: print: light, on white paper, controls hidden, content shown */
 @media print{
   :root,:root[data-theme="dark"]{color-scheme:light;--paper:#fff;--card:#fff;--band:#fff;--text:#000;--ink:#000;--muted:#333;--line:#999;--edge:#666;--header-bg:#fff;--on-dark:#000;--header-sub:#333;--obs:#000}

@@ -38,6 +38,25 @@
   var T1 = function (c) { return Math.round(inU(c)) + " " + sym(); };
   // Differences and averages keep one decimal: they are measured quantities, not forecasts.
   var D = function (dc) { return (Math.round(Math.abs(dc) * (unit === "F" ? 1.8 : 1) * 10) / 10).toFixed(1) + " " + sym(); };
+  // Compare the two models over a set of cases. A model is "better" only when its average advantage is more
+  // than twice its standard error (a common rule of thumb); otherwise it's too close to call. Cases share
+  // evenings, so they aren't fully independent: a rough guide, and the methods section says so.
+  function compareRows(rows) {
+    var ok = rows.filter(function (r) { return r.observed && typeof r.aigfs === "number" && typeof r.gfs === "number"; });
+    var n = ok.length, sum = function (xs) { return xs.reduce(function (a, v) { return a + v; }, 0); };
+    var ea = ok.map(function (r) { return Math.abs(r.aigfs - r.observed.c); });
+    var eg = ok.map(function (r) { return Math.abs(r.gfs - r.observed.c); });
+    var d = ea.map(function (v, i) { return v - eg[i]; }); // > 0: the physics model was closer
+    var md = n ? sum(d) / n : 0;
+    var sd = n > 1 ? Math.sqrt(sum(d.map(function (v) { return (v - md) * (v - md); })) / (n - 1)) : 0;
+    var se = n > 1 ? sd / Math.sqrt(n) : Infinity;
+    return {
+      n: n, ai: n ? sum(ea) / n : 0, ph: n ? sum(eg) / n : 0,
+      win: ea.filter(function (v, i) { return v < eg[i]; }).length,
+      verdict: n < 5 || Math.abs(md) <= 2 * se ? "even" : md > 0 ? "phys" : "ai"
+    };
+  }
+  var share = function (a, b, noun) { return a + " of " + b + (noun ? " " + noun : "") + (b ? " (" + Math.round(a / b * 100) + "%)" : ""); };
   var dir = function (d) { return Math.abs(d) < 0.05 ? "spot on" : (d < 0 ? "too cold" : "too warm"); };
   var dayName = function (iso, utcDay) {
     var d = new Date(iso);
@@ -176,14 +195,7 @@
   function biggerHtml() {
     var ok = DATA.filter(function (r) { return r.observed && typeof r.aigfs === "number" && typeof r.gfs === "number"; });
     var mean = function (xs) { return xs.reduce(function (s, v) { return s + v; }, 0) / xs.length; };
-    var stat = function (rows) {
-      return {
-        n: rows.length,
-        ai: mean(rows.map(function (r) { return Math.abs(r.aigfs - r.observed.c); })),
-        ph: mean(rows.map(function (r) { return Math.abs(r.gfs - r.observed.c); })),
-        win: rows.filter(function (r) { return Math.abs(r.aigfs - r.observed.c) < Math.abs(r.gfs - r.observed.c); }).length
-      };
-    };
+    var stat = compareRows;
     var byLead = LEADS.map(function (L) { return [L, stat(ok.filter(function (r) { return r.lead_days === L; }))]; });
     var all = stat(ok);
     var bias = mean(ok.map(function (r) { return r.aigfs - r.observed.c; }));
@@ -191,13 +203,13 @@
     var nyBias = mean(ny.map(function (r) { return r.aigfs - r.observed.c; }));
     var lost = DATA.length - ok.length;
     var pct = function (a, b) { return Math.round(a / b * 100); };
-    var share = all.win / all.n;
     var overall = {
-      title: share >= 0.45 && share <= 0.55 ? "Close to a coin toss" : share < 0.45 ? "The physics model came closer more often" : "The AI model came closer more often",
-      dek: "Overall the AI model came closer in " + all.win + " of " + all.n + " cases (" + pct(all.win, all.n) + "%). Its average miss was " + D(all.ai) + ", against the physics model's " + D(all.ph) + "."
+      title: all.verdict === "even" ? "Too close to call so far" : all.verdict === "phys" ? "The physics model has done better" : "The AI model has done better",
+      dek: "The AI model came closer in " + share(all.win, all.n, "cases") + ". Its average miss was " + D(all.ai) + ", against the physics model's " + D(all.ph) + ". " +
+        (all.verdict === "even" ? "That gap is smaller than the day-to-day ups and downs, so neither model is ahead yet." : "That gap is bigger than the day-to-day ups and downs.")
     };
-    var leadKind = function (st) { return Math.abs(st.ai - st.ph) < 0.1 ? "even" : st.ai < st.ph ? "ai" : "phys"; };
-    var LEAD_WORD = { even: "about even", ai: "the AI model did better", phys: "the physics model did better" };
+    var leadKind = function (st) { return st.verdict; };
+    var LEAD_WORD = { even: "too close to call", ai: "the AI model did better", phys: "the physics model did better" };
     var leadWords = byLead.map(function (p) { return p[0] + " days ahead, " + LEAD_WORD[leadKind(p[1])]; });
     var sameEverywhere = byLead.every(function (p) { return leadKind(p[1]) === leadKind(byLead[0][1]); });
     var leadsF = {
@@ -215,10 +227,10 @@
     }).filter(function (v, i, a) { return a.indexOf(v) === i; });
     var missedSource = "Missed: " + missed.slice(0, 3).join("; ") + (missed.length > 3 ? "; and " + (missed.length - 3) + " more" : "");
     var rows = byLead.map(function (p) {
-      return '<tr><th scope="row" class="grid-mark">' + p[0] + ' days</th><td class="num">' + D(p[1].ai) + '</td><td class="num">' + D(p[1].ph) + '</td><td class="num">' + p[1].win + " of " + p[1].n + "</td></tr>";
+      return '<tr><th scope="row" class="grid-mark">' + p[0] + ' days</th><td class="num">' + D(p[1].ai) + '</td><td class="num">' + D(p[1].ph) + '</td><td class="num">' + share(p[1].win, p[1].n) + "</td></tr>";
     }).join("");
     var items = byLead.map(function (p) {
-      return "<li><b>" + p[0] + " days ahead:</b> AI model missed by " + D(p[1].ai) + " on average, physics model by " + D(p[1].ph) + ". The AI model came closer in " + p[1].win + " of " + p[1].n + ".</li>";
+      return "<li><b>" + p[0] + " days ahead:</b> AI model missed by " + D(p[1].ai) + " on average, physics model by " + D(p[1].ph) + ". The AI model came closer in " + share(p[1].win, p[1].n) + ".</li>";
     }).join("");
     // Findings as cards, after the Media Lab's research cards: a glyph, a title, one line, and where it comes from.
     var finding = function (glyph, title, dek, source, id, tryIt) {
@@ -239,8 +251,8 @@
     return '<table class="hairgrid"><caption>Average miss, by how far ahead the forecast was made</caption>' +
       '<thead><tr><th scope="col" class="grid-mark">How far ahead</th><th scope="col"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 48 24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--ai)" stroke-width="3"/></svg></span><span class="ai-text">AI model</span></th>' +
       '<th scope="col"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 48 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="var(--phys)" stroke-width="3"/></svg></span><span class="phys-text">Physics model</span></th><th scope="col">AI model closer</th></tr></thead>' +
-      "<tbody>" + rows + '<tr class="total"><th scope="row" class="grid-mark">All</th><td class="num">' + D(all.ai) + '</td><td class="num">' + D(all.ph) + '</td><td class="num">' + all.win + " of " + all.n + "</td></tr></tbody></table>" +
-      '<ul class="ref-list">' + items + "<li><b>All:</b> " + D(all.ai) + " against " + D(all.ph) + "; the AI model came closer in " + all.win + " of " + all.n + ".</li></ul>" +
+      "<tbody>" + rows + '<tr class="total"><th scope="row" class="grid-mark">All</th><td class="num">' + D(all.ai) + '</td><td class="num">' + D(all.ph) + '</td><td class="num">' + share(all.win, all.n) + "</td></tr></tbody></table>" +
+      '<ul class="ref-list">' + items + "<li><b>All:</b> " + D(all.ai) + " against " + D(all.ph) + "; the AI model came closer in " + share(all.win, all.n) + ".</li></ul>" +
       '<div id="places"></div>' +
       "<h3>What this does and doesn't show</h3><ul class=\"findings\">" +
       finding(G.both, overall.title, overall.dek, "From " + all.n + " cases, " + SPAN) +
@@ -262,18 +274,14 @@
   function cityStats(name) {
     var rows = DATA.filter(function (r) { return r.city === name && r.observed && typeof r.aigfs === "number"; });
     var mean = function (xs) { return xs.reduce(function (s, v) { return s + v; }, 0) / xs.length; };
-    var ai = mean(rows.map(function (r) { return Math.abs(r.aigfs - r.observed.c); }));
-    var ph = mean(rows.map(function (r) { return Math.abs(r.gfs - r.observed.c); }));
-    return {
-      n: rows.length, ai: ai, ph: ph,
-      win: rows.filter(function (r) { return Math.abs(r.aigfs - r.observed.c) < Math.abs(r.gfs - r.observed.c); }).length,
-      aiLean: mean(rows.map(function (r) { return r.aigfs - r.observed.c; })),
-      phLean: mean(rows.map(function (r) { return r.gfs - r.observed.c; })),
-      better: Math.abs(ai - ph) < 0.25 ? "even" : (ai < ph ? "ai" : "phys"),
-      rows: rows
-    };
+    var c = compareRows(rows);
+    c.aiLean = mean(rows.map(function (r) { return r.aigfs - r.observed.c; }));
+    c.phLean = mean(rows.map(function (r) { return r.gfs - r.observed.c; }));
+    c.better = c.verdict;
+    c.rows = rows;
+    return c;
   }
-  var BETTER = { ai: "The AI model did better here", phys: "The physics model did better here", even: "About even here" };
+  var BETTER = { ai: "The AI model did better here", phys: "The physics model did better here", even: "Too close to call here" };
   var lean = function (d) { return Math.abs(d) < 0.3 ? "no clear lean" : (d < 0 ? "ran " + D(d) + " cold" : "ran " + D(d) + " warm"); };
   var pinShape = function (b) {
     return b === "ai" ? '<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="var(--paper)" stroke="var(--ai)" stroke-width="3"/></svg>'
@@ -288,7 +296,7 @@
       '<p class="place__better"><span aria-hidden="true">' + pinShape(st.better) + "</span> " + BETTER[st.better] + ".</p>" +
       '<dl class="place__dl"><dt>AI model</dt><dd>missed by ' + D(st.ai) + " on average, " + lean(st.aiLean) + "</dd>" +
       "<dt>Physics model</dt><dd>missed by " + D(st.ph) + " on average, " + lean(st.phLean) + "</dd>" +
-      "<dt>Closer</dt><dd>the AI model in " + st.win + " of " + st.n + " cases</dd></dl>" +
+      "<dt>Closer</dt><dd>the AI model in " + share(st.win, st.n, "cases") + "</dd></dl>" +
       (st.n < EVENINGS * LEADS.length ? '<p class="hint">' + plural(EVENINGS * LEADS.length - st.n, "case has", "cases have") + " no reading here.</p>" : "") +
       '<button type="button" class="btn quiet try" data-city="' + esc(name) + '" data-valid="' + tryRow.valid + '" data-lead="' + tryRow.lead_days + '">Try a case: ' + esc(name) + ", " + dayName(tryRow.valid) + "</button>";
   }
@@ -305,11 +313,11 @@
     var pct = function (units) { return (units / MAP.width * 100).toFixed(2) + "%"; };
     var rows = CITIES.map(function (c) {
       var st = cityStats(c.name);
-      return '<tr><th scope="row" class="grid-mark">' + esc(c.name) + '</th><td class="num">' + D(st.ai) + '</td><td class="num">' + D(st.ph) + '</td><td class="num">' + st.win + " of " + st.n + "</td><td>" + lean(st.aiLean) + "</td></tr>";
+      return '<tr><th scope="row" class="grid-mark">' + esc(c.name) + '</th><td class="num">' + D(st.ai) + '</td><td class="num">' + D(st.ph) + '</td><td class="num">' + share(st.win, st.n) + "</td><td>" + lean(st.aiLean) + "</td></tr>";
     }).join("");
     var items = CITIES.map(function (c) {
       var st = cityStats(c.name);
-      return "<li><b>" + esc(c.name) + ":</b> AI model " + D(st.ai) + ", physics model " + D(st.ph) + " average miss; the AI model came closer in " + st.win + " of " + st.n + "; it " + lean(st.aiLean) + ".</li>";
+      return "<li><b>" + esc(c.name) + ":</b> AI model " + D(st.ai) + ", physics model " + D(st.ph) + " average miss; the AI model came closer in " + share(st.win, st.n) + "; it " + lean(st.aiLean) + ".</li>";
     }).join("");
     return '<h3 id="h-places">By place</h3>' +
       '<p class="hint">Six weather stations, on a map drawn to scale. Choose one to see how each model did there.</p>' +
@@ -321,7 +329,7 @@
       '<figcaption><span class="scalebar" aria-hidden="true"><span class="scalebar__bar" style="width:' + pct(km * MAP.unitsPerKm) + '"></span><span>' + km + ' km</span>' +
       '<span class="scalebar__bar" style="width:' + pct(mi * 1.609344 * MAP.unitsPerKm) + '"></span><span>' + mi + " mi</span></span>" +
       '<span class="map__note">Contiguous United States, Albers equal-area projection, drawn to scale (the scale bar holds near the middle of the map). Alaska and Hawaii aren\'t shown: no stations there yet. Outlines: US Census Bureau, 2017.</span>' +
-      '<span class="map__key" aria-hidden="true"><span>' + pinShape("ai") + ' AI model did better</span><span>' + pinShape("phys") + ' Physics model did better</span><span>' + pinShape("even") + " About even</span></span></figcaption></figure>" +
+      '<span class="map__key" aria-hidden="true"><span>' + pinShape("ai") + ' AI model did better</span><span>' + pinShape("phys") + ' Physics model did better</span><span>' + pinShape("even") + " Too close to call</span></span></figcaption></figure>" +
       '<div class="place-col"><div class="place-list" role="group" aria-label="Places">' + CITIES.map(function (c) {
         var b = cityStats(c.name).better;
         return '<button type="button" class="place-btn" data-place="' + esc(c.name) + '" aria-pressed="' + (placeSel === c.name) + '">' +
@@ -490,7 +498,11 @@
     var idx = [];
     var steps = [["h-pick", "01 Pick a case", "choose a place evening how far ahead"], ["h-guess", "02 Guess first", "which forecast came closer guess"],
       ["h-result", "03 What happened", "result measured drawing"], ["h-bigger", "The bigger picture", "all cases average miss by place map findings"],
-      ["h-places", "By place", "map stations cities scale"], ["h-scen", "04 Make a scenario", "who what where when why how decision rule"], ["h-words", "Words used here", "glossary"]];
+      ["h-places", "By place", "map stations cities scale"], ["h-scen", "04 Make a scenario", "who what where when why how decision rule"], ["h-words", "Words used here", "glossary"],
+      ["h-about", "About and methods", "about methods how it works data noaa"], ["m-winner", "How we call a winner", "too close to call standard error noise statistics"],
+      ["m-rain", "Rain", "rain precipitation 6 hours measurable"], ["m-access", "Accessibility", "accessibility wcag voiceover screen reader"],
+      ["m-privacy", "Privacy", "privacy cookies tracking data stored"], ["m-sources", "Download the data", "download data csv json open data cc0 code github"],
+      ["m-cite", "How to cite", "cite citation reference apa"]];
     steps.forEach(function (st) { idx.push({ kind: "Step", title: st[1], text: st[2], go: { to: st[0] } }); });
     CITIES.forEach(function (c) {
       idx.push({ kind: "Place", title: c.name, text: c.place + " " + c.station + (c.name === "New York" ? " nyc manhattan" : ""), go: { place: c.name } });
