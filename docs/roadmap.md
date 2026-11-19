@@ -15,7 +15,7 @@ is in demand. Five sketches came out of it; this project is Sketch A.
 |---|---|---|
 | **A. Two forecasts, one sky** | NOAA's AI forecast (AIGFS) against its physics forecast (GFS) and what was measured: calibrated trust | **This project** |
 | B. Readable warnings | NWS alerts in a clear, accessible structure (screen readers, cognitive accessibility, many languages), never rewritten by AI; an open component others can embed | Idea. NWS's Hazard Simplification already moves to plain words, so the gap is presentation and access |
-| C. Tracking vanished datasets | Watch for federal datasets that disappear or change; send dead NOAA links to rescued copies | Idea. dataindex.us and the Data Rescue Project already organise this; join them rather than compete |
+| C. Tracking vanished datasets | Watch for federal datasets that disappear or change; send dead NOAA links to rescued copies | Idea. dataindex.us and the Data Rescue Project already organize this; join them rather than compete |
 | D. Classroom data | NOAA tides, sea level and storms as real data for Grade 6 ratios, rates and graphs | Idea. Fits the Singapore Math curriculum |
 | E. When the trusted database stops checking | NIST's National Vulnerability Database moved to risk-based triage (April 2026), with about 29,000 CVEs "Not Scheduled" | Idea: better as a lesson (an Essential) than a tool |
 
@@ -26,7 +26,7 @@ is in demand. Five sketches came out of it; this project is Sketch A.
 - Protocol: data governance, law, safety, privacy, accessibility, interagency rules, vision, plain-words glossary.
 - Look: in the style of the MIT Media Lab's website (with a thank-you; not affiliated), after a "sea and sky" NOAA theme that replaced Budapest.
 - Two audits, all findings fixed: UX/UI (14) and readability and flow (11).
-- Licences drafted for a future publish: MIT code, CC BY 4.0 words, CC0 data, OFL fonts.
+- Licenses drafted for a future publish: MIT code, CC BY 4.0 words, CC0 data, OFL fonts.
 - Public on GitHub since 19 November 2026, after a protocol check; the page is live on GitHub Pages.
 
 ## Next, in order
@@ -36,15 +36,15 @@ is in demand. Five sketches came out of it; this project is Sketch A.
    places and stations ("Central Park", "KNYC"), cases ("New York 4 November"), glossary
    words ("bias", "false alarm"), findings and steps, and jumps straight to them; picking
    a place could also highlight it on the map and load its case. Everything is searched
-   in the page itself, with no outside service and nothing stored. A labelled field,
+   in the page itself, with no outside service and nothing stored. A labeled field,
    results as a list you can use with the keyboard, a spoken count ("3 results"), and a
    plain "no results" message with suggestions. The course hub's search is a model.
 3. **VoiceOver pass** on Mac and iPhone. *Structure checked 6 November (labels, landmarks, live regions, tables, images, focus); listening still needs a person.*
 4. *Plan ready: [`user-session-plan.md`](user-session-plan.md).* **A session with three to five people** from the audiences: educators, professionals, students, plus one forecaster or emergency manager.
-5. **Windows forced-colours check.** *Rules added 6 November (selection, focus, map, buttons by system colours; shapes carry meaning); still needs a look on Windows.*
+5. **Windows forced-colors check.** *Rules added 6 November (selection, focus, map, buttons by system colors; shapes carry meaning); still needs a look on Windows.*
 6. ✅ **Running from 6 November; the page reads it from 13 November** (GitHub Action; User-Agent names the repository). **Nightly archive.** NOMADS keeps only about 10 days of AIGFS, so the record exists only once something saves it. Once a day, the one variable needed, a User-Agent with contact details David chooses.
 7. **Spelling:** David's call, US or British, for a US audience.
-8. ✅ **Published 19 November 2026** on David's word, after the protocol check (NOAA terms, credits, safety lines, privacy, licences, server use).
+8. ✅ **Published 19 November 2026** on David's word, after the protocol check (NOAA terms, credits, safety lines, privacy, licenses, server use).
 
 ## Growing the tool
 
@@ -59,7 +59,7 @@ is in demand. Five sketches came out of it; this project is Sketch A.
 
 ## The scenario builder, extended
 
-- **More roles:** fire crew lead, park ranger, utility planner, water manager, harbour master, school district, pilot.
+- **More roles:** fire crew lead, park ranger, utility planner, water manager, harbor master, school district, pilot.
 - **Several roles, one forecast:** show how different agencies act on the same forecast (the interagency rule).
 - **More hazards** as data allows: rain and floods, wind, heat waves, cold snaps.
 - **Forecast → decision → outcome** with real thresholds, such as anticipatory action triggers.
@@ -77,27 +77,27 @@ decision) and changes the context.
 - **Energy:** wind, solar and hydro forecasts against generation (EIA); space weather and the grid; heat and demand.
 - **Desalination:** harmful algal blooms and intake shutdowns; drought and when to run plants; energy use; brine and sea life; Forecast-Informed Reservoir Operations (Lake Mendocino) as a model.
 - **Fire and water:** the January 2025 Los Angeles fires (hydrant pressure, grounded aircraft): a good forecast isn't enough, the decision layer matters; wind, fire, water and power shutoffs are linked.
-- **Volcanoes:** NOAA's Volcanic Ash Advisory Centers (HYSPLIT), tsunami centres, ashfall advisories; Kīlauea's fountaining episodes; USGS watches the volcano.
+- **Volcanoes:** NOAA's Volcanic Ash Advisory Centers (HYSPLIT), tsunami centers, ashfall advisories; Kīlauea's fountaining episodes; USGS watches the volcano.
 - **Yosemite, a long-term testbed:** one place over years. Seasons as the calendar (snowpack, Firefall, floods, heat, fire, smoke, rockfall); many agencies (NPS, NOAA/NWS Hanford, USGS, Forest Service, CAL FIRE, Caltrans, county); the tribes whose homeland it is, including the Southern Sierra Miwuk; offline first. Engaging the park or tribes needs David's approval and their agreement.
 
 ## Many agencies, one picture (standing rule)
 
 Always consider how departments share real-time data and pattern-based outcomes
-to mobilise quickly. Hurricanes are the model case: NHC, Hurricane Hunters, FEMA, the
+to mobilize quickly. Hurricanes are the model case: NHC, Hurricane Hunters, FEMA, the
 Army Corps, USGS, the Coast Guard, states (EMAC), utilities, local responders.
 
 - One record shape with source, time and version; one shared picture that shows where sources disagree.
 - Common standards: the Common Alerting Protocol, Incident Command System terms, NIEM-style exchange.
 - Offline and low-bandwidth fallbacks.
 - People's data kept minimal (Privacy Act); AI is one input, a person decides.
-- A teaching lens: the hurricane cone shows where the centre may go, not the storm's size.
+- A teaching lens: the hurricane cone shows where the center may go, not the storm's size.
 
 ## Delivery: how it reaches people
 
 David's point: the experience matters more than the technology (as Jobs put it,
 start with the customer experience and work back to the technology).
 
-- **Where people already are:** TV weather segments, radio and NOAA Weather Radio, short videos, podcasts, museums, planetariums, science centres, park visitor centres and ranger talks, classrooms, libraries, text messages.
+- **Where people already are:** TV weather segments, radio and NOAA Weather Radio, short videos, podcasts, museums, planetariums, science centers, park visitor centers and ranger talks, classrooms, libraries, text messages.
 - **Trusted messengers:** broadcast meteorologists, rangers, teachers, librarians, community and faith leaders.
 - **One idea, many forms:** a 30-second clip, a ranger's five-minute talk and a classroom lesson all teach "check a forecast like any source".
 - **Two-way:** call and response (David's jazz vision): guess, see, say what you noticed.

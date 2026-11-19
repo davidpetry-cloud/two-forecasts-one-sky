@@ -1,9 +1,9 @@
 /* Two Forecasts, One Sky: Media Lab style (David, 5 November 2026: "change theme to media mit edu", after
    media.mit.edu's about and research pages). Its style, never its brand: no MIT name or logo, nothing that suggests
    MIT made this. Near-black and off-white (not pure black and white, so letters don't glow), flat surfaces, hairline
-   rules, sans-serif headings, colour only in the data. The light theme stays warm paper, never white (David's rule).
-   Softer text is a solid grey token, never faded. Every pairing is checked by scripts/palette.py.
-   Fonts (self-hosted, SIL OFL 1.1, licences in fonts/): Instrument Sans for headings, a free grotesk in the spirit
+   rules, sans-serif headings, color only in the data. The light theme stays warm paper, never white (David's rule).
+   Softer text is a solid gray token, never faded. Every pairing is checked by scripts/palette.py.
+   Fonts (self-hosted, SIL OFL 1.1, licenses in fonts/): Instrument Sans for headings, a free grotesk in the spirit
    of the Media Lab's Neue Haas Grotesk; Atkinson Hyperlegible Next for text, so I, l and 1 and O and 0 never look
    alike; Atkinson Hyperlegible Mono for readings, so numbers line up. */
 @font-face{font-family:'Instrument Sans';font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/instrument-sans-latin-wght-normal.woff2) format('woff2')}
@@ -63,7 +63,7 @@ h1,h2{overflow-wrap:break-word;hyphens:auto}
 main{max-width:80rem;margin:0 auto;padding:var(--s-8) var(--margin) 0}
 .band{display:grid;grid-template-columns:1fr;gap:var(--s-3) var(--s-6);border-top:1px solid var(--edge);padding:var(--s-6) 0 var(--s-9);margin:0}
 /* alternate bands are one shade lighter, edge to edge, so sections stay apart while scrolling (David, 6 November 2026:
-   "in dark mode, the black background runs together"); value, not hue, so colour stays reserved for the data */
+   "in dark mode, the black background runs together"); value, not hue, so color stays reserved for the data */
 main > .band:nth-child(even){background:var(--band);box-shadow:0 0 0 100vmax var(--band);clip-path:inset(0 -100vmax)}
 main > .band:nth-child(even) .sc-live{background:var(--band)}
 @media (min-width:56em){.band{grid-template-columns:var(--mark-col) minmax(0,1fr)}}
@@ -80,7 +80,7 @@ h3{font-family:var(--display);font-weight:600;font-size:var(--fs-lg);color:var(-
 p,li,dd{max-width:var(--measure)}
 .sense{font-size:var(--fs-md);margin:0 0 var(--s-6);color:var(--text)}
 
-/* choices: outlined, 44px tall; the chosen one gains a thicker ring and a filled dot (not colour alone) */
+/* choices: outlined, 44px tall; the chosen one gains a thicker ring and a filled dot (not color alone) */
 fieldset{border:0;margin:0 0 var(--s-6);padding:0}
 legend{font-size:var(--fs-base);font-weight:600;margin-bottom:var(--s-3);padding:0}
 .choices{display:flex;flex-wrap:wrap;gap:var(--s-2)}
@@ -326,8 +326,8 @@ main > .band:first-child{border-top:0}
 }
 
 
-/* Windows high contrast (forced colours): the system replaces colours, so every state must also show by shape,
-   border or a system colour (6 November 2026). Shapes already tell the models apart (circle, square, diamond). */
+/* Windows high contrast (forced colors): the system replaces colors, so every state must also show by shape,
+   border or a system color (6 November 2026). Shapes already tell the models apart (circle, square, diamond). */
 @media (forced-colors: active){
   .choice input:checked + span,.place-btn[aria-pressed="true"],.pin[data-on="true"] .pin__label{border-color:Highlight;outline:2px solid Highlight;outline-offset:2px}
   .choice input:checked + span::before{forced-color-adjust:none;background:Highlight;border-color:Highlight}

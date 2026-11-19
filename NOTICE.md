@@ -24,7 +24,7 @@ License ([LICENSE](LICENSE)); words and drawings under CC BY 4.0
 - **Instrument Sans**: The Instrument Sans Project Authors.
 - **Atkinson Hyperlegible Next** and **Atkinson Hyperlegible Mono**: the Atkinson
   Hyperlegible Next Project Authors (Braille Institute of America).
-- Latin subsets from the Fontsource packages, version 5.3.0. Each font's licence
+- Latin subsets from the Fontsource packages, version 5.3.0. Each font's license
   is in `site/fonts/OFL-*.txt`. The fonts may be used, changed and redistributed
   under the OFL, but not sold on their own.
 
@@ -42,7 +42,7 @@ affiliated with or endorsed by MIT, and uses no MIT text, images, logos or code.
 
 ## Not legal advice
 
-These licences were chosen to match the Human-Centered AI Literacy course (MIT
+These licenses were chosen to match the Human-Centered AI Literacy course (MIT
 for code, CC BY 4.0 for content) and NOAA's own practice for its data (public
 domain, CC0). A school, agency or company that adopts the project should have
 its own counsel check them.

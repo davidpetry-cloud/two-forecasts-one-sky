@@ -64,7 +64,7 @@ In short:
 - **Rules for fetching:** once a day at most, only the variable needed (2 m
   temperature via `.idx` byte ranges), retries a minute apart. The NWS API needs a
   User-Agent; NWS asks for contact details in it, and David chooses which.
-- **Licence:** we use NOAA's output files only, never model weights. Before any
+- **License:** we use NOAA's output files only, never model weights. Before any
   commercial use, ask NOAA (nodd@noaa.gov).
 - **Privacy:** collect nothing. No accounts, location, cookies, analytics or
   third-party requests.
@@ -80,11 +80,11 @@ In short:
   0.9 °C cold overall, and about 3 °C cold at Central Park every time (cause not
   known). Too few days to say which model is better, which is the lesson.
 
-## Licence
+## License
 
 Public since 19 November 2026, after a protocol check.
 
-| Part | Licence | File |
+| Part | License | File |
 |---|---|---|
 | Code (HTML structure, styles, scripts, page logic) | MIT | [LICENSE](LICENSE) |
 | Words and drawings (page text, docs, README prose, textures) | CC BY 4.0 | [LICENSE-CONTENT.md](LICENSE-CONTENT.md) |
@@ -100,7 +100,7 @@ CC0 for data, matching NOAA's own practice. Credits, trademarks and tools are in
 Data: NOAA / National Weather Service. Not affiliated with or endorsed by NOAA.
 NWS material is not under copyright (17 U.S.C. § 403).
 
-Fonts (self-hosted, SIL Open Font License 1.1; licences in `site/fonts/`):
+Fonts (self-hosted, SIL Open Font License 1.1; licenses in `site/fonts/`):
 Instrument Sans for headings, Atkinson Hyperlegible Next for text, Atkinson
 Hyperlegible Mono for readings. Downloaded 5 November 2026 from the Fontsource
 packages (v5.3.0), Latin subsets only.
@@ -111,7 +111,7 @@ isn't affiliated with or endorsed by MIT; no MIT text, images, logos or code are
 
 The look in brief: near-black and off-white, flat surfaces, hairline rules, a tall
 opening with big type, and sections as bands with a mark column, alternating one
-shade lighter (dark) or deeper (light) so steps stay apart while scrolling. Colour is kept for
+shade lighter (dark) or deeper (light) so steps stay apart while scrolling. Color is kept for
 the data: blue for the AI model, ochre for the physics model, always with a shape
 too. The light theme stays warm paper, never white. Earlier drawings from a "sea and
 sky" theme (isobars, a horizon swell, depth contours) are kept, unused, in

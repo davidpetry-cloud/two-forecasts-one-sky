@@ -71,14 +71,14 @@ GitHub Action in this repository at 06:30 UTC) follows these rules. Its
 User-Agent is `two-forecasts-one-sky/0.1 (github.com/davidpetry-cloud/two-forecasts-one-sky)`,
 David's choice of contact.
 
-### 3. Licence of the AI model's output
+### 3. License of the AI model's output
 
 - NOAA's GraphCast-GFS output (AIGFS's experimental precursor) is released under
   CC0, according to NOAA's AWS registry entry. That entry says the files hold only
   NOAA's products, not GraphCast code or training data.
 - Google DeepMind's GraphCast weights are CC BY-NC-SA 4.0 (non-commercial,
   share-alike). We never use or share weights; we use only NOAA's output files.
-- No licence statement specific to AIGFS was found. Non-commercial educational use
+- No license statement specific to AIGFS was found. Non-commercial educational use
   is covered under either reading. **Before any commercial use, ask NOAA**
   (nodd@noaa.gov, or EMC: emc.products.feedback@noaa.gov).
 
@@ -100,7 +100,7 @@ David's choice of contact.
   Federal Register (91 FR 20902) before quoting it.
 - Section 508 applies if a federal agency uses the tool.
 - Our own standard, WCAG 2.2 AA (`docs/ux-foundations.md`), goes beyond both. Every
-  chart is also given as a table and an `aria-label`. Colour is never the only cue.
+  chart is also given as a table and an `aria-label`. Color is never the only cue.
 
 ### 6. Honesty about claims (the course's own governance)
 
@@ -124,7 +124,7 @@ David's choice of contact.
 
 ### 8. A governance check for every data source
 
-Each new source gets its own check before use: its terms, licence, rate limits,
+Each new source gets its own check before use: its terms, license, rate limits,
 privacy and who to credit. NOAA's rules don't cover anyone else's data. Sources likely
 later: USGS (Interior), the Energy Information Administration (Energy), the Forest
 Service (Agriculture), FEMA (Homeland Security), CAL FIRE and other state agencies,
@@ -159,7 +159,7 @@ system; it teaches patterns that would transfer.
   the Common Alerting Protocol (CAP), which NWS alerts and FEMA's IPAWS use; the
   Incident Command System's terms (NIMS); and NIEM-style data exchange.
 - **A person makes the call.** AI output is one input with its uncertainty shown,
-  never an automatic trigger for mobilising people or resources.
+  never an automatic trigger for mobilizing people or resources.
 
 ## Future design possibilities
 
@@ -231,8 +231,8 @@ So **delivery is designed first, not bolted on.** One core, many lenses, and now
 **many channels**:
 
 - **Go where people already are:** TV weather segments, radio and NOAA Weather
-  Radio, short videos, podcasts, museums, planetariums and science centres, park
-  visitor centres and ranger talks (Yosemite), classrooms, libraries, text messages.
+  Radio, short videos, podcasts, museums, planetariums and science centers, park
+  visitor centers and ranger talks (Yosemite), classrooms, libraries, text messages.
 - **Work through trusted messengers:** broadcast meteorologists, park rangers,
   teachers, librarians, community and faith leaders. People act on warnings from
   someone they trust.
@@ -273,7 +273,7 @@ So **delivery is designed first, not bolted on.** One core, many lenses, and now
   enough; the decision layer (reservoirs, pressure, tankers, staging) matters.
   Wind, fire, water demand and power shutoffs are linked.
 - **Volcanoes:** NOAA's Volcanic Ash Advisory Centers (HYSPLIT ash forecasts for
-  aviation), tsunami centres, ashfall advisories; USGS watches the volcano itself.
+  aviation), tsunami centers, ashfall advisories; USGS watches the volcano itself.
   Kīlauea's fountaining episodes (a 48th reported by June 2026) are forecasts to
   check.
 - **Yosemite as a long-term testbed** (David, 5 November 2026). A *testbed* is a real
@@ -302,12 +302,12 @@ So **delivery is designed first, not bolted on.** One core, many lenses, and now
 ### Many agencies, one picture (standing rule, David)
 
 Always consider how several departments share real-time, accurate data and
-pattern-based outcomes, so agencies can mobilise quickly. Hurricanes are the model
+pattern-based outcomes, so agencies can mobilize quickly. Hurricanes are the model
 case.
 
 - **Who's involved in a hurricane** *(check details)*: NOAA's National Hurricane
   Center (forecasts, the cone), Hurricane Hunter flights (NOAA and Air Force
-  Reserve), FEMA (mobilising under the National Response Framework), the Army Corps
+  Reserve), FEMA (mobilizing under the National Response Framework), the Army Corps
   of Engineers, USGS (storm-surge and stream sensors), the Coast Guard, states
   (mutual aid between states through EMAC), utilities and local responders. NWS
   incident meteorologists and "impact-based decision support" sit inside the
@@ -324,7 +324,7 @@ case.
   standards (protocol item 10); offline and low-bandwidth fallbacks; and AI as one
   input, with a person deciding.
 - **A teaching lens:** the hurricane "cone" is widely misread as the storm's size;
-  it shows where the centre may go *(check)*. That's a natural warm-up misconception.
+  it shows where the center may go *(check)*. That's a natural warm-up misconception.
 
 ## Words used here, in plain terms
 
@@ -367,7 +367,7 @@ plain words the first time a reader meets it.
 - NWS API documentation: https://www.weather.gov/documentation/services-web-api
 - NWS Service Change Notice 26-68, AIGFS v1.1:
   https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf
-- AWS Open Data Registry, NOAA GraphCast GFS (licence):
+- AWS Open Data Registry, NOAA GraphCast GFS (license):
   https://registry.opendata.aws/noaa-nws-graphcastgfs-pds
 - NWS logo request FAQ: https://www.weather.gov/logorequest-faq
 - NOAA emblem usage and licensing: https://www.noaa.gov/noaa-emblem-usage-and-licensing

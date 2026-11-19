@@ -343,10 +343,10 @@
   // Forecast -> decision -> outcome, on the saved cases only. Practice, not advice; it never scores the person.
   var SC = {
     who: [
-      { value: "manager", label: "An emergency manager", cold: "open a warming centre", warm: "open a cooling centre" },
+      { value: "manager", label: "An emergency manager", cold: "open a warming center", warm: "open a cooling center" },
       { value: "farmer", label: "A farmer", cold: "cover the crops", warm: "water the seedlings early" },
       { value: "teacher", label: "A teacher planning a trip", cold: "move the trip indoors", warm: "plan shade and water" },
-      { value: "organiser", label: "An event organiser", cold: "book heaters", warm: "add shade and water stations" }
+      { value: "organizer", label: "An event organizer", cold: "book heaters", warm: "add shade and water stations" }
     ],
     // Thresholds are set in °C (the data's unit) and shown in the viewer's unit.
     what: [
@@ -377,7 +377,7 @@
   var sc = { who: "manager", what: "lt10", where: "all", when: 3, why: null, how: "either" };
   var find = function (list, v) { return list.find(function (x) { return x.value === v; }); };
 
-  // The whole judgement, kept pure so it can be checked by hand.
+  // The whole judgment, kept pure so it can be checked by hand.
   function judge(rows, what, how) {
     var hit = function (c) { return what.cold ? c < what.t : c > what.t; };
     var out = { inTime: [], falseAlarm: [], caught: [], quiet: [], noReading: [] };

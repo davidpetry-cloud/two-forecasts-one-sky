@@ -27,7 +27,7 @@ const STATIONS = [
   { name: "Miami", station: "KMIA", lat: 25.79, lon: -80.29 }
 ].map((s) => { const [x, y] = proj([s.lon, s.lat]); return { ...s, x: +x.toFixed(1), y: +y.toFixed(1) }; });
 
-// Map units per kilometre along 39°N near the centre (an equal-area map's scale varies a little with place).
+// Map units per kilometer along 39°N near the center (an equal-area map's scale varies a little with place).
 const a = [-99, 39], b = [-93, 39];
 const km = geoDistance(a, b) * 6371.0088;
 const [ax, ay] = proj(a), [bx, by] = proj(b);

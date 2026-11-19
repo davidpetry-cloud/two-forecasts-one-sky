@@ -1,4 +1,4 @@
-# Content licence: CC BY 4.0
+# Content license: CC BY 4.0
 
 Copyright (c) 2026 David Petry
 
@@ -17,7 +17,7 @@ Creative Commons Attribution 4.0 International License (CC BY 4.0).
 - The prose of `README.md`.
 - The drawings in `site/textures/` (isobars, horizon swell, depth contours),
   except `grain.svg`, which comes from the Human-Centered AI Literacy course
-  under the same licence.
+  under the same license.
 
 ## What doesn't
 
@@ -31,13 +31,13 @@ Creative Commons Attribution 4.0 International License (CC BY 4.0).
 ## How to credit it
 
 You may share and adapt the content for any purpose, including commercially, as
-long as you give credit, link to the licence, and say whether you changed
+long as you give credit, link to the license, and say whether you changed
 anything. For example:
 
 > Adapted from *Two Forecasts, One Sky* by David Petry, licensed under
 > CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Changes: …
 
-Two requests, not licence conditions:
+Two requests, not license conditions:
 
 - Keep the safety line: this is a learning tool, not a forecast or warning
   service. Real forecasts and warnings are at weather.gov.
