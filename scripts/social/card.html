@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- The link-preview card (site/social.png, 1200x630). Remake it with:
+     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
+       --window-size=1200,630 --screenshot=site/social.png scripts/social/card.html
+     Keep "Prototype" in the eyebrow until David says the design is set (19 November 2026). -->
+<html lang="en"><head><meta charset="utf-8"><title>Two Forecasts, One Sky (prototype): preview card</title>
+<style>
+@font-face{font-family:'Instrument Sans';font-weight:400 700;src:url(../../site/fonts/instrument-sans-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:'Atkinson Hyperlegible Next';font-weight:200 800;src:url(../../site/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2) format('woff2')}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#0E0F12;color:#F4F2EC;font-family:'Atkinson Hyperlegible Next',sans-serif}
+.card{box-sizing:border-box;width:1200px;height:630px;padding:68px 72px 0;display:flex;flex-direction:column}
+.eyebrow{display:flex;align-items:center;gap:14px;font-size:22px;font-weight:600;color:#BBBEC2;margin:0}
+.pill{padding:3px 14px;border:2px solid #F3AE58;border-radius:999px;color:#F3AE58;letter-spacing:.02em}
+h1{font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:118px;line-height:1;letter-spacing:-.02em;margin:30px 0 24px}
+.sub{font-size:31px;line-height:1.4;color:#D3D1CB;margin:0;max-width:880px}
+.key{display:flex;gap:40px;font-size:24px;margin-top:16px;align-items:center}
+.key span{display:inline-flex;align-items:center;gap:12px}
+.foot{margin-top:auto;border-top:1px solid #343538;display:flex;justify-content:space-between;padding:24px 0 26px;font-size:21px;color:#A9ABAF}
+</style></head><body><div class="card">
+<p class="eyebrow"><span class="pill">Prototype</span> A learning tool · open data · updated nightly</p>
+<h1>Two Forecasts,<br>One Sky</h1>
+<p class="sub">NOAA's AI weather model and its physics model, checked against what weather stations measured.</p>
+<div class="key">
+  <span><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="7.5" fill="none" stroke="#98C2F0" stroke-width="3"/></svg>AI model</span>
+  <span><svg width="22" height="22" viewBox="0 0 22 22"><rect x="4" y="4" width="14" height="14" fill="none" stroke="#ECAF79" stroke-width="3"/></svg>Physics model</span>
+  <span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 3 19 11 11 19 3 11Z" fill="#F4F2EC"/></svg>Measured</span>
+</div>
+<div class="foot"><span>davidpetry-cloud.github.io/two-forecasts-one-sky</span><span>Not affiliated with NOAA</span></div>
+</div></body></html>

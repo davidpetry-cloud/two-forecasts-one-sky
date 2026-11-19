@@ -180,8 +180,8 @@
 
   var KEY = '<ul class="key" aria-hidden="true">' +
     '<li><svg viewBox="0 0 22 22"><path d="M11 2 L20 11 L11 20 L2 11Z" fill="var(--obs)"/></svg>Measured</li>' +
-    '<li><svg viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="var(--paper)" stroke="var(--ai)" stroke-width="3"/></svg>AI model (AIGFS)</li>' +
-    '<li><svg viewBox="0 0 22 22"><rect x="3" y="3" width="16" height="16" fill="var(--paper)" stroke="var(--phys)" stroke-width="3"/></svg>Physics model (GFS)</li></ul>';
+    '<li><svg viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="var(--paper)" stroke="var(--ai-mark)" stroke-width="3"/></svg>AI model (AIGFS)</li>' +
+    '<li><svg viewBox="0 0 22 22"><rect x="3" y="3" width="16" height="16" fill="var(--paper)" stroke="var(--phys-mark)" stroke-width="3"/></svg>Physics model (GFS)</li></ul>';
 
   var NEXT_AFTER_RESULT = '<p class="next"><a href="#h-pick">Try another case ↑</a> <span aria-hidden="true">·</span> <a href="#h-bigger">Next: the bigger picture ↓</a> <span aria-hidden="true">·</span> <a href="#top">Back to top ↑</a></p>';
   var PLACEHOLDER = '<p class="placeholder">Make a guess in step 02, then choose <b>Show what happened</b>.</p><p class="next"><a href="#top">Back to top ↑</a></p>';
@@ -267,6 +267,142 @@
     }
   }
 
+  // ---------- charts (audit P9, 19 November 2026) ----------
+  // Drawn at the box's real width in CSS pixels, so text never scales below 14px. Each chart has a spoken
+  // summary and a table with the same numbers; the hover and keyboard readout adds, it never gates.
+  // Shapes carry identity as well as color: circle = AI model, square = physics model.
+  var uScale = function (dc) { return dc * (unit === "F" ? 1.8 : 1); }; // a difference in °C, in the viewer's unit
+  var fmt1 = function (v) { return (Math.round(v * 10) / 10).toFixed(1); };
+  var niceStep = function (span, room, minPx) { return [0.5, 1, 2, 5, 10, 20].find(function (st) { return room / (span / st) >= minPx; }) || 20; };
+  var markAI = function (x, y, r) { return '<circle class="m-ai" cx="' + x + '" cy="' + y + '" r="' + r + '"/>'; };
+  var markPH = function (x, y, h) { return '<rect class="m-phys" x="' + (x - h) + '" y="' + (y - h) + '" width="' + 2 * h + '" height="' + 2 * h + '"/>'; };
+  var KEY_MODELS = '<ul class="key" aria-hidden="true">' +
+    '<li><svg viewBox="0 0 22 22"><circle cx="11" cy="11" r="7" fill="var(--paper)" stroke="var(--ai-mark)" stroke-width="3"/></svg>AI model (AIGFS)</li>' +
+    '<li><svg viewBox="0 0 22 22"><rect x="4" y="4" width="14" height="14" fill="var(--paper)" stroke="var(--phys-mark)" stroke-width="3"/></svg>Physics model (GFS)</li></ul>';
+
+  // 1. Average miss by how far ahead: a dot plot, one row per forecast length, the gap drawn between the dots.
+  function leadPlotSvg(rows, W) {
+    W = Math.max(260, Math.round(W));
+    var LBL = 76, X0 = LBL + 8, X1 = W - 16, ROW = 46, top = 18;
+    var vals = []; rows.forEach(function (r) { vals.push(uScale(r.st.ai), uScale(r.st.ph)); });
+    var step = niceStep(Math.max.apply(null, vals), X1 - X0, 48);
+    var hi = Math.ceil(Math.max.apply(null, vals) / step) * step || step;
+    var x = function (v) { return Math.round((X0 + v / hi * (X1 - X0)) * 10) / 10; };
+    var axisY = top + rows.length * ROW, H = axisY + 52, g = "";
+    for (var t = 0; t <= hi + 1e-9; t += step) {
+      g += '<line class="grid" x1="' + x(t) + '" y1="' + (top - 8) + '" x2="' + x(t) + '" y2="' + axisY + '"/>' +
+        '<text class="tick" x="' + x(t) + '" y="' + (axisY + 22) + '" text-anchor="middle">' + (step < 1 ? t.toFixed(1) : t) + "°</text>";
+    }
+    var body = rows.map(function (r, i) {
+      var y = top + i * ROW + ROW / 2 - 6, a = uScale(r.st.ai), p = uScale(r.st.ph);
+      return '<g><title>' + esc(r.label + ": AI model " + fmt1(a) + " " + sym() + ", physics model " + fmt1(p) + " " + sym()) + "</title>" +
+        '<text class="row-label' + (r.total ? " row-label--total" : "") + '" x="0" y="' + (y + 5) + '">' + esc(r.label) + "</text>" +
+        '<line class="gap-line" x1="' + x(Math.min(a, p)) + '" y1="' + y + '" x2="' + x(Math.max(a, p)) + '" y2="' + y + '"/>' +
+        markAI(x(a), y, 7) + markPH(x(p), y, 6.5) + "</g>";
+    }).join("");
+    var label = "Average miss by how far ahead the forecast was made, in " + sym() + ". " + rows.map(function (r) {
+      return r.label + ": AI model " + fmt1(uScale(r.st.ai)) + ", physics model " + fmt1(uScale(r.st.ph));
+    }).join("; ") + ". Smaller is better. The table below has the same numbers.";
+    return '<svg viewBox="0 0 ' + W + " " + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(label) + '">' + g +
+      '<line class="axis" x1="' + X0 + '" y1="' + axisY + '" x2="' + X1 + '" y2="' + axisY + '"/>' + body +
+      '<text class="axis-title" x="' + X0 + '" y="' + (H - 4) + '">average miss, ' + sym() + "</text></svg>";
+  }
+
+  // 2. Evening by evening: each evening's average miss for both models, as two lines. Shows the day-to-day ups
+  // and downs behind "too close to call". A vertical crosshair and readout follow the pointer or the arrow keys.
+  function eveningRows() {
+    return VALIDS.map(function (v) {
+      var st = compareRows(DATA.filter(function (r) { return r.valid === v; }));
+      return { valid: v, st: st };
+    }).filter(function (e) { return e.st.n > 0; });
+  }
+  var evPlot = { pts: [], rows: [] };
+  function eveningSvg(rows, W) {
+    W = Math.max(260, Math.round(W));
+    var X0 = 44, X1 = W - 14, top = 34, H = W < 480 ? 236 : 276, Y1 = H - 32;
+    var vals = []; rows.forEach(function (e) { vals.push(uScale(e.st.ai), uScale(e.st.ph)); });
+    var step = niceStep(Math.max.apply(null, vals), Y1 - top, 36);
+    var hi = Math.ceil(Math.max.apply(null, vals) / step) * step || step;
+    var y = function (v) { return Math.round((Y1 - v / hi * (Y1 - top)) * 10) / 10; };
+    var n = rows.length, x = function (i) { return Math.round((X0 + 10 + (n > 1 ? i / (n - 1) : 0.5) * (X1 - X0 - 20)) * 10) / 10; };
+    var g = "";
+    for (var t = 0; t <= hi + 1e-9; t += step) {
+      g += '<line class="grid" x1="' + X0 + '" y1="' + y(t) + '" x2="' + X1 + '" y2="' + y(t) + '"/>' +
+        '<text class="tick" x="' + (X0 - 8) + '" y="' + (y(t) + 5) + '" text-anchor="end">' + (step < 1 ? t.toFixed(1) : t) + "°</text>";
+    }
+    var every = Math.max(1, Math.ceil(n * 64 / (X1 - X0)));
+    rows.forEach(function (e, i) {
+      if (i % every === 0 || i === n - 1 && (n - 1) % every >= every / 2) {
+        var d = new Date(new Date(e.valid).getTime() - 86400000);
+        g += '<text class="tick" x="' + x(i) + '" y="' + (Y1 + 22) + '" text-anchor="middle">' + d.getUTCDate() + " " + ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getUTCMonth()] + "</text>";
+      }
+    });
+    var line = function (key, cls) { return '<path class="' + cls + '" d="' + rows.map(function (e, i) { return (i ? "L" : "M") + x(i) + " " + y(uScale(e.st[key])); }).join(" ") + '"/>'; };
+    var dots = rows.map(function (e, i) { return markAI(x(i), y(uScale(e.st.ai)), 4.5) + markPH(x(i), y(uScale(e.st.ph)), 4); }).join("");
+    evPlot.pts = rows.map(function (e, i) { return x(i); }); evPlot.rows = rows; evPlot.W = W;
+    return '<svg viewBox="0 0 ' + W + " " + H + '" width="' + W + '" height="' + H + '" aria-hidden="true" focusable="false">' + g +
+      '<line class="axis" x1="' + X0 + '" y1="' + Y1 + '" x2="' + X1 + '" y2="' + Y1 + '"/>' +
+      '<line class="crosshair" id="ev-cross" x1="0" y1="' + top + '" x2="0" y2="' + Y1 + '" visibility="hidden"/>' +
+      line("ph", "line-phys") + line("ai", "line-ai") + dots +
+      '<text class="axis-title" x="0" y="14">average miss each evening, ' + sym() + "</text></svg>" +
+      '<div class="readout" id="ev-readout" hidden></div>';
+  }
+  function eveningLabel(rows) {
+    var aiDays = rows.filter(function (e) { return e.st.ai < e.st.ph; }).length;
+    return "Each evening's average miss for both models, " + rows.length + " evenings, in " + sym() + ". The AI model had the smaller average miss on " +
+      aiDays + " of " + rows.length + " evenings. The gap swings from evening to evening. Use the left and right arrow keys to read each evening; the table below has the same numbers.";
+  }
+  function showReadout(i) {
+    var box = $("ev-chart"), cross = $("ev-cross"), ro = $("ev-readout");
+    if (!box || !cross || !ro) return;
+    if (i === null) { cross.setAttribute("visibility", "hidden"); ro.hidden = true; evPlot.i = null; return; }
+    evPlot.i = i;
+    var e = evPlot.rows[i], px = evPlot.pts[i];
+    cross.setAttribute("x1", px); cross.setAttribute("x2", px); cross.setAttribute("visibility", "visible");
+    ro.textContent = "";
+    var h = document.createElement("b"); h.textContent = "Evening of " + dayName(e.valid); ro.appendChild(h);
+    [["ai", "AI model", "k-ai"], ["ph", "Physics model", "k-phys"]].forEach(function (m) {
+      var row = document.createElement("span"); row.className = "readout__row";
+      var k = document.createElement("i"); k.className = "readout__key " + m[2]; k.setAttribute("aria-hidden", "true");
+      var v = document.createElement("strong"); v.textContent = fmt1(uScale(e.st[m[0]])) + " " + sym();
+      row.appendChild(k); row.appendChild(v); row.appendChild(document.createTextNode(" " + m[1]));
+      ro.appendChild(row);
+    });
+    var c = document.createElement("span"); c.className = "readout__n"; c.textContent = e.st.n + " cases"; ro.appendChild(c);
+    ro.hidden = false;
+    var left = Math.min(Math.max(px + 12, 0), box.clientWidth - ro.offsetWidth - 4);
+    if (px + 12 + ro.offsetWidth > box.clientWidth) left = Math.max(px - 12 - ro.offsetWidth, 0);
+    ro.style.left = left + "px";
+  }
+  var chartObs = [];
+  function fitChart(box, draw, after) {
+    if (!box) return;
+    var w = box.clientWidth;
+    box.innerHTML = draw(w); if (after) after();
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(function () { if (box.clientWidth !== w) { w = box.clientWidth; box.innerHTML = draw(w); if (after) after(); } });
+      ro.observe(box); chartObs.push(ro);
+    }
+  }
+  function drawCharts() {
+    chartObs.forEach(function (o) { o.disconnect(); }); chartObs = [];
+    var ok = DATA.filter(function (r) { return r.observed && typeof r.aigfs === "number" && typeof r.gfs === "number"; });
+    var leadRows = LEADS.map(function (L) { return { label: L + " days", st: compareRows(ok.filter(function (r) { return r.lead_days === L; })) }; })
+      .concat([{ label: "All", total: true, st: compareRows(ok) }]);
+    fitChart($("lead-chart"), function (w) { return leadPlotSvg(leadRows, w); });
+    var ev = eveningRows(), box = $("ev-chart");
+    if (!box) return;
+    box.setAttribute("aria-label", eveningLabel(ev));
+    fitChart(box, function (w) { return eveningSvg(ev, w); }, function () { if (evPlot.i != null) showReadout(evPlot.i); });
+  }
+  function eveningTwin() {
+    var ev = eveningRows();
+    return '<details class="sc-cases twin"><summary>See each evening\'s numbers (' + ev.length + ")</summary>" +
+      '<table class="hairgrid"><caption>Average miss on each evening</caption><thead><tr><th scope="col" class="grid-mark">Evening</th><th scope="col">AI model</th><th scope="col">Physics model</th><th scope="col">Cases</th></tr></thead><tbody>' +
+      ev.map(function (e) { return '<tr><th scope="row" class="grid-mark">' + dayName(e.valid) + '</th><td class="num">' + D(e.st.ai) + '</td><td class="num">' + D(e.st.ph) + '</td><td class="num">' + e.st.n + "</td></tr>"; }).join("") +
+      '</tbody></table><ul class="ref-list">' + ev.map(function (e) { return "<li><b>" + dayName(e.valid) + ":</b> AI model " + D(e.st.ai) + ", physics model " + D(e.st.ph) + " (" + e.st.n + " cases)</li>"; }).join("") + "</ul></details>";
+  }
+
   // ---------- the bigger picture ----------
   // Rain, as hits, misses and false alarms: the same four outcomes as the scenario, so the words carry over.
   function rainSectionHtml(rs) {
@@ -336,13 +472,13 @@
         '<p class="finding__source">' + source + "</p></li>";
     };
     var G = {
-      both: '<svg viewBox="0 0 48 24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--ai)" stroke-width="3"/><rect x="28" y="4" width="16" height="16" fill="none" stroke="var(--phys)" stroke-width="3"/></svg>',
+      both: '<svg viewBox="0 0 48 24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--ai-mark)" stroke-width="3"/><rect x="28" y="4" width="16" height="16" fill="none" stroke="var(--phys-mark)" stroke-width="3"/></svg>',
       leads: '<svg viewBox="0 0 48 24"><path d="M4 20V14M18 20V9M32 20V4" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></svg>',
-      cold: '<svg viewBox="0 0 48 24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--ai)" stroke-width="3"/><path d="M30 6v12m-6-6 6 6 6-6" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      grid: '<svg viewBox="0 0 48 24"><path d="M3 3h30v18H3zM13 3v18M23 3v18M3 12h30" fill="none" stroke="var(--ink)" stroke-width="2"/><circle cx="40" cy="12" r="3" fill="var(--ai)"/></svg>',
+      cold: '<svg viewBox="0 0 48 24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--ai-mark)" stroke-width="3"/><path d="M30 6v12m-6-6 6 6 6-6" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      grid: '<svg viewBox="0 0 48 24"><path d="M3 3h30v18H3zM13 3v18M23 3v18M3 12h30" fill="none" stroke="var(--ink)" stroke-width="2"/><circle cx="40" cy="12" r="3" fill="var(--ai-mark)"/></svg>',
       version: '<svg viewBox="0 0 48 24"><rect x="3" y="4" width="34" height="16" rx="8" fill="none" stroke="var(--ink)" stroke-width="2.5"/><circle cx="12" cy="12" r="3" fill="var(--ink)"/></svg>',
       missing: '<svg viewBox="0 0 48 24"><path d="M12 2 22 12 12 22 2 12Z" fill="none" stroke="var(--obs)" stroke-width="2.5" stroke-dasharray="4 3"/></svg>',
-      rain: '<svg viewBox="0 0 48 24"><path d="M12 2C12 2 5.5 9.5 5.5 15a6.5 6.5 0 0 0 13 0C18.5 9.5 12 2 12 2Z" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="12" r="6" fill="none" stroke="var(--ai)" stroke-width="2.5"/><rect x="40" y="7" width="6" height="10" fill="none" stroke="var(--phys)" stroke-width="2"/></svg>'
+      rain: '<svg viewBox="0 0 48 24"><path d="M12 2C12 2 5.5 9.5 5.5 15a6.5 6.5 0 0 0 13 0C18.5 9.5 12 2 12 2Z" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="12" r="6" fill="none" stroke="var(--ai-mark)" stroke-width="2.5"/><rect x="40" y="7" width="6" height="10" fill="none" stroke="var(--phys-mark)" stroke-width="2"/></svg>'
     };
     var rs = compareRain(DATA);
     var rainF = { title: "", dek: "", tryIt: null };
@@ -358,11 +494,19 @@
       if (pickR) rainF.tryIt = { city: pickR.city, valid: pickR.valid, lead: pickR.lead_days, label: pickR.city + ", " + dayName(pickR.valid) };
     }
     var SCN = '<a href="https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf">NWS Service Change Notice 26-68</a>';
-    return '<table class="hairgrid"><caption>Average miss, by how far ahead the forecast was made</caption>' +
-      '<thead><tr><th scope="col" class="grid-mark">How far ahead</th><th scope="col"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 48 24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--ai)" stroke-width="3"/></svg></span><span class="ai-text">AI model</span></th>' +
-      '<th scope="col"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 48 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="var(--phys)" stroke-width="3"/></svg></span><span class="phys-text">Physics model</span></th><th scope="col">AI model closer</th></tr></thead>' +
+    var evs = eveningRows(), aiDays = evs.filter(function (e) { return e.st.ai < e.st.ph; }).length;
+    return KEY_MODELS + '<figure class="figure chart-fig"><div class="chart" id="lead-chart"></div>' +
+      "<figcaption>Average miss by how far ahead the forecast was made. Smaller is better; the line between the shapes is the gap.</figcaption></figure>" +
+      '<table class="hairgrid"><caption>Average miss, by how far ahead the forecast was made</caption>' +
+      '<thead><tr><th scope="col" class="grid-mark">How far ahead</th><th scope="col"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 48 24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--ai-mark)" stroke-width="3"/></svg></span><span class="ai-text">AI model</span></th>' +
+      '<th scope="col"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 48 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="var(--phys-mark)" stroke-width="3"/></svg></span><span class="phys-text">Physics model</span></th><th scope="col">AI model closer</th></tr></thead>' +
       "<tbody>" + rows + '<tr class="total"><th scope="row" class="grid-mark">All</th><td class="num">' + D(all.ai) + '</td><td class="num">' + D(all.ph) + '</td><td class="num">' + share(all.win, all.n) + "</td></tr></tbody></table>" +
       '<ul class="ref-list">' + items + "<li><b>All:</b> " + D(all.ai) + " against " + D(all.ph) + "; the AI model came closer in " + share(all.win, all.n) + ".</li></ul>" +
+      '<h3 id="h-evenings">Evening by evening</h3>' +
+      '<p class="hint">Each evening\'s average miss, across the six places and three forecast lengths. The AI model had the smaller miss on ' + aiDays + " of " + evs.length +
+      " evenings. Single evenings swing a lot, which is why one case, or one evening, says little.</p>" +
+      KEY_MODELS + '<figure class="figure chart-fig"><div class="chart chart--ev" id="ev-chart" tabindex="0" role="img"></div>' +
+      "<figcaption>Point at the chart, or select it and use the arrow keys, to read each evening.</figcaption></figure>" + eveningTwin() +
       '<div id="places"></div>' + rainSectionHtml(rs) +
       "<h3>What this does and doesn't show</h3><ul class=\"findings\">" +
       finding(G.both, overall.title, overall.dek, "From " + all.n + " cases, " + SPAN) +
@@ -395,8 +539,8 @@
   var BETTER = { ai: "The AI model did better here", phys: "The physics model did better here", even: "Too close to call here" };
   var lean = function (d) { return Math.abs(d) < 0.3 ? "no clear lean" : (d < 0 ? "ran " + D(d) + " cold" : "ran " + D(d) + " warm"); };
   var pinShape = function (b) {
-    return b === "ai" ? '<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="var(--paper)" stroke="var(--ai)" stroke-width="3"/></svg>'
-      : b === "phys" ? '<svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" fill="var(--paper)" stroke="var(--phys)" stroke-width="3"/></svg>'
+    return b === "ai" ? '<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="var(--paper)" stroke="var(--ai-mark)" stroke-width="3"/></svg>'
+      : b === "phys" ? '<svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" fill="var(--paper)" stroke="var(--phys-mark)" stroke-width="3"/></svg>'
         : '<svg viewBox="0 0 20 20"><path d="M10 2 18 10 10 18 2 10Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/></svg>';
   };
   function placePanel(name) {
@@ -615,7 +759,7 @@
     var idx = [];
     var steps = [["h-pick", "01 Pick a case", "choose a place evening how far ahead"], ["h-guess", "02 Guess first", "which forecast came closer guess"],
       ["h-result", "03 What happened", "result measured drawing"], ["h-bigger", "The bigger picture", "all cases average miss by place map findings"],
-      ["h-places", "By place", "map stations cities scale"], ["h-rain", "Rain", "rain precipitation wet dry caught missed false alarm"], ["h-scen", "04 Make a scenario", "who what where when why how decision rule"], ["h-words", "Words used here", "glossary"],
+      ["h-places", "By place", "map stations cities scale"], ["h-evenings", "Evening by evening", "chart line each evening running record ups and downs"], ["h-rain", "Rain", "rain precipitation wet dry caught missed false alarm"], ["h-scen", "04 Make a scenario", "who what where when why how decision rule"], ["h-words", "Words used here", "glossary"],
       ["h-about", "About and methods", "about methods how it works data noaa"], ["m-winner", "How we call a winner", "too close to call standard error noise statistics"],
       ["m-rain", "Rain", "rain precipitation 6 hours measurable"], ["m-access", "Accessibility", "accessibility wcag voiceover screen reader"],
       ["m-privacy", "Privacy", "privacy cookies tracking data stored"], ["m-sources", "Download the data", "download data csv json open data cc0 code github"],
@@ -712,6 +856,7 @@
     ], state.guess, function (v) { state.guess = v; $("hint").textContent = ""; });
     radios("sc-what", "sc-what", SC.what.map(function (w) { var l = whatLabel(w); return { value: w.value, label: l.label, small: l.small }; }), sc.what, scPick("what"));
     $("bigger").innerHTML = biggerHtml();
+    drawCharts();
     var okN = DATA.filter(function (r) { return r.observed && typeof r.aigfs === "number" && typeof r.gfs === "number"; }).length;
     $("bigger-sense").textContent = "One case says little. Here are all " + okN + " cases with a measurement: 6 places, " + EVENINGS + " " + SPAN.replace("evenings of", "evenings, from") +
       ", and 3 forecast lengths. A new evening is added each day.";
@@ -749,6 +894,35 @@
     var b = e.target.closest(".try");
     if (b) loadCase(b.dataset.city, b.dataset.valid, Number(b.dataset.lead));
   });
+  // The evening chart's readout: pointer and arrow keys, on the box (it survives redraws).
+  $("bigger").addEventListener("pointermove", function (e) {
+    var box = e.target.closest("#ev-chart"); if (!box || !evPlot.pts.length) return;
+    var px = e.clientX - box.getBoundingClientRect().left, best = 0;
+    evPlot.pts.forEach(function (p, i) { if (Math.abs(p - px) < Math.abs(evPlot.pts[best] - px)) best = i; });
+    showReadout(best);
+  });
+  $("bigger").addEventListener("pointerleave", function () { if (document.activeElement !== $("ev-chart")) showReadout(null); }, true);
+  $("bigger").addEventListener("keydown", function (e) {
+    if (e.target.id !== "ev-chart") return;
+    var n = evPlot.pts.length, i = evPlot.i == null ? -1 : evPlot.i;
+    if (e.key === "ArrowRight") i = Math.min(n - 1, i + 1);
+    else if (e.key === "ArrowLeft") i = i < 0 ? n - 1 : Math.max(0, i - 1);
+    else if (e.key === "Home") i = 0; else if (e.key === "End") i = n - 1;
+    else if (e.key === "Escape") { showReadout(null); return; } else return;
+    e.preventDefault(); showReadout(i);
+    var r = evPlot.rows[i];
+    announce("Evening of " + dayName(r.valid) + ": AI model " + fmt1(uScale(r.st.ai)) + ", physics model " + fmt1(uScale(r.st.ph)) + " " + (unit === "F" ? "degrees Fahrenheit" : "degrees Celsius") + ".");
+  });
+  $("bigger").addEventListener("focusout", function (e) { if (e.target.id === "ev-chart") showReadout(null); });
+  // What's in the record so far (audit P8): counts only, no winner, so the guess stays a real guess.
+  (function () {
+    var el = $("kpis"); if (!el || !VALIDS.length) return;
+    var okN = DATA.filter(function (r) { return r.observed && typeof r.aigfs === "number" && typeof r.gfs === "number"; }).length;
+    var last = new Intl.DateTimeFormat("en-GB", { month: "short", day: "numeric", timeZone: "UTC" }).format(new Date(new Date(VALIDS[VALIDS.length - 1]).getTime() - 86400000));
+    el.innerHTML = [["Evenings saved", EVENINGS], ["Cases checked", okN], ["Weather stations", CITIES.length], ["Latest evening", last]].map(function (k) {
+      return '<div class="kpi"><dt>' + k[0] + "</dt><dd>" + esc(k[1]) + "</dd></div>";
+    }).join("");
+  })();
   $("again").addEventListener("click", function () { newCase(); announce("Started again. Make a guess."); });
   $("theme").addEventListener("click", function () {
     var next = themeNow() === "dark" ? "light" : "dark";

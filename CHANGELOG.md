@@ -1,5 +1,12 @@
 # What's new
 
+## 0.6 (19 November 2026), still a prototype
+
+- **Titled a prototype** everywhere: the page title, a "Prototype" label above the name, link previews, the citation, the README and the GitHub description. It stays until the design is set.
+- **A clear start**: one "Start with a case" button in the opening, and what's in the record so far (evenings saved, cases checked, weather stations, latest evening). No winner in the opening, so the guess in step 02 stays a real guess.
+- **Charts**: average miss by how far ahead (a dot plot, the gap drawn between the two models) and evening by evening (two lines, with a readout that follows the pointer or the arrow keys). Each has a spoken summary and a table with the same numbers.
+- **Chart colors** checked for color blindness and contrast in both themes; circles and squares tell the models apart as well as color.
+
 ## 0.5 (19 November 2026)
 
 - **Rain on the page**: under each case ("And rain?"), as a table in the bigger picture (caught, missed, false alarms, rightly dry), and as a choice in the scenario.

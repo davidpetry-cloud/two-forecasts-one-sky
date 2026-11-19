@@ -1,12 +1,12 @@
 cff-version: 1.2.0
 message: "If you use this tool or its data, please cite it as below."
-title: "Two Forecasts, One Sky"
+title: "Two Forecasts, One Sky (prototype)"
 abstract: "A learning tool and open dataset comparing NOAA's AI weather model (AIGFS) and physics model (GFS) with what weather stations measured."
 type: software
 authors:
   - family-names: Petry
     given-names: David
-version: "0.5"
+version: "0.6"
 date-released: 2026-11-19
 url: "https://davidpetry-cloud.github.io/two-forecasts-one-sky/"
 repository-code: "https://github.com/davidpetry-cloud/two-forecasts-one-sky"

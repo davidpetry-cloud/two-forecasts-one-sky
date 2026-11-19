@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Two Forecasts, One Sky</title>
-<meta name="description" content="A learning tool: NOAA's AI weather model and its physics model, checked against what weather stations measured. Guess, see, and make your own forecast decisions. Open data, updated nightly.">
+<title>Two Forecasts, One Sky (prototype)</title>
+<meta name="description" content="A prototype learning tool: NOAA's AI weather model and its physics model, checked against what weather stations measured. Guess, see, and make your own forecast decisions. Open data, updated nightly.">
 <link rel="canonical" href="https://davidpetry-cloud.github.io/two-forecasts-one-sky/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#0E0F12">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Two Forecasts, One Sky">
-<meta property="og:title" content="Two Forecasts, One Sky">
-<meta property="og:description" content="A learning tool: NOAA's AI weather model and its physics model, checked against what weather stations measured. Guess, see, and make your own forecast decisions. Open data, updated nightly.">
+<meta property="og:title" content="Two Forecasts, One Sky (prototype)">
+<meta property="og:description" content="A prototype learning tool: NOAA's AI weather model and its physics model, checked against what weather stations measured. Guess, see, and make your own forecast decisions. Open data, updated nightly.">
 <meta property="og:url" content="https://davidpetry-cloud.github.io/two-forecasts-one-sky/">
 <meta property="og:image" content="https://davidpetry-cloud.github.io/two-forecasts-one-sky/social.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Two Forecasts, One Sky: NOAA's AI weather model and its physics model, checked against what weather stations measured. Not affiliated with NOAA.">
+<meta property="og:image:alt" content="Two Forecasts, One Sky, a prototype: NOAA's AI weather model and its physics model, checked against what weather stations measured. Not affiliated with NOAA.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="style.css">
 <script src="theme.js"></script>
@@ -39,7 +39,7 @@
 <noscript><p class="noscript">This page needs JavaScript to show its cases and charts. The data is also available as a <a href="data/cases.csv">CSV file</a>.</p></noscript>
 <header class="top" id="top">
   <div class="top-row">
-    <span class="tag">Prototype · 5 November 2026</span>
+    <span class="tag">Version <span class="app-version">0.6</span> · updated nightly</span>
     <div class="top-controls">
       <div class="units" role="group" aria-label="Units: °F with inches of rain, or °C with millimeters">
         <button type="button" class="unit-btn" data-unit="F" aria-pressed="true">°F</button>
@@ -49,8 +49,14 @@
     </div>
   </div>
   <div class="top-inner">
+    <p class="eyebrow"><span class="eyebrow__pill">Prototype</span> <span class="eyebrow__note">The design is still being worked out.</span></p>
     <h1>Two Forecasts, One Sky</h1>
     <p class="sub">NOAA now runs an <a class="term" href="#g-ai">AI weather model</a> beside its <a class="term" href="#g-phys">physics model</a>. Guess which one came closer, then see what really happened.</p>
+    <div class="start-row">
+      <a class="start" href="#h-pick">Start with a case <span aria-hidden="true">↓</span></a>
+      <span class="start-note">About 10 minutes · nothing to sign up for</span>
+    </div>
+    <dl class="kpis" id="kpis" aria-label="In the record so far"></dl>
   </div>
 </header>
 
@@ -200,7 +206,7 @@
       </ul>
 
       <h3 id="m-cite">How to cite</h3>
-      <p class="cite">Petry, D. (2026). <i>Two Forecasts, One Sky</i> (Version <span class="app-version">0.5</span>) [Learning tool and open data]. https://davidpetry-cloud.github.io/two-forecasts-one-sky/</p>
+      <p class="cite">Petry, D. (2026). <i>Two Forecasts, One Sky</i> (Version <span class="app-version">0.6</span>) [Prototype learning tool and open data]. https://davidpetry-cloud.github.io/two-forecasts-one-sky/</p>
       <p class="next"><a href="#top">Back to top ↑</a></p>
     </div>
   </section>
@@ -231,7 +237,7 @@
   <div class="body">
     <p>Data: NOAA / National Weather Service. Forecasts: AIGFS v1.1 and GFS from <a href="https://nomads.ncep.noaa.gov/">NOMADS</a>, the 00:00 UTC runs, 2 m temperature at the nearest grid point. Measurements: station readings from the <a href="https://www.weather.gov/documentation/services-web-api">NWS API</a>, nearest 00:00 UTC. Rain: each model's 6-hour total, and the rain in each station's 00:00 UTC report, from the <a href="https://aviationweather.gov/data/api/">NOAA Aviation Weather Center</a>. The AI model's version: <a href="https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf">NWS Service Change Notice 26-68</a>.</p>
     <p id="data-status"></p>
-    <p class="foot-links"><a href="#h-about">About and methods</a> <span aria-hidden="true">·</span> <a href="#m-access">Accessibility</a> <span aria-hidden="true">·</span> <a href="#m-privacy">Privacy</a> <span aria-hidden="true">·</span> <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">Report a problem or suggest an idea</a> <span aria-hidden="true">·</span> Version <span class="app-version">0.5</span>, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">what's new</a></p>
+    <p class="foot-links"><a href="#h-about">About and methods</a> <span aria-hidden="true">·</span> <a href="#m-access">Accessibility</a> <span aria-hidden="true">·</span> <a href="#m-privacy">Privacy</a> <span aria-hidden="true">·</span> <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">Report a problem or suggest an idea</a> <span aria-hidden="true">·</span> Version <span class="app-version">0.6</span>, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">what's new</a></p>
     <p>Not affiliated with or endorsed by NOAA. NWS material is not under copyright (17 U.S.C. § 403). The misses and averages are our own analysis.</p>
     <p>Design inspired by the <a href="https://www.media.mit.edu/">MIT Media Lab</a>'s website and its use of space. Thank you. Not affiliated with MIT.</p>
   </div>
