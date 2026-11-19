@@ -107,7 +107,15 @@ def main():
         return
     cache = Path(tempfile.mkdtemp(prefix="tf-archive-"))
     try:
-        obs = {n: with_retries(f"reading {s}", lambda s=s: observed(s, valid)) for n, (s, _, _) in CITIES.items()}
+        # A station that can't be reached costs only its own reading, never the night: the forecasts
+        # are the part NOAA deletes, so they are always saved. Missing readings are filled in later.
+        obs = {}
+        for n, (st, _, _) in CITIES.items():
+            try:
+                obs[n] = with_retries(f"reading {st}", lambda st=st: observed(st, valid))
+            except Exception as e:
+                obs[n] = None
+                print(f"  reading {st}: gave up for now: {e}", file=sys.stderr)
         rows, versions = [], {}
         for lead in LEADS:
             run = valid - timedelta(days=lead)
