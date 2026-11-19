@@ -117,8 +117,8 @@
     '<li><svg viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="var(--paper)" stroke="var(--ai)" stroke-width="3"/></svg>AI model (AIGFS)</li>' +
     '<li><svg viewBox="0 0 22 22"><rect x="3" y="3" width="16" height="16" fill="var(--paper)" stroke="var(--phys)" stroke-width="3"/></svg>Physics model (GFS)</li></ul>';
 
-  var NEXT_AFTER_RESULT = '<p class="next"><a href="#h-pick">Try another case ↑</a> <span aria-hidden="true">·</span> <a href="#h-bigger">Next: the bigger picture ↓</a></p>';
-  var PLACEHOLDER = '<p class="placeholder">Make a guess in step 02, then choose <b>Show what happened</b>.</p>';
+  var NEXT_AFTER_RESULT = '<p class="next"><a href="#h-pick">Try another case ↑</a> <span aria-hidden="true">·</span> <a href="#h-bigger">Next: the bigger picture ↓</a> <span aria-hidden="true">·</span> <a href="#top">Back to top ↑</a></p>';
+  var PLACEHOLDER = '<p class="placeholder">Make a guess in step 02, then choose <b>Show what happened</b>.</p><p class="next"><a href="#top">Back to top ↑</a></p>';
 
   function resultHtml(r) {
     var city = CITIES.find(function (c) { return c.name === r.city; });
