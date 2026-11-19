@@ -3,7 +3,7 @@
  "license": "CC0-1.0 (https://creativecommons.org/publicdomain/zero/1.0/); underlying NOAA/NWS data is public domain",
  "source": "NOAA / National Weather Service: AIGFS (NOMADS), GFS (NOAA open data on AWS), station readings (NWS API), station rain (NOAA Aviation Weather Center). Not affiliated with or endorsed by NOAA.",
  "notes": "Temperatures in deg C at 2 m, at each station's nearest grid point. Rain: 6-hour totals in mm ending at the evening (00:00 UTC); measured rain from the 6-hour group of each station's 00:00 UTC report (trace = less than 0.01 in). Empty values are missing, never zero. Methods: https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/docs/protocol.md",
- "built": "2026-11-19T15:03:23+00:00",
+ "built": "2026-11-19T15:33:38+00:00",
  "cases": [
   {
    "city": "Chicago",
@@ -2322,8 +2322,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Denver",
@@ -2338,8 +2338,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Miami",
@@ -2354,8 +2354,8 @@
    "measured_at_utc": "2026-11-10T23:53:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "New York",
@@ -2370,8 +2370,8 @@
    "measured_at_utc": "2026-11-10T23:51:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Phoenix",
@@ -2386,8 +2386,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Seattle",
@@ -2402,8 +2402,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.81,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 14.5,
+   "measured_rain_trace": false
   },
   {
    "city": "Chicago",
@@ -2418,8 +2418,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Denver",
@@ -2434,8 +2434,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Miami",
@@ -2450,8 +2450,8 @@
    "measured_at_utc": "2026-11-10T23:53:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.25,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "New York",
@@ -2466,8 +2466,8 @@
    "measured_at_utc": "2026-11-10T23:51:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Phoenix",
@@ -2482,8 +2482,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Seattle",
@@ -2498,8 +2498,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 3.75,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 14.5,
+   "measured_rain_trace": false
   },
   {
    "city": "Chicago",
@@ -2514,8 +2514,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Denver",
@@ -2530,8 +2530,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Miami",
@@ -2546,8 +2546,8 @@
    "measured_at_utc": "2026-11-10T23:53:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "New York",
@@ -2562,8 +2562,8 @@
    "measured_at_utc": "2026-11-10T23:51:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Phoenix",
@@ -2578,8 +2578,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Seattle",
@@ -2594,8 +2594,8 @@
    "measured_at_utc": "2026-11-11T00:05:00+00:00",
    "aigfs_rain_6h_mm": null,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 14.5,
+   "measured_rain_trace": false
   },
   {
    "city": "Chicago",
@@ -4626,8 +4626,8 @@
    "measured_at_utc": "2026-11-19T00:05:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Denver",
@@ -4642,8 +4642,8 @@
    "measured_at_utc": "2026-11-18T23:53:00+00:00",
    "aigfs_rain_6h_mm": 0.06,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Miami",
@@ -4658,8 +4658,8 @@
    "measured_at_utc": "2026-11-19T00:05:00+00:00",
    "aigfs_rain_6h_mm": 10.38,
    "gfs_rain_6h_mm": 8.75,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 16.0,
+   "measured_rain_trace": false
   },
   {
    "city": "New York",
@@ -4674,8 +4674,8 @@
    "measured_at_utc": "2026-11-18T23:51:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Phoenix",
@@ -4690,8 +4690,8 @@
    "measured_at_utc": "2026-11-18T23:51:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Seattle",
@@ -4706,8 +4706,8 @@
    "measured_at_utc": "2026-11-19T00:05:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.12,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": true
   },
   {
    "city": "Chicago",
@@ -4722,8 +4722,8 @@
    "measured_at_utc": "2026-11-19T00:05:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Denver",
@@ -4738,8 +4738,8 @@
    "measured_at_utc": "2026-11-18T23:53:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Miami",
@@ -4754,8 +4754,8 @@
    "measured_at_utc": "2026-11-19T00:05:00+00:00",
    "aigfs_rain_6h_mm": 6.06,
    "gfs_rain_6h_mm": 2.56,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 16.0,
+   "measured_rain_trace": false
   },
   {
    "city": "New York",
@@ -4770,8 +4770,8 @@
    "measured_at_utc": "2026-11-18T23:51:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Phoenix",
@@ -4786,8 +4786,8 @@
    "measured_at_utc": "2026-11-18T23:51:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Seattle",
@@ -4802,8 +4802,8 @@
    "measured_at_utc": "2026-11-19T00:05:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.12,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": true
   },
   {
    "city": "Chicago",
@@ -4818,8 +4818,8 @@
    "measured_at_utc": "2026-11-19T00:05:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Denver",
@@ -4834,8 +4834,8 @@
    "measured_at_utc": "2026-11-18T23:53:00+00:00",
    "aigfs_rain_6h_mm": 0.44,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Miami",
@@ -4850,8 +4850,8 @@
    "measured_at_utc": "2026-11-19T00:05:00+00:00",
    "aigfs_rain_6h_mm": 0.44,
    "gfs_rain_6h_mm": 0.06,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 16.0,
+   "measured_rain_trace": false
   },
   {
    "city": "New York",
@@ -4866,8 +4866,8 @@
    "measured_at_utc": "2026-11-18T23:51:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Phoenix",
@@ -4882,8 +4882,8 @@
    "measured_at_utc": "2026-11-18T23:51:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.0,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": false
   },
   {
    "city": "Seattle",
@@ -4898,8 +4898,8 @@
    "measured_at_utc": "2026-11-19T00:05:00+00:00",
    "aigfs_rain_6h_mm": 0.0,
    "gfs_rain_6h_mm": 0.62,
-   "measured_rain_6h_mm": null,
-   "measured_rain_trace": null
+   "measured_rain_6h_mm": 0.0,
+   "measured_rain_trace": true
   }
  ]
 }
