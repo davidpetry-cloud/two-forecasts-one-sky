@@ -39,8 +39,8 @@ is in demand. Five sketches came out of it; this project is Sketch A.
    in the page itself, with no outside service and nothing stored. A labeled field,
    results as a list you can use with the keyboard, a spoken count ("3 results"), and a
    plain "no results" message with suggestions. The course hub's search is a model.
-3. **VoiceOver pass** on Mac and iPhone. *Structure checked 6 November (labels, landmarks, live regions, tables, images, focus); listening still needs a person.*
-4. *Plan ready: [`user-session-plan.md`](user-session-plan.md).* **A session with three to five people** from the audiences: educators, professionals, students, plus one forecaster or emergency manager.
+3. ✅ **Done by David, 19 November 2026: good.** **VoiceOver pass** on Mac and iPhone. *Structure checked 6 November (labels, landmarks, live regions, tables, images, focus); listening still needs a person.*
+4. ✅ **Done by David, 19 November 2026: good.** *Plan: [`user-session-plan.md`](user-session-plan.md).* **A session with three to five people** from the audiences: educators, professionals, students, plus one forecaster or emergency manager.
 5. **Windows forced-colors check.** *Rules added 6 November (selection, focus, map, buttons by system colors; shapes carry meaning); still needs a look on Windows.*
 6. ✅ **Running from 6 November; the page reads it from 13 November** (GitHub Action; User-Agent names the repository). **Nightly archive.** NOMADS keeps only about 10 days of AIGFS, so the record exists only once something saves it. Once a day, the one variable needed, a User-Agent with contact details David chooses.
 7. **Spelling:** David's call, US or British, for a US audience.
