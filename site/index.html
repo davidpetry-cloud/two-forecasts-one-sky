@@ -23,13 +23,25 @@
 <script src="theme.js"></script>
 </head>
 <body>
+<!-- Navigation icons (19 November 2026): line drawings, one stroke weight, color from the text. Drawn once, reused by <use>. -->
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-pick" viewBox="0 0 24 24"><path d="M12 21.5s-6.5-6-6.5-11.5a6.5 6.5 0 0 1 13 0c0 5.5-6.5 11.5-6.5 11.5Z"/><circle cx="12" cy="10" r="2.4"/></symbol>
+  <symbol id="i-guess" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M9.4 9.3a2.7 2.7 0 1 1 3.9 2.4c-.8.4-1.3 1-1.3 1.9v.6"/><path d="M12 17.4v.1"/></symbol>
+  <symbol id="i-result" viewBox="0 0 24 24"><path d="M1.8 12S5.5 5.2 12 5.2 22.2 12 22.2 12 18.5 18.8 12 18.8 1.8 12 1.8 12Z"/><circle cx="12" cy="12" r="3.2"/></symbol>
+  <symbol id="i-bigger" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1.5"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></symbol>
+  <symbol id="i-rain" viewBox="0 0 24 24"><path d="M12 2.5S5.5 9.8 5.5 15a6.5 6.5 0 0 0 13 0C18.5 9.8 12 2.5 12 2.5Z"/><path d="M9 15.5a3 3 0 0 0 3 3"/></symbol>
+  <symbol id="i-scen" viewBox="0 0 24 24"><path d="M12 2.5v19M12 5h6.5l2.5 2.5-2.5 2.5H12M12 12.5H5.5L3 15l2.5 2.5H12M8.5 21.5h7"/></symbol>
+  <symbol id="i-about" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.4v.1"/></symbol>
+  <symbol id="i-words" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.4 3 4.8v14c4-.4 7 .2 9 1.7 2-1.5 5-2.1 9-1.7v-14c-4-.4-7 .2-9 1.7ZM12 6.5v14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
+</svg>
 <a class="skip" href="#content">Skip to the activity</a>
 <noscript><p class="noscript">This page needs JavaScript to show its cases and charts. The data is also available as a <a href="data/cases.csv">CSV file</a>.</p></noscript>
 <header class="top" id="top">
   <div class="top-row">
     <span class="tag">Prototype · 5 November 2026</span>
     <div class="top-controls">
-      <div class="units" role="group" aria-label="Temperature units">
+      <div class="units" role="group" aria-label="Units: °F with inches of rain, or °C with millimeters">
         <button type="button" class="unit-btn" data-unit="F" aria-pressed="true">°F</button>
         <button type="button" class="unit-btn" data-unit="C" aria-pressed="false">°C</button>
       </div>
@@ -48,7 +60,7 @@
     <div class="body">
       <p class="notice">This is a prototype for learning, not a forecast. For real forecasts and warnings, go to <a href="https://www.weather.gov/">weather.gov</a>. The AI model is new: see <a href="#f-limits">what it can't do yet</a>. It takes about 10 minutes.</p>
       <div class="search" role="search">
-        <label for="q" class="search__label">Search this page</label>
+        <label for="q" class="search__label"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>Search this page</label>
         <input type="search" id="q" class="search__input" autocomplete="off" spellcheck="false" placeholder="A place, a date, a word…" aria-describedby="q-status">
         <p class="hint search__status" id="q-status" role="status">Try "Central Park", "4 November", "bias" or "farmer".</p>
         <ul class="search__results" id="q-results"></ul>
@@ -56,20 +68,21 @@
       <nav class="toc" aria-label="On this page">
         <h2 class="toc__h">On this page</h2>
         <ol>
-          <li><a href="#h-pick"><span class="toc__n">01</span> Pick a case</a></li>
-          <li><a href="#h-guess"><span class="toc__n">02</span> Guess first</a></li>
-          <li><a href="#h-result"><span class="toc__n">03</span> What happened</a></li>
-          <li><a href="#h-bigger"><span class="toc__n">—</span> The bigger picture</a></li>
-          <li><a href="#h-scen"><span class="toc__n">04</span> Make a scenario</a></li>
-          <li><a href="#h-about"><span class="toc__n">—</span> About and methods</a></li>
-          <li><a href="#h-words"><span class="toc__n">—</span> Words used here</a></li>
+          <li><a href="#h-pick"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-pick"/></svg><span class="toc__n">01</span> Pick a case</a></li>
+          <li><a href="#h-guess"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-guess"/></svg><span class="toc__n">02</span> Guess first</a></li>
+          <li><a href="#h-result"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-result"/></svg><span class="toc__n">03</span> What happened</a></li>
+          <li><a href="#h-bigger"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-bigger"/></svg><span class="toc__n">—</span> The bigger picture</a></li>
+          <li><a href="#h-rain"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-rain"/></svg><span class="toc__n">—</span> Rain</a></li>
+          <li><a href="#h-scen"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-scen"/></svg><span class="toc__n">04</span> Make a scenario</a></li>
+          <li><a href="#h-about"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-about"/></svg><span class="toc__n">—</span> About and methods</a></li>
+          <li><a href="#h-words"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-words"/></svg><span class="toc__n">—</span> Words used here</a></li>
         </ol>
       </nav>
     </div>
   </div>
 
   <section class="band" aria-labelledby="h-pick">
-    <div class="mark" aria-hidden="true"><span class="step-num">01</span></div>
+    <div class="mark" aria-hidden="true"><span class="step-num">01</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-pick"/></svg></div>
     <div class="body">
       <h2 id="h-pick">Pick a case</h2>
       <p class="sense">Choose a place, an evening, and how far ahead the forecast was made.</p>
@@ -91,7 +104,7 @@
   </section>
 
   <section class="band" aria-labelledby="h-guess">
-    <div class="mark" aria-hidden="true"><span class="step-num">02</span></div>
+    <div class="mark" aria-hidden="true"><span class="step-num">02</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-guess"/></svg></div>
     <div class="body">
       <h2 id="h-guess">Guess first</h2>
       <p class="gloss">The <b>AI model</b> (AIGFS) learned from years of past weather. The <b>physics model</b> (GFS) is built from the laws of motion, heat and moisture.</p>
@@ -110,7 +123,7 @@
   </section>
 
   <section class="band" aria-labelledby="h-result" id="result">
-    <div class="mark" aria-hidden="true"><span class="step-num">03</span></div>
+    <div class="mark" aria-hidden="true"><span class="step-num">03</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-result"/></svg></div>
     <div class="body">
       <h2 id="h-result" tabindex="-1">What happened</h2>
       <div id="result-body"></div>
@@ -118,7 +131,7 @@
   </section>
 
   <section class="band" aria-labelledby="h-bigger">
-    <div class="mark" aria-hidden="true"><span class="label">All cases</span></div>
+    <div class="mark" aria-hidden="true"><span class="label">All cases</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-bigger"/></svg></div>
     <div class="body bigger">
       <h2 id="h-bigger">The bigger picture</h2>
       <p class="sense" id="bigger-sense">One case says little. Here are all the cases with a measurement.</p>
@@ -128,7 +141,7 @@
   </section>
 
   <section class="band" aria-labelledby="h-scen" id="scenario">
-    <div class="mark" aria-hidden="true"><span class="step-num">04</span></div>
+    <div class="mark" aria-hidden="true"><span class="step-num">04</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-scen"/></svg></div>
     <div class="body">
       <h2 id="h-scen">Make a scenario</h2>
       <p class="sense">Turn a forecast into a decision. Answer six questions. The results change as you go.</p>
@@ -148,7 +161,7 @@
   </section>
 
   <section class="band" aria-labelledby="h-about" id="about">
-    <div class="mark" aria-hidden="true"><span class="label">About</span></div>
+    <div class="mark" aria-hidden="true"><span class="label">About</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-about"/></svg></div>
     <div class="body about">
       <h2 id="h-about">About and methods</h2>
       <p class="sense">How the comparison works, what it can and can't tell you, and where everything comes from.</p>
@@ -163,7 +176,8 @@
       <p>We only say a model did better when its average advantage is more than twice its standard error, a common rule of thumb for "bigger than the day-to-day ups and downs". Otherwise we say it's too close to call. It's a rough guide: cases on the same evening share the same weather, so they aren't fully independent. Counts always come with their share, such as "31 of 96 (32%)".</p>
 
       <h3 id="m-rain">Rain</h3>
-      <p>Since 19 November 2026 the archive also saves rain: each model's total for the 6 hours ending at 00:00 UTC, and what each station measured in the same 6 hours. A station that reports no rain while its rain gauge works counts as dry; a broken or missing report counts as missing, never as dry. "Rain" means at least 0.01 inch, the National Weather Service's measurable amount. Rain will appear on this page once enough evenings are saved.</p>
+      <p>Since 19 November 2026 the archive also saves rain: each model's total for the 6 hours ending at 00:00 UTC, and what each station measured in the same 6 hours. A station that reports no rain while its rain gauge works counts as dry; a broken or missing report counts as missing, never as dry. "Rain" means at least 0.01 inch, the National Weather Service's measurable amount. Earlier evenings were filled in where the sources still had them: station reports from the past two weeks, physics model forecasts from its long archive, and AI model forecasts only from runs NOAA still kept (about 10 days). So far fewer cases have rain than temperature.</p>
+      <p>Rain shows in three places: under each case in step 03, as a table in the bigger picture, and as a choice in the scenario. A model's rain forecast counts as "rain" when it gives at least 0.01 inch. Because one rainy evening counts up to three times (once for each forecast length), we won't call a model better at rain until the record holds at least 10 rainy place-evenings, and then only by the same twice-the-standard-error rule.</p>
 
       <h3 id="m-limits">What this can't tell you</h3>
       <p>Six stations and a few weeks of evenings are a small sample, and the findings will change as the record grows. A grid point can miss what makes a place special, such as a city park or a valley. This is a learning tool, not a forecast: for real forecasts and warnings, go to <a href="https://www.weather.gov/">weather.gov</a>. See also <a href="#f-limits">what the AI model can't do yet</a>.</p>
@@ -186,13 +200,13 @@
       </ul>
 
       <h3 id="m-cite">How to cite</h3>
-      <p class="cite">Petry, D. (2026). <i>Two Forecasts, One Sky</i> (Version <span class="app-version">0.4</span>) [Learning tool and open data]. https://davidpetry-cloud.github.io/two-forecasts-one-sky/</p>
+      <p class="cite">Petry, D. (2026). <i>Two Forecasts, One Sky</i> (Version <span class="app-version">0.5</span>) [Learning tool and open data]. https://davidpetry-cloud.github.io/two-forecasts-one-sky/</p>
       <p class="next"><a href="#top">Back to top ↑</a></p>
     </div>
   </section>
 
   <section class="band" aria-labelledby="h-words">
-    <div class="mark" aria-hidden="true"><span class="label">Glossary</span></div>
+    <div class="mark" aria-hidden="true"><span class="label">Glossary</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-words"/></svg></div>
     <div class="body">
       <h2 id="h-words">Words used here</h2>
       <dl>
@@ -204,6 +218,7 @@
         <dt id="g-cold">Running cold</dt><dd>Forecasting lower temperatures than really happened, again and again. Scientists call a lean like this a <i>bias</i>.</dd>
         <dt id="g-rule">Rule</dt><dd>What you decide to do with the forecasts, such as "act only if both models agree".</dd>
         <dt id="g-alarm">False alarm</dt><dd>You acted, and the weather didn't come.</dd>
+        <dt id="g-rain">Measurable rain</dt><dd>At least 0.01 inch (0.25 mm) in the 6 hours. Less than that is called a <i>trace</i>, and counts as dry.</dd>
         <dt id="g-caught">Caught off guard</dt><dd>The weather came, and you hadn't acted.</dd>
       </dl>
       <p class="next"><a href="#top">Back to top ↑</a></p>
@@ -214,9 +229,9 @@
 <footer class="band band--foot">
   <div class="mark" aria-hidden="true"><span class="label">Sources</span></div>
   <div class="body">
-    <p>Data: NOAA / National Weather Service. Forecasts: AIGFS v1.1 and GFS from <a href="https://nomads.ncep.noaa.gov/">NOMADS</a>, the 00:00 UTC runs, 2 m temperature at the nearest grid point. Measurements: station readings from the <a href="https://www.weather.gov/documentation/services-web-api">NWS API</a>, nearest 00:00 UTC. The AI model's version: <a href="https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf">NWS Service Change Notice 26-68</a>.</p>
+    <p>Data: NOAA / National Weather Service. Forecasts: AIGFS v1.1 and GFS from <a href="https://nomads.ncep.noaa.gov/">NOMADS</a>, the 00:00 UTC runs, 2 m temperature at the nearest grid point. Measurements: station readings from the <a href="https://www.weather.gov/documentation/services-web-api">NWS API</a>, nearest 00:00 UTC. Rain: each model's 6-hour total, and the rain in each station's 00:00 UTC report, from the <a href="https://aviationweather.gov/data/api/">NOAA Aviation Weather Center</a>. The AI model's version: <a href="https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf">NWS Service Change Notice 26-68</a>.</p>
     <p id="data-status"></p>
-    <p class="foot-links"><a href="#h-about">About and methods</a> <span aria-hidden="true">·</span> <a href="#m-access">Accessibility</a> <span aria-hidden="true">·</span> <a href="#m-privacy">Privacy</a> <span aria-hidden="true">·</span> <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">Report a problem or suggest an idea</a> <span aria-hidden="true">·</span> Version <span class="app-version">0.4</span>, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">what's new</a></p>
+    <p class="foot-links"><a href="#h-about">About and methods</a> <span aria-hidden="true">·</span> <a href="#m-access">Accessibility</a> <span aria-hidden="true">·</span> <a href="#m-privacy">Privacy</a> <span aria-hidden="true">·</span> <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">Report a problem or suggest an idea</a> <span aria-hidden="true">·</span> Version <span class="app-version">0.5</span>, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">what's new</a></p>
     <p>Not affiliated with or endorsed by NOAA. NWS material is not under copyright (17 U.S.C. § 403). The misses and averages are our own analysis.</p>
     <p>Design inspired by the <a href="https://www.media.mit.edu/">MIT Media Lab</a>'s website and its use of space. Thank you. Not affiliated with MIT.</p>
   </div>

@@ -1,5 +1,12 @@
 # What's new
 
+## 0.5 (19 November 2026)
+
+- **Rain on the page**: under each case ("And rain?"), as a table in the bigger picture (caught, missed, false alarms, rightly dry), and as a choice in the scenario.
+- **Rain is called carefully**: no model is called better at rain until the record holds at least 10 rainy place-evenings, because one rainy evening counts up to three times. For now it says "too early to call".
+- **Rain follows the units switch**: inches with °F, millimeters with °C.
+- **Icons for finding your way**: line icons beside every entry in "On this page" and beside each section's number, and a Rain entry in the page list.
+
 ## 0.4 (19 November 2026)
 
 - **Public**, after a protocol check. Live at https://davidpetry-cloud.github.io/two-forecasts-one-sky/

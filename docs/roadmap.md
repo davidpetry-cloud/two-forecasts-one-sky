@@ -50,7 +50,7 @@ is in demand. Five sketches came out of it; this project is Sketch A.
 
 - **Any number of forecasts:** AI, physics, hybrid, ensembles, a human forecaster, local and Indigenous knowledge (with consent and credit), future methods (quantum-assisted, if it ever earns it).
 - **Uncertainty as a range:** AIGEFS (31 AI members) and HGEFS (62, hybrid): "a range, not a number".
-- **More weather:** rain (AIGFS has it) and wind. Not gusts, visibility or radar: AIGFS doesn't make them yet.
+- **More weather:** rain (done 19 November 2026: archived nightly, and on the page in version 0.5) and wind. Not gusts, visibility or radar: AIGFS doesn't make them yet.
 - **Fit for purpose:** each lens says which forecast suits its decision (grid size, variables, lead time), and when the AI model is the wrong tool.
 - **Version history:** a timeline of model versions, and whether scores moved after each.
 - **Tropical cyclones:** test NOAA's v1.1 claim against a season of storm tracks.

@@ -57,6 +57,53 @@
     };
   }
   var share = function (a, b, noun) { return a + " of " + b + (noun ? " " + noun : "") + (b ? " (" + Math.round(a / b * 100) + "%)" : ""); };
+
+  // ---------- rain: the 6 hours ending at the evening (00:00 UTC) ----------
+  // "Rain" means at least 0.01 inch, the NWS's measurable amount (0.254 mm; the models' files store it as 0.25).
+  var WET = 0.25;
+  var hasRainObs = function (r) { return !!(r.rain_obs && typeof r.rain_obs.mm === "number"); };
+  var rainCase = function (r) { return hasRainObs(r) && typeof r.aigfs_rain === "number" && typeof r.gfs_rain === "number"; };
+  var wetMin = function () { return unit === "F" ? "0.01 in" : "0.25 mm"; };
+  // Rain follows the units switch: inches with °F, millimeters with °C, the other in brackets.
+  var R = function (mm) {
+    var i = (Math.round(mm / 25.4 * 100) / 100).toFixed(2) + " in", m = (Math.round(mm * 10) / 10).toFixed(1) + " mm";
+    return unit === "F" ? i + " (" + m + ")" : m + " (" + i + ")";
+  };
+  var Rshort = function (mm) { return unit === "F" ? (Math.round(mm / 25.4 * 100) / 100).toFixed(2) + " in" : (Math.round(mm * 10) / 10).toFixed(1) + " mm"; };
+  var fcRain = function (mm) { return mm >= WET ? "Rain, " + R(mm) : mm > 0 ? "Dry (a little, under " + wetMin() + ")" : "Dry"; };
+  var obsRain = function (r) {
+    if (!hasRainObs(r)) return "No report";
+    return r.rain_obs.mm >= WET ? "Rain, " + R(r.rain_obs.mm) : r.rain_obs.trace ? "Dry (a trace, too little to measure)" : "Dry";
+  };
+  var rainOutcome = function (f, o) { return f ? (o ? "Right: it rained" : "Wrong: a false alarm") : (o ? "Wrong: it missed the rain" : "Right: it stayed dry"); };
+  // Compare the two models on rain over the cases where all three are saved. Same 2-standard-error rule as for
+  // temperature, on how often each was right. One rainy evening counts up to three times (once per forecast
+  // length), so no model is called better until at least 10 rainy place-evenings are in the record.
+  var RAIN_EVENTS_MIN = 10;
+  function compareRain(rows) {
+    var ok = rows.filter(rainCase), n = ok.length;
+    var tally = function (key) {
+      var t = { hit: 0, miss: 0, fa: 0, quiet: 0 };
+      ok.forEach(function (r) { var f = r[key] >= WET, o = r.rain_obs.mm >= WET; t[f ? (o ? "hit" : "fa") : (o ? "miss" : "quiet")]++; });
+      t.right = t.hit + t.quiet; return t;
+    };
+    var right = function (r, key) { return (r[key] >= WET) === (r.rain_obs.mm >= WET) ? 1 : 0; };
+    var d = ok.map(function (r) { return right(r, "aigfs_rain") - right(r, "gfs_rain"); }); // > 0: the AI model was right more often
+    var sum = function (xs) { return xs.reduce(function (a, v) { return a + v; }, 0); };
+    var md = n ? sum(d) / n : 0;
+    var sd = n > 1 ? Math.sqrt(sum(d.map(function (v) { return (v - md) * (v - md); })) / (n - 1)) : 0;
+    var se = n > 1 ? sd / Math.sqrt(n) : Infinity;
+    var wetRows = ok.filter(function (r) { return r.rain_obs.mm >= WET; });
+    var events = new Set(wetRows.map(function (r) { return r.city + "|" + r.valid; })).size;
+    var leads = LEADS.map(function (L) { return [L, ok.filter(function (r) { return r.lead_days === L; }).length]; });
+    return {
+      n: n, wet: wetRows.length, events: events, evenings: new Set(ok.map(function (r) { return r.valid; })).size,
+      ai: tally("aigfs_rain"), ph: tally("gfs_rain"), leads: leads, rows: ok,
+      few: events < RAIN_EVENTS_MIN,
+      verdict: events < RAIN_EVENTS_MIN || n < 5 || Math.abs(md) <= 2 * se ? "even" : md > 0 ? "ai" : "phys"
+    };
+  }
+  window.TF_compareRain = compareRain; // for checking in the console
   var dir = function (d) { return Math.abs(d) < 0.05 ? "spot on" : (d < 0 ? "too cold" : "too warm"); };
   var dayName = function (iso, utcDay) {
     var d = new Date(iso);
@@ -139,13 +186,42 @@
   var NEXT_AFTER_RESULT = '<p class="next"><a href="#h-pick">Try another case ↑</a> <span aria-hidden="true">·</span> <a href="#h-bigger">Next: the bigger picture ↓</a> <span aria-hidden="true">·</span> <a href="#top">Back to top ↑</a></p>';
   var PLACEHOLDER = '<p class="placeholder">Make a guess in step 02, then choose <b>Show what happened</b>.</p><p class="next"><a href="#top">Back to top ↑</a></p>';
 
+  // Rain for one case, after the temperature: no guess, just what each model said and what fell.
+  var ICON = function (id, cls) { return '<svg class="ico' + (cls ? " " + cls : "") + '" aria-hidden="true" focusable="false"><use href="#i-' + id + '"/></svg>'; };
+  function caseRainHtml(r) {
+    var head = '<h3 id="h-case-rain">' + ICON("rain") + "And rain?</h3>";
+    var anyRain = hasRainObs(r) || typeof r.aigfs_rain === "number" || typeof r.gfs_rain === "number";
+    if (!anyRain) {
+      return head + '<p class="hint">Rain wasn\'t saved for this evening. The archive began saving rain on 19 November 2026, and filled in earlier evenings only where the sources still had them.</p>';
+    }
+    var o = hasRainObs(r) ? r.rain_obs.mm >= WET : null;
+    var line = function (key) {
+      if (typeof r[key] !== "number") return { said: "Not saved", out: "—" };
+      return { said: fcRain(r[key]), out: o === null ? "Can't tell" : rainOutcome(r[key] >= WET, o) };
+    };
+    var a = line("aigfs_rain"), g = line("gfs_rain");
+    var notes = [];
+    if (typeof r.aigfs_rain !== "number") notes.push("NOAA keeps the AI model's forecasts for only about 10 days, so its rain from older runs couldn't be saved.");
+    if (!hasRainObs(r)) notes.push("The station's report for this evening had no usable rain group, so the measurement counts as missing, never as dry.");
+    return head + '<p class="sense rain-sense">Rain in the 6 hours before the evening. At least ' + wetMin() + " counts as rain.</p>" +
+      '<div class="wide"><table><caption>Rain, ' + esc(r.city) + ", evening of " + dayName(r.valid) + "</caption>" +
+      '<thead><tr><th scope="col">Source</th><th scope="col">Rain</th><th scope="col">Right?</th></tr></thead><tbody>' +
+      '<tr><th scope="row">Measured</th><td>' + obsRain(r) + "</td><td>—</td></tr>" +
+      '<tr><th scope="row" class="ai-text">AI model</th><td>' + a.said + "</td><td>" + a.out + "</td></tr>" +
+      '<tr><th scope="row" class="phys-text">Physics model</th><td>' + g.said + "</td><td>" + g.out + "</td></tr></tbody></table>" +
+      '<ul class="ref-list"><li><b>Measured:</b> ' + obsRain(r) + "</li>" +
+      '<li><b class="ai-text">AI model:</b> ' + a.said + (a.out !== "—" ? ". " + a.out : "") + "</li>" +
+      '<li><b class="phys-text">Physics model:</b> ' + g.said + (g.out !== "—" ? ". " + g.out : "") + "</li></ul></div>" +
+      (notes.length ? '<p class="hint">' + notes.join(" ") + "</p>" : "");
+  }
+
   function resultHtml(r) {
     var city = CITIES.find(function (c) { return c.name === r.city; });
     var when = "Both forecasts were made " + r.lead_days + " days earlier, on the evening of " + dayName(r.run) + ".";
     if (!r.observed || typeof r.aigfs !== "number" || typeof r.gfs !== "number") {
       return '<p class="missing"><b>No reading for this evening.</b> The ' + esc(city.place) + " station sent no temperature near this time, " +
         "so there is nothing to check the forecasts against. Instruments do miss readings, and an honest tool says so.</p>" +
-        '<p class="hint">The AI model said ' + T(r.aigfs) + "; the physics model said " + T(r.gfs) + ". " + when + "</p>" + NEXT_AFTER_RESULT;
+        '<p class="hint">The AI model said ' + T(r.aigfs) + "; the physics model said " + T(r.gfs) + ". " + when + "</p>" + caseRainHtml(r) + NEXT_AFTER_RESULT;
     }
     var o = r.observed.c, ea = r.aigfs - o, eg = r.gfs - o;
     fig.o = o; fig.a = r.aigfs; fig.g = r.gfs;
@@ -168,7 +244,7 @@
       '<li><b class="ai-text">AI model:</b> ' + T(r.aigfs) + ", missed by " + D(ea) + " " + dir(ea) + "</li>" +
       '<li><b class="phys-text">Physics model:</b> ' + T(r.gfs) + ", missed by " + D(eg) + " " + dir(eg) + "</li></ul></div>" +
       '<p class="hint">Forecasts are estimates, so they are shown in whole degrees; the misses come from the exact numbers. ' +
-      "Measured at " + esc(at) + " local time at " + esc(city.place) + " (station " + city.station + "). " + when + "</p>" + NEXT_AFTER_RESULT;
+      "Measured at " + esc(at) + " local time at " + esc(city.place) + " (station " + city.station + "). " + when + "</p>" + caseRainHtml(r) + NEXT_AFTER_RESULT;
   }
 
   // Step 03 always shows, so the numbering never jumps (audit 8); the button says whether its content is open (audit 11).
@@ -192,6 +268,26 @@
   }
 
   // ---------- the bigger picture ----------
+  // Rain, as hits, misses and false alarms: the same four outcomes as the scenario, so the words carry over.
+  function rainSectionHtml(rs) {
+    if (!rs.n) return "";
+    var leadsText = rs.leads.filter(function (p) { return p[1]; }).map(function (p) { return p[1] + " at " + p[0] + " days"; }).join(", ");
+    var row = function (label, cls, t) {
+      return '<tr><th scope="row" class="grid-mark"><span class="' + cls + '">' + label + '</span></th><td class="num">' + share(t.hit, rs.wet) + '</td><td class="num">' + t.miss +
+        '</td><td class="num">' + t.fa + '</td><td class="num">' + share(t.quiet, rs.n - rs.wet) + "</td></tr>";
+    };
+    var item = function (label, cls, t) {
+      return '<li><b class="' + cls + '">' + label + ":</b> caught the rain in " + share(t.hit, rs.wet) + ", missed it " + plural(t.miss, "time", "times") + ", " +
+        plural(t.fa, "false alarm", "false alarms") + ", and right that it stayed dry in " + share(t.quiet, rs.n - rs.wet) + ".</li>";
+    };
+    return '<h3 id="h-rain" tabindex="-1">' + ICON("rain") + "Rain</h3>" +
+      '<p class="hint">Did it rain in the 6 hours before the evening? Counted only where both models\' rain and the station\'s report are saved: ' +
+      rs.n + " cases from " + plural(rs.evenings, "evening", "evenings") + " (" + leadsText + "). What it means is in the findings below.</p>" +
+      '<table class="hairgrid rain-table"><caption>Rain forecasts against what the stations measured, in ' + rs.n + " cases (rain in " + rs.wet + ")</caption>" +
+      '<thead><tr><th scope="col" class="grid-mark">Model</th><th scope="col">Caught the rain</th><th scope="col">Missed it</th><th scope="col">False alarm</th><th scope="col">Right that it stayed dry</th></tr></thead><tbody>' +
+      row("AI model", "ai-text", rs.ai) + row("Physics model", "phys-text", rs.ph) + "</tbody></table>" +
+      '<ul class="ref-list">' + item("AI model", "ai-text", rs.ai) + item("Physics model", "phys-text", rs.ph) + "</ul>";
+  }
   function biggerHtml() {
     var ok = DATA.filter(function (r) { return r.observed && typeof r.aigfs === "number" && typeof r.gfs === "number"; });
     var mean = function (xs) { return xs.reduce(function (s, v) { return s + v; }, 0) / xs.length; };
@@ -245,15 +341,29 @@
       cold: '<svg viewBox="0 0 48 24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--ai)" stroke-width="3"/><path d="M30 6v12m-6-6 6 6 6-6" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       grid: '<svg viewBox="0 0 48 24"><path d="M3 3h30v18H3zM13 3v18M23 3v18M3 12h30" fill="none" stroke="var(--ink)" stroke-width="2"/><circle cx="40" cy="12" r="3" fill="var(--ai)"/></svg>',
       version: '<svg viewBox="0 0 48 24"><rect x="3" y="4" width="34" height="16" rx="8" fill="none" stroke="var(--ink)" stroke-width="2.5"/><circle cx="12" cy="12" r="3" fill="var(--ink)"/></svg>',
-      missing: '<svg viewBox="0 0 48 24"><path d="M12 2 22 12 12 22 2 12Z" fill="none" stroke="var(--obs)" stroke-width="2.5" stroke-dasharray="4 3"/></svg>'
+      missing: '<svg viewBox="0 0 48 24"><path d="M12 2 22 12 12 22 2 12Z" fill="none" stroke="var(--obs)" stroke-width="2.5" stroke-dasharray="4 3"/></svg>',
+      rain: '<svg viewBox="0 0 48 24"><path d="M12 2C12 2 5.5 9.5 5.5 15a6.5 6.5 0 0 0 13 0C18.5 9.5 12 2 12 2Z" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="12" r="6" fill="none" stroke="var(--ai)" stroke-width="2.5"/><rect x="40" y="7" width="6" height="10" fill="none" stroke="var(--phys)" stroke-width="2"/></svg>'
     };
+    var rs = compareRain(DATA);
+    var rainF = { title: "", dek: "", tryIt: null };
+    if (rs.n) {
+      rainF.title = rs.verdict === "ai" ? "The AI model has done better at rain" : rs.verdict === "phys" ? "The physics model has done better at rain"
+        : rs.few ? "Rain: too early to call" : "Rain: too close to call";
+      rainF.dek = "It rained in " + plural(rs.wet, "case", "cases") + ". The AI model caught the rain in " + share(rs.ai.hit, rs.wet) + ", the physics model in " + share(rs.ph.hit, rs.wet) + ". " +
+        "False alarms: " + rs.ai.fa + " for the AI model, " + rs.ph.fa + " for the physics model. " +
+        (rs.few ? "These come from only " + plural(rs.events, "rainy place-evening", "rainy place-evenings") + ", and one rainy evening counts up to three times, so this is an early sign, not a finding."
+          : rs.verdict === "even" ? "That gap is smaller than the day-to-day ups and downs." : "That gap is bigger than the day-to-day ups and downs.");
+      var split = rs.rows.filter(function (r) { return r.rain_obs.mm >= WET && (r.aigfs_rain >= WET) !== (r.gfs_rain >= WET); });
+      var pickR = (split.length ? split : rs.rows.filter(function (r) { return r.rain_obs.mm >= WET; })).slice().sort(function (a, b) { return a.valid < b.valid ? 1 : -1; })[0];
+      if (pickR) rainF.tryIt = { city: pickR.city, valid: pickR.valid, lead: pickR.lead_days, label: pickR.city + ", " + dayName(pickR.valid) };
+    }
     var SCN = '<a href="https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf">NWS Service Change Notice 26-68</a>';
     return '<table class="hairgrid"><caption>Average miss, by how far ahead the forecast was made</caption>' +
       '<thead><tr><th scope="col" class="grid-mark">How far ahead</th><th scope="col"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 48 24"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--ai)" stroke-width="3"/></svg></span><span class="ai-text">AI model</span></th>' +
       '<th scope="col"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 48 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="var(--phys)" stroke-width="3"/></svg></span><span class="phys-text">Physics model</span></th><th scope="col">AI model closer</th></tr></thead>' +
       "<tbody>" + rows + '<tr class="total"><th scope="row" class="grid-mark">All</th><td class="num">' + D(all.ai) + '</td><td class="num">' + D(all.ph) + '</td><td class="num">' + share(all.win, all.n) + "</td></tr></tbody></table>" +
       '<ul class="ref-list">' + items + "<li><b>All:</b> " + D(all.ai) + " against " + D(all.ph) + "; the AI model came closer in " + share(all.win, all.n) + ".</li></ul>" +
-      '<div id="places"></div>' +
+      '<div id="places"></div>' + rainSectionHtml(rs) +
       "<h3>What this does and doesn't show</h3><ul class=\"findings\">" +
       finding(G.both, overall.title, overall.dek, "From " + all.n + " cases, " + SPAN) +
       finding(G.leads, leadsF.title, leadsF.dek, "From the table above") +
@@ -262,6 +372,7 @@
       finding(G.grid, "What the AI model can't do yet", "It works on a grid of points about 28 km (17 miles) apart, so it can't see a single park, valley or stretch of coast. It doesn't forecast wind gusts, visibility or radar.", "Checked in the AIGFS v1.1 files on NOMADS, 4 November 2026", "f-limits") +
       finding(G.version, "A new version", "NOAA updated the AI model to version 1.1 and says some forecasts improved. A claim like that needs checking over many months." +
         (META.versions && META.versions.length ? " Every forecast in the nightly archive is version " + META.versions.join(", ").replace(/v/g, "") + "." : ""), SCN + ", 27 July 2026") +
+      (rs.n ? finding(G.rain, rainF.title, rainF.dek, "From " + rs.n + " cases with rain saved for both models and the station", "f-rain", rainF.tryIt) : "") +
       (lost ? finding(G.missing, lost === 1 ? "A missed reading" : "Missed readings", plural(lost, "case has", "cases have") + " no measurement, because a station missed a reading. So there are " + all.n + " cases, not " + DATA.length + ".", missedSource) : "") +
       "</ul>";
   }
@@ -351,17 +462,18 @@
   // Forecast -> decision -> outcome, on the saved cases only. Practice, not advice; it never scores the person.
   var SC = {
     who: [
-      { value: "manager", label: "An emergency manager", cold: "open a warming center", warm: "open a cooling center" },
-      { value: "farmer", label: "A farmer", cold: "cover the crops", warm: "water the seedlings early" },
-      { value: "teacher", label: "A teacher planning a trip", cold: "move the trip indoors", warm: "plan shade and water" },
-      { value: "organizer", label: "An event organizer", cold: "book heaters", warm: "add shade and water stations" }
+      { value: "manager", label: "An emergency manager", cold: "open a warming center", warm: "open a cooling center", rain: "put road crews on standby" },
+      { value: "farmer", label: "A farmer", cold: "cover the crops", warm: "water the seedlings early", rain: "hold off spraying" },
+      { value: "teacher", label: "A teacher planning a trip", cold: "move the trip indoors", warm: "plan shade and water", rain: "book the indoor backup" },
+      { value: "organizer", label: "An event organizer", cold: "book heaters", warm: "add shade and water stations", rain: "put up tents" }
     ],
     // Thresholds are set in °C (the data's unit) and shown in the viewer's unit.
     what: [
       { value: "lt10", cold: true, t: 10 },
       { value: "lt15", cold: true, t: 15 },
       { value: "gt20", cold: false, t: 20 },
-      { value: "gt25", cold: false, t: 25 }
+      { value: "gt25", cold: false, t: 25 },
+      { value: "rain", rain: true }
     ],
     why: [
       { value: "caught", label: "Being caught off guard" },
@@ -376,6 +488,7 @@
     ]
   };
   var whatLabel = function (w) {
+    if (w.rain) return { label: "Rain", small: "at least " + wetMin(), name: "rain" };
     var word = w.cold ? "Colder than " : "Warmer than ";
     var f = Math.round(toF(w.t));
     return unit === "F" ? { label: word + f + " °F", small: w.t + " °C", name: word.toLowerCase() + f + " °F (" + w.t + " °C)" }
@@ -386,14 +499,16 @@
   var find = function (list, v) { return list.find(function (x) { return x.value === v; }); };
 
   // The whole judgment, kept pure so it can be checked by hand.
+  // Rain uses each model's 6-hour total and the station's measured rain; the rest use temperature.
   function judge(rows, what, how) {
-    var hit = function (c) { return what.cold ? c < what.t : c > what.t; };
+    var hit = what.rain ? function (mm) { return mm >= WET; } : function (c) { return what.cold ? c < what.t : c > what.t; };
     var out = { inTime: [], falseAlarm: [], caught: [], quiet: [], noReading: [] };
     rows.forEach(function (r) {
-      if (!r.observed || typeof r.aigfs !== "number" || typeof r.gfs !== "number") { out.noReading.push(r); return; }
-      var a = hit(r.aigfs), g = hit(r.gfs);
+      var v = what.rain ? [r.aigfs_rain, r.gfs_rain, hasRainObs(r) ? r.rain_obs.mm : null] : [r.aigfs, r.gfs, r.observed ? r.observed.c : null];
+      if (!v.every(function (x) { return typeof x === "number"; })) { out.noReading.push(r); return; }
+      var a = hit(v[0]), g = hit(v[1]);
       var act = how === "ai" ? a : how === "phys" ? g : how === "both" ? (a && g) : (a || g);
-      var came = hit(r.observed.c);
+      var came = hit(v[2]);
       (act ? (came ? out.inTime : out.falseAlarm) : (came ? out.caught : out.quiet)).push(r);
     });
     return out;
@@ -419,8 +534,8 @@
     var counted = rows.length - o.noReading.length;
     var came = o.inTime.length + o.caught.length, acted = o.inTime.length + o.falseAlarm.length;
     var place = sc.where === "all" ? "in any of the six places" : "in " + sc.where;
-    var action = what.cold ? who.cold : who.warm;
-    var summary = who.label + ": you'll " + action + " if the evening will be " + wl.name + " " + place +
+    var action = what.rain ? who.rain : what.cold ? who.cold : who.warm;
+    var summary = who.label + ": you'll " + action + (what.rain ? " if it will rain (at least " + wetMin() + ") in the 6 hours before the evening, " : " if the evening will be " + wl.name + " ") + place +
       ". You decide " + sc.when + " days ahead, and " + how.label.charAt(0).toLowerCase() + how.label.slice(1) + ".";
     var whyLine = sc.why === "caught"
       ? "You said being caught off guard is worse. The weather came " + plural(came, "time", "times") + ", and this rule caught you off guard in " + o.caught.length + " of them."
@@ -455,8 +570,9 @@
 
     var caseLine = function (r) {
       var key = ["inTime", "falseAlarm", "caught", "quiet"].find(function (k) { return o[k].indexOf(r) !== -1; });
-      if (!key) return "<li><b>" + esc(r.city) + ", evening of " + dayName(r.valid) + ":</b> no reading, so not counted.</li>";
-      return "<li><b>" + esc(r.city) + ", evening of " + dayName(r.valid) + ":</b> AI model " + T1(r.aigfs) + ", physics model " + T1(r.gfs) + ", measured " + T1(r.observed.c) + ". <span class=\"sc-tag\">" + OUTCOME[key].label + "</span></li>";
+      if (!key) return "<li><b>" + esc(r.city) + ", evening of " + dayName(r.valid) + ":</b> " + (what.rain ? "no rain record" : "no reading") + ", so not counted.</li>";
+      var said = what.rain ? function (mm) { return mm >= WET ? Rshort(mm) : "dry"; } : T1;
+      return "<li><b>" + esc(r.city) + ", evening of " + dayName(r.valid) + ":</b> AI model " + said(what.rain ? r.aigfs_rain : r.aigfs) + ", physics model " + said(what.rain ? r.gfs_rain : r.gfs) + ", measured " + said(what.rain ? r.rain_obs.mm : r.observed.c) + ". <span class=\"sc-tag\">" + OUTCOME[key].label + "</span></li>";
     };
     var wasOpen = document.querySelector(".sc-cases") && document.querySelector(".sc-cases").open;
     $("sc-out").innerHTML =
@@ -464,7 +580,8 @@
       '<p class="sc-why">' + esc(whyLine) + "</p>" +
       "<h3>Other rules</h3><p class=\"hint\">Same cases, same threshold. Each rule trades false alarms against being caught off guard.</p>" + compare +
       '<details class="sc-cases"' + (wasOpen ? " open" : "") + "><summary>See each case (" + rows.length + ")</summary><ul>" + rows.map(caseLine).join("") + "</ul></details>" +
-      (o.noReading.length ? '<p class="hint">' + plural(o.noReading.length, "case has", "cases have") + " no reading and " + (o.noReading.length === 1 ? "isn't" : "aren't") + " counted.</p>" : "") +
+      (o.noReading.length ? '<p class="hint">' + plural(o.noReading.length, "case has", "cases have") + (what.rain ? " no rain record" : " no reading") + " and " + (o.noReading.length === 1 ? "isn't" : "aren't") + " counted." +
+        (what.rain ? " Rain has been saved since 19 November 2026; earlier evenings were filled in only where the sources still had them, and NOAA keeps the AI model's forecasts for about 10 days." : "") + "</p>" : "") +
       '<p class="hint">Same forecast, different decisions: change <i>Who</i> to see how another role would use it.</p>';
     // A short summary that stays in view while answering, so every change shows a result (audit 1).
     $("sc-live").innerHTML = '<span class="sc-live__k">Your rule so far</span> <span class="sc-live__v">' + o.inTime.length + " in time · " +
@@ -498,7 +615,7 @@
     var idx = [];
     var steps = [["h-pick", "01 Pick a case", "choose a place evening how far ahead"], ["h-guess", "02 Guess first", "which forecast came closer guess"],
       ["h-result", "03 What happened", "result measured drawing"], ["h-bigger", "The bigger picture", "all cases average miss by place map findings"],
-      ["h-places", "By place", "map stations cities scale"], ["h-scen", "04 Make a scenario", "who what where when why how decision rule"], ["h-words", "Words used here", "glossary"],
+      ["h-places", "By place", "map stations cities scale"], ["h-rain", "Rain", "rain precipitation wet dry caught missed false alarm"], ["h-scen", "04 Make a scenario", "who what where when why how decision rule"], ["h-words", "Words used here", "glossary"],
       ["h-about", "About and methods", "about methods how it works data noaa"], ["m-winner", "How we call a winner", "too close to call standard error noise statistics"],
       ["m-rain", "Rain", "rain precipitation 6 hours measurable"], ["m-access", "Accessibility", "accessibility wcag voiceover screen reader"],
       ["m-privacy", "Privacy", "privacy cookies tracking data stored"], ["m-sources", "Download the data", "download data csv json open data cc0 code github"],
@@ -645,7 +762,7 @@
       unit = b.dataset.unit;
       store.set("tf-unit", unit);
       renderUnits();
-      announce("Temperatures now in " + (unit === "F" ? "Fahrenheit" : "Celsius") + ".");
+      announce(unit === "F" ? "Now in Fahrenheit, with rain in inches." : "Now in Celsius, with rain in millimeters.");
     });
   });
   $("q").addEventListener("input", renderSearch);

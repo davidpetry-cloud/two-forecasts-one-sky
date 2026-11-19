@@ -21,7 +21,7 @@ is the only variable so far.
 
 **Status: prototype, public since 19 November 2026.** Try it at https://davidpetry-cloud.github.io/two-forecasts-one-sky/. Not a forecast service: for real forecasts and warnings, go to weather.gov.
 
-**Version 0.4** ([what's new](CHANGELOG.md)). Download the data from the page's "About and methods"
+**Version 0.5** ([what's new](CHANGELOG.md)). Download the data from the page's "About and methods"
 section (CSV or JSON, CC0). To cite it, use GitHub's "Cite this repository" button
 ([CITATION.cff](CITATION.cff)). Problems and ideas: [open an issue](https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose).
 
@@ -42,7 +42,8 @@ someone saves it. A GitHub Action in this repository
 commits one small file per evening to `data/archive/`: both models' forecasts made 3,
 5 and 7 days ahead, each station's reading, and the AI model's version. Since 19 November
 2026 it also saves rain: each model's 6-hour total ending at 00:00 UTC, and what each
-station measured in the same 6 hours (from NOAA's Aviation Weather Center). It follows the
+station measured in the same 6 hours (from NOAA's Aviation Weather Center). The page shows
+rain under each case, in the bigger picture and in the scenario. It follows the
 protocol's rules for NOAA's servers, and identifies itself by this repository's address.
 Each night the Action also rebuilds `site/data.js` from the spike and the archive (`scripts/build_data.py`), so the page grows by one evening a day, and its findings are worded from the data, not fixed sentences.
 
