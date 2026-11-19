@@ -33,13 +33,14 @@
   <symbol id="i-scen" viewBox="0 0 24 24"><path d="M12 2.5v19M12 5h6.5l2.5 2.5-2.5 2.5H12M12 12.5H5.5L3 15l2.5 2.5H12M8.5 21.5h7"/></symbol>
   <symbol id="i-about" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.4v.1"/></symbol>
   <symbol id="i-words" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.4 3 4.8v14c4-.4 7 .2 9 1.7 2-1.5 5-2.1 9-1.7v-14c-4-.4-7 .2-9 1.7ZM12 6.5v14"/></symbol>
+  <symbol id="i-reflect" viewBox="0 0 24 24"><path d="M4 11.5c0-4.1 3.6-7.5 8-7.5s8 3.4 8 7.5-3.6 7.5-8 7.5c-1 0-2-.2-2.9-.5L4.5 20.5l1.3-3.9A7.2 7.2 0 0 1 4 11.5Z"/><path d="M9 11.5h.01M12 11.5h.01M15 11.5h.01"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
 </svg>
 <a class="skip" href="#content">Skip to the activity</a>
 <noscript><p class="noscript">This page needs JavaScript to show its cases and charts. The data is also available as a <a href="data/cases.csv">CSV file</a>.</p></noscript>
 <header class="top" id="top">
   <div class="top-row">
-    <span class="tag">Version <span class="app-version">0.6</span> · updated nightly</span>
+    <span class="tag">Version <span class="app-version">0.7</span> · updated nightly</span>
     <div class="top-controls">
       <div class="units" role="group" aria-label="Units: °F with inches of rain, or °C with millimeters">
         <button type="button" class="unit-btn" data-unit="F" aria-pressed="true">°F</button>
@@ -65,6 +66,14 @@
     <div class="mark"><span class="label">Before you start</span></div>
     <div class="body">
       <p class="notice">This is a prototype for learning, not a forecast. For real forecasts and warnings, go to <a href="https://www.weather.gov/">weather.gov</a>. The AI model is new: see <a href="#f-limits">what it can't do yet</a>. It takes about 10 minutes.</p>
+      <div class="outcomes">
+        <h2 class="toc__h" id="h-outcomes">What you'll be able to do</h2>
+        <ol class="outcomes__list">
+          <li>Compare an AI forecast and a physics forecast with what a weather station measured.</li>
+          <li>Explain why one case, or one evening, isn't enough to judge a forecast.</li>
+          <li>Choose a rule for acting on forecasts, and say what it trades: false alarms against being caught off guard.</li>
+        </ol>
+      </div>
       <div class="search" role="search">
         <label for="q" class="search__label"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>Search this page</label>
         <input type="search" id="q" class="search__input" autocomplete="off" spellcheck="false" placeholder="A place, a date, a word…" aria-describedby="q-status">
@@ -80,6 +89,7 @@
           <li><a href="#h-bigger"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-bigger"/></svg><span class="toc__n">—</span> The bigger picture</a></li>
           <li><a href="#h-rain"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-rain"/></svg><span class="toc__n">—</span> Rain</a></li>
           <li><a href="#h-scen"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-scen"/></svg><span class="toc__n">04</span> Make a scenario</a></li>
+          <li><a href="#h-reflect"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-reflect"/></svg><span class="toc__n">—</span> Before you go</a></li>
           <li><a href="#h-about"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-about"/></svg><span class="toc__n">—</span> About and methods</a></li>
           <li><a href="#h-words"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-words"/></svg><span class="toc__n">—</span> Words used here</a></li>
         </ol>
@@ -162,7 +172,28 @@
       </ol>
       <a class="sc-live" id="sc-live" href="#sc-h"></a>
       <div id="sc-out" class="sc-out wide"></div>
-      <p class="next end">That's the whole activity. Take a break, or come back and try another place. <a href="#top">Back to top ↑</a></p>
+      <p class="next"><a href="#h-reflect">Next: before you go ↓</a> <span aria-hidden="true">·</span> <a href="#top">Back to top ↑</a></p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-reflect" id="reflect">
+    <div class="mark" aria-hidden="true"><span class="label">A pause</span><svg class="ico ico--mark" aria-hidden="true" focusable="false"><use href="#i-reflect"/></svg></div>
+    <div class="body">
+      <h2 id="h-reflect">Before you go</h2>
+      <p class="sense">One question to think about. There's nothing to type, and nothing is saved.</p>
+      <p class="reflect-q">Think of a forecast you lean on: an app, a TV meteorologist, a colleague. What would you want to know about it before you trust it more, or less?</p>
+      <details class="sc-cases reflect-ideas">
+        <summary>Ideas, if you're stuck</summary>
+        <ul>
+          <li>How often has it been right where you are, not just on average?</li>
+          <li>Does it say how sure it is?</li>
+          <li>When it's wrong, which way does it lean: too cold, too warm, a false alarm, a miss?</li>
+          <li>Who checks it, and do they tell you when it changes?</li>
+        </ul>
+      </details>
+      <h3 id="h-lookback">Look back</h3>
+      <p>At the start, you set out to compare two forecasts with a measurement, explain why one case says little, and choose a rule for acting on forecasts. If one of those still feels shaky, <a href="#h-pick">try another place in step 01</a> or <a href="#h-scen">another rule in step 04</a>.</p>
+      <p class="next end">That's the whole activity. Take a break; a new evening is added each night if you want to look again another day. <a href="#top">Back to top ↑</a></p>
     </div>
   </section>
 
@@ -206,7 +237,7 @@
       </ul>
 
       <h3 id="m-cite">How to cite</h3>
-      <p class="cite">Petry, D. (2026). <i>Two Forecasts, One Sky</i> (Version <span class="app-version">0.6</span>) [Prototype learning tool and open data]. https://davidpetry-cloud.github.io/two-forecasts-one-sky/</p>
+      <p class="cite">Petry, D. (2026). <i>Two Forecasts, One Sky</i> (Version <span class="app-version">0.7</span>) [Prototype learning tool and open data]. https://davidpetry-cloud.github.io/two-forecasts-one-sky/</p>
       <p class="next"><a href="#top">Back to top ↑</a></p>
     </div>
   </section>
@@ -237,14 +268,13 @@
   <div class="body">
     <p>Data: NOAA / National Weather Service. Forecasts: AIGFS v1.1 and GFS from <a href="https://nomads.ncep.noaa.gov/">NOMADS</a>, the 00:00 UTC runs, 2 m temperature at the nearest grid point. Measurements: station readings from the <a href="https://www.weather.gov/documentation/services-web-api">NWS API</a>, nearest 00:00 UTC. Rain: each model's 6-hour total, and the rain in each station's 00:00 UTC report, from the <a href="https://aviationweather.gov/data/api/">NOAA Aviation Weather Center</a>. The AI model's version: <a href="https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf">NWS Service Change Notice 26-68</a>.</p>
     <p id="data-status"></p>
-    <p class="foot-links"><a href="#h-about">About and methods</a> <span aria-hidden="true">·</span> <a href="#m-access">Accessibility</a> <span aria-hidden="true">·</span> <a href="#m-privacy">Privacy</a> <span aria-hidden="true">·</span> <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">Report a problem or suggest an idea</a> <span aria-hidden="true">·</span> Version <span class="app-version">0.6</span>, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">what's new</a></p>
+    <p class="foot-links"><a href="#h-about">About and methods</a> <span aria-hidden="true">·</span> <a href="#m-access">Accessibility</a> <span aria-hidden="true">·</span> <a href="#m-privacy">Privacy</a> <span aria-hidden="true">·</span> <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">Report a problem or suggest an idea</a> <span aria-hidden="true">·</span> Version <span class="app-version">0.7</span>, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">what's new</a></p>
     <p>Not affiliated with or endorsed by NOAA. NWS material is not under copyright (17 U.S.C. § 403). The misses and averages are our own analysis.</p>
     <p>Design inspired by the <a href="https://www.media.mit.edu/">MIT Media Lab</a>'s website and its use of space. Thank you. Not affiliated with MIT.</p>
   </div>
 </footer>
 <div id="announce" class="sr" aria-live="polite"></div>
 <script src="data.js"></script>
-<script src="map.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

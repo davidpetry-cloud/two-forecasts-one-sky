@@ -21,7 +21,7 @@ is the only variable so far.
 
 **Status: prototype, public since 19 November 2026.** Try it at https://davidpetry-cloud.github.io/two-forecasts-one-sky/. Not a forecast service: for real forecasts and warnings, go to weather.gov.
 
-**Version 0.6, a prototype** ([what's new](CHANGELOG.md)). Download the data from the page's "About and methods"
+**Version 0.7, a prototype** ([what's new](CHANGELOG.md)). Download the data from the page's "About and methods"
 section (CSV or JSON, CC0). To cite it, use GitHub's "Cite this repository" button
 ([CITATION.cff](CITATION.cff)). Problems and ideas: [open an issue](https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose).
 

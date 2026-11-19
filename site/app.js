@@ -523,7 +523,18 @@
 
   // ---------- by place: every station, on a map drawn to scale ----------
   // Map: contiguous US in an Albers equal-area projection (map.js, built from public-domain Census outlines).
-  var MAP = window.TF_MAP;
+  // The map (map.js, about 37 KB) loads only when the reader comes near it (audit P12); until then, and if it
+  // fails, the place list, the panel and the table give the same information.
+  var MAP = window.TF_MAP, mapState = MAP ? "ready" : "waiting";
+  function loadMap() {
+    if (mapState !== "waiting") return;
+    mapState = "loading";
+    var sc = document.createElement("script");
+    sc.src = "map.js?v=2026-11-19"; // change the date when the map is rebuilt, so browsers fetch the new one
+    sc.onload = function () { MAP = window.TF_MAP; mapState = MAP ? "ready" : "failed"; renderPlaces(); };
+    sc.onerror = function () { mapState = "failed"; renderPlaces(); };
+    document.body.appendChild(sc);
+  }
   var PIN_SIDE = { Seattle: "right", Phoenix: "right", Denver: "right", Chicago: "above", "New York": "below", Miami: "left" };
   var placeSel = null;
   function cityStats(name) {
@@ -555,8 +566,12 @@
       (st.n < EVENINGS * LEADS.length ? '<p class="hint">' + plural(EVENINGS * LEADS.length - st.n, "case has", "cases have") + " no reading here.</p>" : "") +
       '<button type="button" class="btn quiet try" data-city="' + esc(name) + '" data-valid="' + tryRow.valid + '" data-lead="' + tryRow.lead_days + '">Try a case: ' + esc(name) + ", " + dayName(tryRow.valid) + "</button>";
   }
-  function placesHtml() {
-    if (!MAP) return "";
+  function mapFigure() {
+    if (!MAP) {
+      return '<figure class="map"><div class="map__canvas map__canvas--wait">' +
+        (mapState === "failed" ? '<p class="hint">The map couldn\'t load. The list and the table below have the same information.</p>' : '<p class="hint">Loading the map…</p>') +
+        "</div></figure>";
+    }
     var pins = MAP.stations.map(function (s) {
       var st = cityStats(s.name), side = PIN_SIDE[s.name] || "right";
       return '<button type="button" class="pin pin--' + side + '" data-place="' + esc(s.name) + '" tabindex="-1" aria-hidden="true" data-on="' + (placeSel === s.name) + '" ' +
@@ -566,6 +581,16 @@
     }).join("");
     var km = 500, mi = 300;
     var pct = function (units) { return (units / MAP.width * 100).toFixed(2) + "%"; };
+    return '<figure class="map"><div class="map__canvas">' +
+      '<svg class="map__svg" viewBox="0 0 ' + MAP.width + " " + MAP.height + '" aria-hidden="true" focusable="false">' +
+      '<path class="map__land" d="' + MAP.outline + '"/><path class="map__borders" d="' + MAP.borders + '"/><path class="map__outline" d="' + MAP.outline + '"/></svg>' +
+      pins + "</div>" +
+      '<figcaption><span class="scalebar" aria-hidden="true"><span class="scalebar__bar" style="width:' + pct(km * MAP.unitsPerKm) + '"></span><span>' + km + ' km</span>' +
+      '<span class="scalebar__bar" style="width:' + pct(mi * 1.609344 * MAP.unitsPerKm) + '"></span><span>' + mi + " mi</span></span>" +
+      '<span class="map__note">Contiguous United States, Albers equal-area projection, drawn to scale (the scale bar holds near the middle of the map). Alaska and Hawaii aren\'t shown: no stations there yet. Outlines: US Census Bureau, 2017, simplified for the web.</span>' +
+      '<span class="map__key" aria-hidden="true"><span>' + pinShape("ai") + ' AI model did better</span><span>' + pinShape("phys") + ' Physics model did better</span><span>' + pinShape("even") + " Too close to call</span></span></figcaption></figure>";
+  }
+  function placesHtml() {
     var rows = CITIES.map(function (c) {
       var st = cityStats(c.name);
       return '<tr><th scope="row" class="grid-mark">' + esc(c.name) + '</th><td class="num">' + D(st.ai) + '</td><td class="num">' + D(st.ph) + '</td><td class="num">' + share(st.win, st.n) + "</td><td>" + lean(st.aiLean) + "</td></tr>";
@@ -576,15 +601,7 @@
     }).join("");
     return '<h3 id="h-places">By place</h3>' +
       '<p class="hint">Six weather stations, on a map drawn to scale. Choose one to see how each model did there.</p>' +
-      '<div class="places">' +
-      '<figure class="map"><div class="map__canvas">' +
-      '<svg class="map__svg" viewBox="0 0 ' + MAP.width + " " + MAP.height + '" aria-hidden="true" focusable="false">' +
-      '<path class="map__land" d="' + MAP.states + '"/><path class="map__borders" d="' + MAP.borders + '"/><path class="map__outline" d="' + MAP.outline + '"/></svg>' +
-      pins + "</div>" +
-      '<figcaption><span class="scalebar" aria-hidden="true"><span class="scalebar__bar" style="width:' + pct(km * MAP.unitsPerKm) + '"></span><span>' + km + ' km</span>' +
-      '<span class="scalebar__bar" style="width:' + pct(mi * 1.609344 * MAP.unitsPerKm) + '"></span><span>' + mi + " mi</span></span>" +
-      '<span class="map__note">Contiguous United States, Albers equal-area projection, drawn to scale (the scale bar holds near the middle of the map). Alaska and Hawaii aren\'t shown: no stations there yet. Outlines: US Census Bureau, 2017.</span>' +
-      '<span class="map__key" aria-hidden="true"><span>' + pinShape("ai") + ' AI model did better</span><span>' + pinShape("phys") + ' Physics model did better</span><span>' + pinShape("even") + " Too close to call</span></span></figcaption></figure>" +
+      '<div class="places">' + mapFigure() +
       '<div class="place-col"><div class="place-list" role="group" aria-label="Places">' + CITIES.map(function (c) {
         var b = cityStats(c.name).better;
         return '<button type="button" class="place-btn" data-place="' + esc(c.name) + '" aria-pressed="' + (placeSel === c.name) + '">' +
@@ -760,7 +777,7 @@
     var steps = [["h-pick", "01 Pick a case", "choose a place evening how far ahead"], ["h-guess", "02 Guess first", "which forecast came closer guess"],
       ["h-result", "03 What happened", "result measured drawing"], ["h-bigger", "The bigger picture", "all cases average miss by place map findings"],
       ["h-places", "By place", "map stations cities scale"], ["h-evenings", "Evening by evening", "chart line each evening running record ups and downs"], ["h-rain", "Rain", "rain precipitation wet dry caught missed false alarm"], ["h-scen", "04 Make a scenario", "who what where when why how decision rule"], ["h-words", "Words used here", "glossary"],
-      ["h-about", "About and methods", "about methods how it works data noaa"], ["m-winner", "How we call a winner", "too close to call standard error noise statistics"],
+      ["h-reflect", "Before you go", "reflect reflection question trust pause think"], ["h-outcomes", "What you'll be able to do", "outcomes goals learn objectives"], ["h-about", "About and methods", "about methods how it works data noaa"], ["m-winner", "How we call a winner", "too close to call standard error noise statistics"],
       ["m-rain", "Rain", "rain precipitation 6 hours measurable"], ["m-access", "Accessibility", "accessibility wcag voiceover screen reader"],
       ["m-privacy", "Privacy", "privacy cookies tracking data stored"], ["m-sources", "Download the data", "download data csv json open data cc0 code github"],
       ["m-cite", "How to cite", "cite citation reference apa"]];
@@ -914,6 +931,16 @@
     announce("Evening of " + dayName(r.valid) + ": AI model " + fmt1(uScale(r.st.ai)) + ", physics model " + fmt1(uScale(r.st.ph)) + " " + (unit === "F" ? "degrees Fahrenheit" : "degrees Celsius") + ".");
   });
   $("bigger").addEventListener("focusout", function (e) { if (e.target.id === "ev-chart") showReadout(null); });
+  // Load the map when the bigger picture comes within about a screen of view (audit P12).
+  (function () {
+    var box = $("bigger");
+    if (mapState !== "waiting" || !box) return;
+    if (!("IntersectionObserver" in window)) { loadMap(); return; }
+    var io = new IntersectionObserver(function (es) {
+      if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); loadMap(); }
+    }, { rootMargin: "800px 0px" });
+    io.observe(box);
+  })();
   // What's in the record so far (audit P8): counts only, no winner, so the guess stays a real guess.
   (function () {
     var el = $("kpis"); if (!el || !VALIDS.length) return;

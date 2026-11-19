@@ -420,3 +420,17 @@ svg .crosshair{stroke:var(--ink);stroke-width:1}
 .eyebrow__note{color:var(--header-sub);font-size:var(--fs-sm)}
 @media print{.eyebrow__pill{border-color:#000}}
 .readout{min-width:min(11rem,100%);max-width:100%;box-sizing:border-box}
+
+/* the map loads when it comes near (audit P12); its space is kept, so nothing jumps */
+.map__canvas--wait{aspect-ratio:975/610;display:grid;place-items:center;border:1px solid var(--line);border-radius:4px}
+.map__canvas--wait .hint{margin:0;padding:var(--s-4);text-align:center}
+
+/* learning bookends (audit P11): what you'll be able to do, at the top; a pause and a look back at the end */
+.outcomes{margin-top:var(--s-6);max-width:var(--measure)}
+.outcomes__list{margin:0;padding-left:1.4rem}
+.outcomes__list li{margin-bottom:var(--s-2)}
+.reflect-q{font-family:var(--display);font-weight:500;font-size:var(--fs-lg);line-height:1.35;color:var(--ink);margin:0 0 var(--s-5);padding-left:var(--s-4);border-left:3px solid var(--ink);max-width:34rem}
+.reflect-ideas ul{list-style:disc;padding-left:1.4rem}
+.reflect-ideas li{border-top:0;padding:var(--s-1) 0}
+#reflect a:not(.next a){color:var(--link);text-underline-offset:3px}
+.reflect-q,.outcomes__list,.reflect-ideas{overflow-wrap:break-word;hyphens:auto}

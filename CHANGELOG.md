@@ -1,5 +1,11 @@
 # What's new
 
+## 0.7 (19 November 2026), still a prototype
+
+- **What you'll be able to do**: three outcomes at the top, so you know what the activity is for.
+- **Before you go**: a pause at the end with one question to think about (nothing to type, nothing saved), ideas if you're stuck, and a look back at the three outcomes.
+- **A lighter map**: 37 KB instead of 198 KB, with no visible change at the page's sizes. It loads when you scroll near it, and if it can't load, the place list and table carry the same information.
+
 ## 0.6 (19 November 2026), still a prototype
 
 - **Titled a prototype** everywhere: the page title, a "Prototype" label above the name, link previews, the citation, the README and the GitHub description. It stays until the design is set.
