@@ -13,7 +13,13 @@
     "c": 13,
     "at": "2026-11-08T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KSEA 072353Z 20005KT 10SM SCT100 OVC230 13/10 A2979 RMK AO2 SLP093 T01280100 10150 20117 56023"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "Phoenix",
@@ -26,7 +32,13 @@
     "c": 27,
     "at": "2026-11-07T23:55:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KPHX 072351Z 06007KT 10SM FEW090 27/07 A2995 RMK AO2 SLP130 T02670072 10278 20239 55003 $"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "Denver",
@@ -39,7 +51,13 @@
     "c": 13,
     "at": "2026-11-07T23:55:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KDEN 072353Z 07005KT 10SM BKN220 13/M07 A3022 RMK AO2 SLP210 T01331067 10183 20128 51012"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "Chicago",
@@ -52,7 +70,13 @@
     "c": 8,
     "at": "2026-11-08T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KORD 072351Z 22005KT 10SM FEW250 08/00 A3011 RMK AO2 SLP201 T00780000 10106 20078 56003 $"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "New York",
@@ -65,7 +89,13 @@
     "c": 11.1,
     "at": "2026-11-07T23:51:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KNYC 072351Z AUTO VRB05KT 10SM BKN065 11/02 A2986 RMK AO2 SLP102 T01110017 10144 20111 51011"
+   },
+   "gfs_rain": 1.94
   },
   {
    "city": "Miami",
@@ -78,7 +108,13 @@
     "c": 27,
     "at": "2026-11-08T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KMIA 072353Z 08006KT 10SM BKN035 BKN045 27/22 A2993 RMK AO2 SLP134 T02720217 10306 20272 53016 $"
+   },
+   "gfs_rain": 0.06
   },
   {
    "city": "Seattle",
@@ -91,7 +127,13 @@
     "c": 13,
     "at": "2026-11-08T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KSEA 072353Z 20005KT 10SM SCT100 OVC230 13/10 A2979 RMK AO2 SLP093 T01280100 10150 20117 56023"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "Phoenix",
@@ -104,7 +146,13 @@
     "c": 27,
     "at": "2026-11-07T23:55:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KPHX 072351Z 06007KT 10SM FEW090 27/07 A2995 RMK AO2 SLP130 T02670072 10278 20239 55003 $"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "Denver",
@@ -117,7 +165,13 @@
     "c": 13,
     "at": "2026-11-07T23:55:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KDEN 072353Z 07005KT 10SM BKN220 13/M07 A3022 RMK AO2 SLP210 T01331067 10183 20128 51012"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "Chicago",
@@ -130,7 +184,13 @@
     "c": 8,
     "at": "2026-11-08T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KORD 072351Z 22005KT 10SM FEW250 08/00 A3011 RMK AO2 SLP201 T00780000 10106 20078 56003 $"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "New York",
@@ -143,7 +203,13 @@
     "c": 11.1,
     "at": "2026-11-07T23:51:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KNYC 072351Z AUTO VRB05KT 10SM BKN065 11/02 A2986 RMK AO2 SLP102 T01110017 10144 20111 51011"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "Miami",
@@ -156,7 +222,13 @@
     "c": 27,
     "at": "2026-11-08T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KMIA 072353Z 08006KT 10SM BKN035 BKN045 27/22 A2993 RMK AO2 SLP134 T02720217 10306 20272 53016 $"
+   },
+   "gfs_rain": 0.12
   },
   {
    "city": "Seattle",
@@ -169,7 +241,13 @@
     "c": 13,
     "at": "2026-11-08T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KSEA 072353Z 20005KT 10SM SCT100 OVC230 13/10 A2979 RMK AO2 SLP093 T01280100 10150 20117 56023"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "Phoenix",
@@ -182,7 +260,13 @@
     "c": 27,
     "at": "2026-11-07T23:55:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KPHX 072351Z 06007KT 10SM FEW090 27/07 A2995 RMK AO2 SLP130 T02670072 10278 20239 55003 $"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "Denver",
@@ -195,7 +279,13 @@
     "c": 13,
     "at": "2026-11-07T23:55:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KDEN 072353Z 07005KT 10SM BKN220 13/M07 A3022 RMK AO2 SLP210 T01331067 10183 20128 51012"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "Chicago",
@@ -208,7 +298,13 @@
     "c": 8,
     "at": "2026-11-08T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KORD 072351Z 22005KT 10SM FEW250 08/00 A3011 RMK AO2 SLP201 T00780000 10106 20078 56003 $"
+   },
+   "gfs_rain": 0.0
   },
   {
    "city": "New York",
@@ -221,7 +317,13 @@
     "c": 11.1,
     "at": "2026-11-07T23:51:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KNYC 072351Z AUTO VRB05KT 10SM BKN065 11/02 A2986 RMK AO2 SLP102 T01110017 10144 20111 51011"
+   },
+   "gfs_rain": 0.19
   },
   {
    "city": "Miami",
@@ -234,7 +336,16 @@
     "c": 27,
     "at": "2026-11-08T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "rain_obs": {
+    "mm": 0.0,
+    "trace": false,
+    "report": "METAR KMIA 072353Z 08006KT 10SM BKN035 BKN045 27/22 A2993 RMK AO2 SLP134 T02720217 10306 20272 53016 $"
+   },
+   "gfs_rain": 0.0
   }
+ ],
+ "filled": [
+  "2026-11-19T14:59:16+00:00"
  ]
 }

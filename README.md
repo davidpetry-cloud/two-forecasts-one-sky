@@ -36,7 +36,9 @@ NOAA keeps the AI model's forecasts only about 10 days, so a record exists only 
 someone saves it. A GitHub Action in this repository
 (`.github/workflows/archive.yml`) runs `scripts/archive.py` at 06:30 UTC every day and
 commits one small file per evening to `data/archive/`: both models' forecasts made 3,
-5 and 7 days ahead, each station's reading, and the AI model's version. It follows the
+5 and 7 days ahead, each station's reading, and the AI model's version. Since 19 November
+2026 it also saves rain: each model's 6-hour total ending at 00:00 UTC, and what each
+station measured in the same 6 hours (from NOAA's Aviation Weather Center). It follows the
 protocol's rules for NOAA's servers, and identifies itself by this repository's address.
 Each night the Action also rebuilds `site/data.js` from the spike and the archive (`scripts/build_data.py`), so the page grows by one evening a day, and its findings are worded from the data, not fixed sentences.
 

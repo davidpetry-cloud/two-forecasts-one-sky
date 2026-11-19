@@ -9,7 +9,9 @@ License ([LICENSE](LICENSE)); words and drawings under CC BY 4.0
 
 - **NOAA / National Weather Service.** AIGFS v1.1 and GFS forecasts (NOMADS) and
   station observations (NWS API). Public domain (17 U.S.C. § 105). This project
-  is not affiliated with or endorsed by NOAA or the NWS. "NOAA" and "National
+  is not affiliated with or endorsed by NOAA or the NWS.
+- **NOAA Aviation Weather Center** (aviationweather.gov): the stations' 00:00 UTC
+  reports, from which the measured rain is decoded (from 19 November 2026). Public domain. "NOAA" and "National
   Weather Service" are used only to name the source of the data.
 
 ## Map

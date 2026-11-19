@@ -5,10 +5,13 @@ For the evening that has just passed (00:00 UTC today), it saves:
     station's nearest grid point (AIGFS from NOMADS, which keeps only about 10 days;
     GFS from NOAA's open-data bucket on AWS);
   - the station reading nearest 00:00 UTC, from the NWS API;
+  - rain (from 19 November 2026): each model's 6-hour rain total ending at 00:00 UTC (the
+    "N-6 to N hour" accumulation, in mm), and what fell at each station in the same 6 hours,
+    decoded from the 6-hour rain group of its 00:00 UTC report (NOAA Aviation Weather Center);
   - the AI model's version, as NOMADS names it (for example "v1.1").
 
 Writes data/archive/YYYY/MM/YYYY-MM-DD.json (skipping an evening already saved), then re-checks the
-last 6 evenings for missing readings or forecasts and fills any the sources still hold.
+last 14 evenings for missing readings, rain or forecasts and fills any the sources still hold.
 
 Follows docs/protocol.md, "Being a good user of NOAA's servers": run once a day; fetch
 only 2 m temperature through the .idx byte ranges; at most 3 tries, a minute apart.
@@ -78,6 +81,53 @@ def forecast(model, run, fxx, cache):
             for name, (_, lat, lon) in CITIES.items()}
 
 
+def forecast_rain(model, run, fxx, cache):
+    """The 6-hour rain total ending at the forecast hour, in mm (kg per square metre), per station."""
+    from herbie import Herbie
+    kw = dict(model=model, fxx=fxx, save_dir=cache, verbose=False)
+    if model == "aigfs":
+        kw.update(product="sfc", priority=["nomads"])
+    else:
+        kw.update(product="pgrb2.0p25", priority=["aws", "nomads"])
+    H = Herbie(run.replace(tzinfo=None), **kw)
+    ds = H.xarray(f":APCP:surface:{fxx - 6}-{fxx} hour acc", remove_grib=True)
+    if isinstance(ds, list):
+        ds = ds[0]
+    var = list(ds.data_vars)[0]
+    return {name: max(0.0, round(float(ds[var].sel(latitude=lat, longitude=lon % 360, method="nearest")), 2))
+            for name, (_, lat, lon) in CITIES.items()}
+
+
+def rain_from_metar(raw):
+    """Decode the 6-hour rain group of a US 00/06/12/18 UTC report (FAA/NWS METAR remarks).
+    6RRRR = hundredths of an inch; 60000 = a trace; no group from an automated station with a
+    rain gauge (AO2) = no rain; PNO (gauge not operating) or 6//// = unknown, never zero."""
+    rmk = raw.split(" RMK ", 1)[1] if " RMK " in raw else ""
+    if re.search(r"(?<!\S)PNO(?!\S)", rmk) or re.search(r"(?<!\S)6////(?!\S)", rmk):
+        return None
+    m = re.search(r"(?<!\S)6(\d{4})(?!\S)", rmk)
+    if m:
+        v = int(m.group(1))
+        return {"mm": round(v * 0.254, 1), "trace": v == 0}
+    if re.search(r"(?<!\S)AO2(?!\S)", rmk):
+        return {"mm": 0.0, "trace": False}
+    return None
+
+
+def rain_reports(valid):
+    """One request to NOAA's Aviation Weather Center for all six stations' reports at 00:00 UTC."""
+    ids = ",".join(st for st, _, _ in CITIES.values())
+    url = f"https://aviationweather.gov/api/data/metar?ids={ids}&format=json&date={valid:%Y-%m-%dT%H:%M:%SZ}&hours=1"
+    reports = json.loads(get(url, "application/json") or b"[]")
+    out = {}
+    for name, (st, _, _) in CITIES.items():
+        mine = [m for m in reports if m.get("icaoId") == st and str(m.get("reportTime", "")).startswith(f"{valid:%Y-%m-%dT%H:00}")
+                and m.get("metarType", "METAR") == "METAR"]
+        out[name] = (dict(rain_from_metar(mine[0]["rawOb"]), report=mine[0]["rawOb"])
+                     if mine and rain_from_metar(mine[0]["rawOb"]) is not None else None)
+    return out
+
+
 def observed(station, when):
     start = (when - timedelta(minutes=40)).strftime("%Y-%m-%dT%H:%M:%SZ")
     end = (when + timedelta(minutes=40)).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -110,6 +160,11 @@ def save_evening(day, force, cache):
         except Exception as e:
             obs[n] = None
             print(f"  reading {st}: gave up for now: {e}", file=sys.stderr)
+    try:
+        rain_obs = with_retries("rain reports", lambda: rain_reports(valid))
+    except Exception as e:
+        rain_obs = {}
+        print(f"  rain reports: gave up for now: {e}", file=sys.stderr)
     rows, versions = [], {}
     for lead in LEADS:
         run = valid - timedelta(days=lead)
@@ -121,6 +176,12 @@ def save_evening(day, force, cache):
             except Exception as e:
                 got[model] = {}
                 print(f"  {model} {run:%Y%m%d%H} f{fxx}: gave up: {e}", file=sys.stderr)
+        for model in ("aigfs", "gfs"):
+            try:
+                got[model + "_rain"] = with_retries(f"{model} rain {run:%Y%m%d%H} f{fxx}", lambda m=model: forecast_rain(m, run, fxx, cache))
+            except Exception as e:
+                got[model + "_rain"] = {}
+                print(f"  {model} rain {run:%Y%m%d%H} f{fxx}: gave up: {e}", file=sys.stderr)
         try:
             versions[f"{run:%Y-%m-%d}"] = with_retries("AIGFS version", lambda: aigfs_version(run))
         except Exception:
@@ -129,6 +190,8 @@ def save_evening(day, force, cache):
             rows.append({
                 "city": name, "valid": valid.isoformat(), "lead_days": lead, "run": run.isoformat(),
                 "aigfs": got["aigfs"].get(name), "gfs": got["gfs"].get(name), "observed": obs[name],
+                "aigfs_rain": got["aigfs_rain"].get(name), "gfs_rain": got["gfs_rain"].get(name),
+                "rain_obs": rain_obs.get(name),
                 "aigfs_version": versions[f"{run:%Y-%m-%d}"],
             })
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -145,7 +208,7 @@ def fill_recent(today, days, cache):
     """Try once more for anything missing in the last few evenings, while the sources still hold it:
     station readings (the NWS API keeps about a week) and forecasts (NOMADS keeps AIGFS about 10 days).
     One try each, no waiting, so a bad night heals itself the next night without extra load."""
-    for back in range(1, days + 1):
+    for back in range(0, days + 1):  # 0 = today, in case it was saved before a field existed
         day = today - timedelta(days=back)
         path = ROOT / "data" / "archive" / f"{day:%Y}" / f"{day:%m}" / f"{day:%Y-%m-%d}.json"
         if not path.exists():
@@ -179,6 +242,32 @@ def fill_recent(today, days, cache):
                     for r in rows:
                         if r["lead_days"] == lead and r[model] is None and got.get(r["city"]) is not None:
                             r[model] = got[r["city"]]; changed += 1
+        # Rain: added to the archive on 19 November 2026, so earlier evenings are filled while the
+        # sources still hold them (AIGFS about 10 days, GFS on AWS for years, AWC reports about 14 days).
+        age = (datetime.now(timezone.utc) - valid).days
+        if age <= 14 and any(r.get("rain_obs") is None for r in rows):
+            try:
+                ro = rain_reports(valid)
+                for r in rows:
+                    if r.get("rain_obs") is None and ro.get(r["city"]) is not None:
+                        r["rain_obs"] = ro[r["city"]]; changed += 1
+            except Exception as e:
+                print(f"  fill {day} rain reports: still unavailable ({e})", file=sys.stderr)
+        for lead in LEADS:
+            run = valid - timedelta(days=lead)
+            for model in ("aigfs", "gfs"):
+                key = model + "_rain"
+                if model == "aigfs" and (datetime.now(timezone.utc) - run).days > 9:
+                    continue
+                if any(r["lead_days"] == lead and r.get(key) is None for r in rows):
+                    try:
+                        got = forecast_rain(model, run, lead * 24, cache)
+                    except Exception as e:
+                        print(f"  fill {day} {key} f{lead*24}: still unavailable ({e})", file=sys.stderr)
+                        continue
+                    for r in rows:
+                        if r["lead_days"] == lead and r.get(key) is None and got.get(r["city"]) is not None:
+                            r[key] = got[r["city"]]; changed += 1
         if changed:
             doc.setdefault("filled", []).append(datetime.now(timezone.utc).isoformat(timespec="seconds"))
             path.write_text(json.dumps(doc, indent=1) + "\n")
@@ -189,7 +278,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", help="the UTC date whose 00:00 UTC to save (default: today)")
     ap.add_argument("--force", action="store_true", help="overwrite an existing file")
-    ap.add_argument("--fill-days", type=int, default=6, help="how many earlier evenings to re-check for gaps (0 to skip)")
+    ap.add_argument("--fill-days", type=int, default=14, help="how many earlier evenings to re-check for gaps (0 to skip)")
     a = ap.parse_args()
     day = datetime.strptime(a.date, "%Y-%m-%d").date() if a.date else datetime.now(timezone.utc).date()
     cache = Path(tempfile.mkdtemp(prefix="tf-archive-"))

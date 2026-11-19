@@ -135,6 +135,16 @@ local water and power utilities. Record each check in this doc, with the date.
 site, so the page loads no map tiles and contacts no map service. State lines haven't
 changed since 2017. Credit in NOTICE.md.
 
+**Check, 19 November 2026: station rain.** NOAA's Aviation Weather Center
+(aviationweather.gov, part of the National Weather Service): public domain, no key, one
+request per evening for all six stations, with the project's User-Agent. Rain is decoded
+from the 6-hour group of each station's 00:00 UTC report, by the FAA/NWS remarks rules:
+a number is hundredths of an inch; 60000 is a trace; no group from an automated station
+with a rain gauge (AO2) is no rain; a gauge marked not operating (PNO) or an unreadable
+group (6////) is recorded as missing, never as zero. "Did it rain?" uses the NWS definition
+of measurable rain, 0.01 inch (0.25 mm). Forecasts: each model's own 6-hour total ending at
+00:00 UTC. The page's credits name the Aviation Weather Center once rain is shown.
+
 ### 9. Real disasters are never content
 
 - People die in the events this tool may show (the January 2025 Los Angeles fires,

@@ -13,7 +13,9 @@
     "c": 9,
     "at": "2026-11-19T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.12
   },
   {
    "city": "Phoenix",
@@ -26,7 +28,9 @@
     "c": 21.7,
     "at": "2026-11-18T23:51:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.0
   },
   {
    "city": "Denver",
@@ -39,7 +43,9 @@
     "c": 7.2,
     "at": "2026-11-18T23:53:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.06,
+   "gfs_rain": 0.0
   },
   {
    "city": "Chicago",
@@ -52,7 +58,9 @@
     "c": 12,
     "at": "2026-11-19T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.0
   },
   {
    "city": "New York",
@@ -65,7 +73,9 @@
     "c": 14.4,
     "at": "2026-11-18T23:51:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.0
   },
   {
    "city": "Miami",
@@ -78,7 +88,9 @@
     "c": 24,
     "at": "2026-11-19T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 10.38,
+   "gfs_rain": 8.75
   },
   {
    "city": "Seattle",
@@ -91,7 +103,9 @@
     "c": 9,
     "at": "2026-11-19T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.12
   },
   {
    "city": "Phoenix",
@@ -104,7 +118,9 @@
     "c": 21.7,
     "at": "2026-11-18T23:51:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.0
   },
   {
    "city": "Denver",
@@ -117,7 +133,9 @@
     "c": 7.2,
     "at": "2026-11-18T23:53:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.0
   },
   {
    "city": "Chicago",
@@ -130,7 +148,9 @@
     "c": 12,
     "at": "2026-11-19T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.0
   },
   {
    "city": "New York",
@@ -143,7 +163,9 @@
     "c": 14.4,
     "at": "2026-11-18T23:51:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.0
   },
   {
    "city": "Miami",
@@ -156,7 +178,9 @@
     "c": 24,
     "at": "2026-11-19T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 6.06,
+   "gfs_rain": 2.56
   },
   {
    "city": "Seattle",
@@ -169,7 +193,9 @@
     "c": 9,
     "at": "2026-11-19T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.62
   },
   {
    "city": "Phoenix",
@@ -182,7 +208,9 @@
     "c": 21.7,
     "at": "2026-11-18T23:51:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.0
   },
   {
    "city": "Denver",
@@ -195,7 +223,9 @@
     "c": 7.2,
     "at": "2026-11-18T23:53:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.44,
+   "gfs_rain": 0.0
   },
   {
    "city": "Chicago",
@@ -208,7 +238,9 @@
     "c": 12,
     "at": "2026-11-19T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.0
   },
   {
    "city": "New York",
@@ -221,7 +253,9 @@
     "c": 14.4,
     "at": "2026-11-18T23:51:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.0,
+   "gfs_rain": 0.0
   },
   {
    "city": "Miami",
@@ -234,7 +268,12 @@
     "c": 24,
     "at": "2026-11-19T00:05:00+00:00"
    },
-   "aigfs_version": "v1.1"
+   "aigfs_version": "v1.1",
+   "aigfs_rain": 0.44,
+   "gfs_rain": 0.06
   }
+ ],
+ "filled": [
+  "2026-11-19T14:57:24+00:00"
  ]
 }
