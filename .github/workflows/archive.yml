@@ -1,4 +1,4 @@
-# Nightly archive (David, 6 November 2026: GitHub, private; the repository address as the NWS contact).
+# Nightly archive (David, 6 November 2026: a GitHub Action; the repository address as the NWS contact).
 # Once a day, after the 00:00 UTC readings are in, it saves that evening's forecasts and readings to
 # data/archive/ and commits them. NOAA keeps AIGFS only about 10 days, so this is the only record.
 # Rules: docs/protocol.md, "Being a good user of NOAA's servers".

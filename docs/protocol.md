@@ -2,7 +2,7 @@
 
 Status: **draft for future reference**, written 5 November 2026 after a feasibility
 spike, first in the AI literacy course's `docs/` folder and moved here the same day
-(David: keep it in the private repository). A visual prototype and a scenario builder
+(David: keep it in the project's own repository, private until the 19 November 2026 protocol check, then public). A visual prototype and a scenario builder
 are now built in `site/`. Whether a course lesson or Essential follows later is not
 decided. Whatever is built must follow this protocol, and the protocol grows as we learn.
 
@@ -67,7 +67,7 @@ calibrated trust: an AI model is a source, so check it like one.
   no live calls), as in this course.
 
 **In practice (6 November 2026):** the nightly archive (`scripts/archive.py`, run by a
-GitHub Action in the private repository at 06:30 UTC) follows these rules. Its
+GitHub Action in this repository at 06:30 UTC) follows these rules. Its
 User-Agent is `two-forecasts-one-sky/0.1 (github.com/davidpetry-cloud/two-forecasts-one-sky)`,
 David's choice of contact.
 

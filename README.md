@@ -19,7 +19,7 @@ cases, so the trade-off is visible. Practice only: it uses saved data, makes no 
 calls, gives no advice for real decisions, and never scores the person. Temperature
 is the only variable so far.
 
-**Status: prototype.** Not a forecast service, and not published anywhere.
+**Status: prototype, public since 19 November 2026.** Try it at https://davidpetry-cloud.github.io/two-forecasts-one-sky/. Not a forecast service: for real forecasts and warnings, go to weather.gov.
 
 ## What's here
 
@@ -33,7 +33,7 @@ is the only variable so far.
 ## The nightly archive
 
 NOAA keeps the AI model's forecasts only about 10 days, so a record exists only if
-someone saves it. A GitHub Action in this private repository
+someone saves it. A GitHub Action in this repository
 (`.github/workflows/archive.yml`) runs `scripts/archive.py` at 06:30 UTC every day and
 commits one small file per evening to `data/archive/`: both models' forecasts made 3,
 5 and 7 days ahead, each station's reading, and the AI model's version. It follows the
@@ -54,8 +54,8 @@ Then go to http://localhost:8096.
 ## The protocol comes first
 
 The full data governance and legal protocol, the spike findings, the vision and a
-plain-words glossary are in [`docs/protocol.md`](docs/protocol.md), kept in this
-private repository until David decides to publish. Anything built here follows it.
+plain-words glossary are in [`docs/protocol.md`](docs/protocol.md). Anything built here
+follows it.
 In short:
 
 - **NOAA / NWS terms:** data is public domain. Never imply NOAA endorsement, never
@@ -82,7 +82,7 @@ In short:
 
 ## Licence
 
-Prepared for when David decides to publish; the repository is private until then.
+Public since 19 November 2026, after a protocol check.
 
 | Part | Licence | File |
 |---|---|---|

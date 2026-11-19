@@ -32,7 +32,7 @@ round.
 
 ## Setup
 
-- The page on David's Mac (http://localhost:8096) or a private copy on their device.
+- The live page (https://davidpetry-cloud.github.io/two-forecasts-one-sky/) on their own device, or on David's Mac.
 - Light or dark theme, °F or °C: their choice. Let them use their own assistive tech
   if they have it.
 - Ask them to think aloud: "Say what you're looking for, what you expect, and what surprises you."
