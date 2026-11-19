@@ -40,7 +40,7 @@
 <noscript><p class="noscript">This page needs JavaScript to show its cases and charts. The data is also available as a <a href="data/cases.csv">CSV file</a>.</p></noscript>
 <header class="top" id="top">
   <div class="top-row">
-    <span class="tag">Version <span class="app-version">0.7</span> · updated nightly</span>
+    <span class="tag">Version <span class="app-version">0.8</span> · updated nightly</span>
     <div class="top-controls">
       <div class="units" role="group" aria-label="Units: °F with inches of rain, or °C with millimeters">
         <button type="button" class="unit-btn" data-unit="F" aria-pressed="true">°F</button>
@@ -65,7 +65,7 @@
   <div class="band band--notice">
     <div class="mark"><span class="label">Before you start</span></div>
     <div class="body">
-      <p class="notice">This is a prototype for learning, not a forecast. For real forecasts and warnings, go to <a href="https://www.weather.gov/">weather.gov</a>. The AI model is new: see <a href="#f-limits">what it can't do yet</a>. It takes about 10 minutes.</p>
+      <p class="notice">This is a prototype for learning, not a forecast. For real forecasts and warnings, go to <a href="https://www.weather.gov/">weather.gov</a>. The AI model is new: see <a href="#f-limits">what it can't do yet</a>. It takes about 10 minutes. Teaching with it? There's a <a href="educators.html">lesson plan</a>.</p>
       <div class="outcomes">
         <h2 class="toc__h" id="h-outcomes">What you'll be able to do</h2>
         <ol class="outcomes__list">
@@ -223,7 +223,7 @@
       <p>A new evening is added each night. If a source is down, the job saves what it can and tries again on later nights; a reading it can't get is shown as missing. The footer says how fresh the data is.</p>
 
       <h3 id="m-access">Accessibility</h3>
-      <p>We aim for WCAG 2.2 level AA. The page has been checked in light and dark themes, at narrow phone widths, with text enlarged to 200%, with the keyboard alone and with VoiceOver, and with real people. Charts have spoken descriptions and tables beside them, and color is never the only cue. Not yet checked: Windows high-contrast mode. If something doesn't work for you, please <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">tell us</a>.</p>
+      <p>We aim for WCAG 2.2 level AA. The page has been checked in light and dark themes, at narrow phone widths, with text enlarged to 200%, with the keyboard alone and with VoiceOver, and with real people. Charts have spoken descriptions and tables beside them, and color is never the only cue. Windows high-contrast mode has been checked in a simulation, in light and dark, but not yet on Windows itself. If something doesn't work for you, please <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">tell us</a>.</p>
 
       <h3 id="m-privacy">Privacy</h3>
       <p>No accounts, no cookies, no tracking, and nothing loaded from other sites. Your theme and unit choices are kept in your own browser so the page remembers them; nothing you choose or type is sent anywhere.</p>
@@ -233,11 +233,12 @@
         <li><a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/docs/protocol.md">Protocol</a>: data rules, law, safety and privacy</li>
         <li><a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky">Code and history</a> on GitHub (MIT License; words under CC BY 4.0)</li>
         <li>Download the data: <a href="data/cases.csv" download>CSV</a> or <a href="data/cases.json" download>JSON</a> (CC0: free to use for anything)</li>
+        <li><a href="educators.html">Lesson plan for educators</a> (30 to 45 minutes, printable, CC BY 4.0)</li>
         <li><a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">What's new</a> and <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/docs/roadmap.md">what's next</a></li>
       </ul>
 
       <h3 id="m-cite">How to cite</h3>
-      <p class="cite">Petry, D. (2026). <i>Two Forecasts, One Sky</i> (Version <span class="app-version">0.7</span>) [Prototype learning tool and open data]. https://davidpetry-cloud.github.io/two-forecasts-one-sky/</p>
+      <p class="cite">Petry, D. (2026). <i>Two Forecasts, One Sky</i> (Version <span class="app-version">0.8</span>) [Prototype learning tool and open data]. https://davidpetry-cloud.github.io/two-forecasts-one-sky/</p>
       <p class="next"><a href="#top">Back to top ↑</a></p>
     </div>
   </section>
@@ -268,7 +269,7 @@
   <div class="body">
     <p>Data: NOAA / National Weather Service. Forecasts: AIGFS v1.1 and GFS from <a href="https://nomads.ncep.noaa.gov/">NOMADS</a>, the 00:00 UTC runs, 2 m temperature at the nearest grid point. Measurements: station readings from the <a href="https://www.weather.gov/documentation/services-web-api">NWS API</a>, nearest 00:00 UTC. Rain: each model's 6-hour total, and the rain in each station's 00:00 UTC report, from the <a href="https://aviationweather.gov/data/api/">NOAA Aviation Weather Center</a>. The AI model's version: <a href="https://www.weather.gov/media/notification/pdf_2026/scn26-68_AIGFS_v1.1.pdf">NWS Service Change Notice 26-68</a>.</p>
     <p id="data-status"></p>
-    <p class="foot-links"><a href="#h-about">About and methods</a> <span aria-hidden="true">·</span> <a href="#m-access">Accessibility</a> <span aria-hidden="true">·</span> <a href="#m-privacy">Privacy</a> <span aria-hidden="true">·</span> <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">Report a problem or suggest an idea</a> <span aria-hidden="true">·</span> Version <span class="app-version">0.7</span>, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">what's new</a></p>
+    <p class="foot-links"><a href="#h-about">About and methods</a> <span aria-hidden="true">·</span> <a href="#m-access">Accessibility</a> <span aria-hidden="true">·</span> <a href="#m-privacy">Privacy</a> <span aria-hidden="true">·</span> <a href="educators.html">For educators</a> <span aria-hidden="true">·</span> <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/issues/new/choose">Report a problem or suggest an idea</a> <span aria-hidden="true">·</span> Version <span class="app-version">0.8</span>, <a href="https://github.com/davidpetry-cloud/two-forecasts-one-sky/blob/main/CHANGELOG.md">what's new</a></p>
     <p>Not affiliated with or endorsed by NOAA. NWS material is not under copyright (17 U.S.C. § 403). The misses and averages are our own analysis.</p>
     <p>Design inspired by the <a href="https://www.media.mit.edu/">MIT Media Lab</a>'s website and its use of space. Thank you. Not affiliated with MIT.</p>
   </div>

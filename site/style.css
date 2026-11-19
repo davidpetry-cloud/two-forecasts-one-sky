@@ -326,12 +326,16 @@ main > .band:first-child{border-top:0}
 
 /* 14: print: light, on white paper, controls hidden, content shown */
 @media print{
-  :root,:root[data-theme="dark"]{color-scheme:light;--paper:#fff;--card:#fff;--band:#fff;--text:#000;--ink:#000;--muted:#333;--line:#999;--edge:#666;--header-bg:#fff;--on-dark:#000;--header-sub:#333;--obs:#000}
+  /* every theme prints light: the dark-mode selector is matched too, or a dark-mode device prints near-white text */
+  :root,:root[data-theme="dark"],:root:not([data-theme="light"]){color-scheme:light;--paper:#fff;--card:#fff;--band:#fff;--text:#000;--ink:#000;--muted:#333;--line:#999;--edge:#666;--header-bg:#fff;--header-edge:#666;--on-dark:#000;--header-sub:#333;--obs:#000;
+    --link:#000;--btn-edge:#000;--btn-bg:#fff;--btn-text:#000;--ai:#17497b;--phys:#83400a;--ai-mark:#1d5c9b;--phys-mark:#a85514}
   body{background:#fff}
   .top{color:#000;border-bottom:1px solid #000;padding-bottom:var(--s-5)}
   .top-controls,.skip,.choices,.actions,.hint:empty,.sc-live,#announce,.toc,.next,.try,.search,.place-list{display:none!important}
   .sc-cases > ul{display:block}
   .band{break-inside:avoid-page;margin-bottom:var(--s-6)}
+  /* the alternate bands' full-width shade is a huge shadow; on paper it spills over the next page's text */
+  main > .band:nth-child(even){box-shadow:none;clip-path:none;background:none}
   a{color:#000}
 }
 
@@ -434,3 +438,47 @@ svg .crosshair{stroke:var(--ink);stroke-width:1}
 .reflect-ideas li{border-top:0;padding:var(--s-1) 0}
 #reflect a:not(.next a){color:var(--link);text-underline-offset:3px}
 .reflect-q,.outcomes__list,.reflect-ideas{overflow-wrap:break-word;hyphens:auto}
+
+/* the lesson plan page (audit P15, 19 November 2026): the same bands and type; prints on two sides of paper */
+.top--short{padding-bottom:var(--s-7)}
+.top--short .top-inner{padding-top:var(--s-7)}
+.h1--plan{font-size:clamp(2.2rem,6vw,3.6rem);max-width:18ch}
+.back{display:inline-flex;align-items:center;min-height:44px;color:var(--on-dark);font-weight:600;text-underline-offset:3px}
+button.start{font:inherit;font-weight:700;font-size:var(--fs-md);cursor:pointer}
+.glance{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:0 var(--s-5);max-width:52rem;border-top:1px solid var(--edge)}
+.glance > div{padding:var(--s-3) 0;border-bottom:1px solid var(--line)}
+.glance dt{border:0;padding:0;font-weight:700}
+.glance dd{margin:var(--s-1) 0 0}
+.plan-list{padding-left:1.4rem;margin:0}
+.plan-list li{margin-bottom:var(--s-2)}
+.plan-page .body a:not(.next a){color:var(--link);text-underline-offset:3px}
+.plan-steps{list-style:none;padding:0;margin:0;border-top:1px solid var(--edge)}
+.plan-steps > li{max-width:none;padding:var(--s-4) 0 var(--s-3);border-bottom:1px solid var(--line)}
+.plan-steps h3{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s-1) var(--s-3);margin:0 0 var(--s-2)}
+.plan-n{font-family:var(--display);font-weight:600;font-size:var(--fs-xl);line-height:1;min-width:1.2ch}
+.plan-t{font-family:var(--sans);font-size:var(--fs-sm);font-weight:600;color:var(--muted)}
+.plan-steps p{margin:0}
+.watch dt{padding-top:var(--s-3)}
+.watch dd{margin:var(--s-1) 0 var(--s-3)}
+@media print{
+  .plan-page .band{display:block;break-inside:auto;padding:var(--s-4) 0;margin:0;box-shadow:none;clip-path:none}
+  .plan-page h2,.plan-page h3,.watch dt{break-after:avoid}
+  .plan-steps > li{break-inside:avoid}
+  .plan-page .top{padding:0 0 var(--s-3)}
+  .plan-page .top-inner{padding-top:0}
+  .plan-page .top-row,.plan-page .start-row{display:none}
+  .plan-page .h1--plan{font-size:28pt;margin-bottom:var(--s-2)}
+  .plan-page a[href^="http"]::after{content:" (" attr(href) ")";font-size:.85em;overflow-wrap:anywhere}
+  .plan-page .mark{display:none}
+  html:has(body.plan-page){font-size:10pt}
+  .plan-page main{padding-top:var(--s-3)}
+  .plan-page{line-height:1.45}
+  .plan-page h2{font-size:15pt;margin:var(--s-3) 0 var(--s-2)}
+  .plan-page h3{margin:var(--s-4) 0 var(--s-2)}
+  .plan-page .band{padding:var(--s-2) 0;margin:0}
+  .plan-page .plan-steps > li{padding:var(--s-2) 0}
+  .plan-page .plan-n{font-size:15pt}
+  .plan-page .sense{margin-bottom:var(--s-3)}
+  .plan-page p,.plan-page li,.plan-page dd{max-width:none}
+  .plan-page .band{grid-template-columns:1fr}
+}

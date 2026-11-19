@@ -780,7 +780,7 @@
       ["h-reflect", "Before you go", "reflect reflection question trust pause think"], ["h-outcomes", "What you'll be able to do", "outcomes goals learn objectives"], ["h-about", "About and methods", "about methods how it works data noaa"], ["m-winner", "How we call a winner", "too close to call standard error noise statistics"],
       ["m-rain", "Rain", "rain precipitation 6 hours measurable"], ["m-access", "Accessibility", "accessibility wcag voiceover screen reader"],
       ["m-privacy", "Privacy", "privacy cookies tracking data stored"], ["m-sources", "Download the data", "download data csv json open data cc0 code github"],
-      ["m-cite", "How to cite", "cite citation reference apa"]];
+      ["m-cite", "How to cite", "cite citation reference apa"], ["m-sources", "Lesson plan for educators", "teacher educator lesson plan classroom print"]];
     steps.forEach(function (st) { idx.push({ kind: "Step", title: st[1], text: st[2], go: { to: st[0] } }); });
     CITIES.forEach(function (c) {
       idx.push({ kind: "Place", title: c.name, text: c.place + " " + c.station + (c.name === "New York" ? " nyc manhattan" : ""), go: { place: c.name } });
@@ -940,6 +940,7 @@
       if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); loadMap(); }
     }, { rootMargin: "800px 0px" });
     io.observe(box);
+    window.addEventListener("beforeprint", loadMap); // so a printout has the map when the reader didn't scroll to it
   })();
   // What's in the record so far (audit P8): counts only, no winner, so the guess stays a real guess.
   (function () {

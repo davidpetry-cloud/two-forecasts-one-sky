@@ -1,5 +1,12 @@
 # What's new
 
+## 0.8 (19 November 2026), still a prototype
+
+- **A lesson plan for educators** (`educators.html`): 30 to 45 minutes in five timed steps, what to listen for, discussion questions, and notes on access and care. It prints on two and a half pages. Linked from "Before you start", About and methods, and the footer.
+- **Printing fixed**: on a device set to dark mode, printed text came out near-white, and long sections could hide the text after them. Both are fixed, and a printout now includes the map.
+- **Windows high contrast** checked in a simulation (light and dark): everything stays readable and told apart by shape. A check on Windows itself is still to come.
+- **Measured rain** filled in for the evenings of 10 and 18 November, after the Aviation Weather Center answered again.
+
 ## 0.7 (19 November 2026), still a prototype
 
 - **What you'll be able to do**: three outcomes at the top, so you know what the activity is for.
